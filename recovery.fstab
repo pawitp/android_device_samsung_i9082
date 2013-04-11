@@ -6,5 +6,6 @@
 /system			ext4		/dev/block/mmcblk0p19
 /data			ext4		/dev/block/mmcblk0p21	length=-16384
 /preload		ext4		/dev/block/mmcblk0p20
-/sdcard			vfat		/dev/block/mmcblk1p1	/dev/block/mmcblk1
+/sdcard         datamedia   /dev/null
+/external_sd	vfat		/dev/block/mmcblk1p1	/dev/block/mmcblk1
 /modem			emmc		/dev/block/mmcblk0p7

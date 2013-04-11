@@ -1,0 +1,117 @@
+
+on boot
+	# setup permissions for logging
+    chown system system /sys/class/bcm_log/bcm_log/log
+    chown system system /sys/class/bcm_log/bcm_log/log_lock
+    chown system system /sys/class/bcm_log/bcm_log/cp_crash
+    chown system system /sys/class/bcm_log/bcm_log/cp_crash_lock
+    chown system system /sys/class/bcm_log/bcm_log/ap_crash
+    chown system system /sys/class/bcm_log/bcm_log/ap_crash_lock
+    chown system system /sys/class/bcm_log/bcm_log/file_max
+    chown system system /sys/class/bcm_log/bcm_log/file_base
+
+    chmod 0664 /sys/class/bcm_log/bcm_log/log
+    chmod 0664 /sys/class/bcm_log/bcm_log/log_lock
+    chmod 0664 /sys/class/bcm_log/bcm_log/cp_crash
+    chmod 0664 /sys/class/bcm_log/bcm_log/cp_crash_lock
+    chmod 0664 /sys/class/bcm_log/bcm_log/ap_crash
+    chmod 0664 /sys/class/bcm_log/bcm_log/ap_crash_lock
+    chmod 0664 /sys/class/bcm_log/bcm_log/file_max
+    chmod 0664 /sys/class/bcm_log/bcm_log/file_base
+
+# setup permissions for lps
+    chown system system /sys/kernel/sysrpc/mtest/lps
+    chmod 0664 /sys/kernel/sysrpc/mtest/lps
+
+# Setup Logging persistent data
+on property:persist.brcm.log=auto
+	write /sys/class/bcm_log/bcm_log/log_lock 0
+on property:persist.brcm.log=none
+	write /sys/class/bcm_log/bcm_log/log_lock 0
+	write /sys/class/bcm_log/bcm_log/log none
+	write /sys/class/bcm_log/bcm_log/log_lock 1
+	write /sys/kernel/sysrpc/mtest/lps 1
+on property:persist.brcm.log=sdcard
+	write /sys/class/bcm_log/bcm_log/log_lock 0
+	write /sys/class/bcm_log/bcm_log/log sdcard
+	write /sys/class/bcm_log/bcm_log/log_lock 1
+	write /sys/kernel/sysrpc/mtest/lps 0
+on property:persist.brcm.log=uart
+	write /sys/class/bcm_log/bcm_log/log_lock 0
+	write /sys/class/bcm_log/bcm_log/log uart
+	write /sys/class/bcm_log/bcm_log/log_lock 1
+on property:persist.brcm.log=stm
+	write /sys/class/bcm_log/bcm_log/log_lock 0
+	write /sys/class/bcm_log/bcm_log/log stm
+	write /sys/class/bcm_log/bcm_log/log_lock 1
+on property:persist.brcm.log=rndis
+	write /sys/class/bcm_log/bcm_log/log_lock 0
+	write /sys/class/bcm_log/bcm_log/log rndis
+	write /sys/class/bcm_log/bcm_log/log_lock 1
+	write /sys/kernel/sysrpc/mtest/lps 0
+on property:persist.brcm.log=acm
+	write /sys/class/bcm_log/bcm_log/log_lock 0
+	write /sys/class/bcm_log/bcm_log/log acm
+	write /sys/class/bcm_log/bcm_log/log_lock 1
+	write /sys/kernel/sysrpc/mtest/lps 0
+
+on property:persist.brcm.cp_crash=auto
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 0
+on property:persist.brcm.cp_crash=sdcard
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/cp_crash sdcard
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 1
+on property:persist.brcm.cp_crash=uart
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/cp_crash uart
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 1
+on property:persist.brcm.cp_crash=stm
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/cp_crash stm
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 1
+on property:persist.brcm.cp_crash=rndis
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/cp_crash rndis
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 1
+on property:persist.brcm.cp_crash=acm
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/cp_crash acm
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 1
+on property:persist.brcm.cp_crash=panic
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/cp_crash panic
+	write /sys/class/bcm_log/bcm_log/cp_crash_lock 1
+
+on property:persist.brcm.ap_crash=auto
+	write /sys/class/bcm_log/bcm_log/ap_crash_lock 0
+on property:persist.brcm.ap_crash=stm
+	write /sys/class/bcm_log/bcm_log/ap_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/ap_crash stm
+	write /sys/class/bcm_log/bcm_log/ap_crash_lock 1
+on property:persist.brcm.ap_crash=panic
+	write /sys/class/bcm_log/bcm_log/ap_crash_lock 0
+	write /sys/class/bcm_log/bcm_log/ap_crash panic
+	write /sys/class/bcm_log/bcm_log/ap_crash_lock 1
+
+#Setup Broadcom brcm.ase.xxx handling for ASE
+on property:brcm.ase.log=*
+    write /sys/class/bcm_log/bcm_log/log ${brcm.ase.log}
+
+on property:brcm.ase.cp_crash=*
+    write /sys/class/bcm_log/bcm_log/cp_crash ${brcm.ase.cp_crash}
+
+on property:brcm.ase.ap_crash=*
+    write /sys/class/bcm_log/bcm_log/ap_crash ${brcm.ase.ap_crash}
+
+on property:brcm.ase.log_save=1
+    setprop persist.brcm.log ${brcm.ase.log}
+
+on property:brcm.ase.file_max=*
+    write /sys/class/bcm_log/bcm_log/file_max ${brcm.ase.file_max}
+
+on property:brcm.ase.file_max_save=1
+    setprop persist.brcm.log_file_max ${brcm.ase.file_max}
+
+on property:persist.brcm.log_file_max=*
+    write /sys/class/bcm_log/bcm_log/file_max ${persist.brcm.log_file_max}
+

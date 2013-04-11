@@ -1,0 +1,12 @@
+on init
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 685e
+    write /sys/class/android_usb/android0/functions mass_storage,adb
+
+    # adb won't work in OSX without this
+    write /sys/class/android_usb/android0/bDeviceClass EF
+    write /sys/class/android_usb/android0/bDeviceSubClass 02
+    write /sys/class/android_usb/android0/bDeviceProtocol 01
+
+    write /sys/class/android_usb/android0/enable 1

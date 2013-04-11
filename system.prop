@@ -1,3 +1,48 @@
 #
 # system.prop for i9082
 #
+persist.brcm.log=none
+persist.brcm.cp_crash=none
+persist.brcm.ap_crash=none
+
+rild.libpath=/system/lib/libbrcm_ril.so
+#rild.libargs=-d /dev/ttyS0
+ro.sf.lcd_density=240
+ro.lcd_brightness=123
+ro.lcd_min_brightness=20
+
+# MultiTouch support
+ro.product.multi_touch_enabled=true
+ro.product.max_num_touch=2
+
+# system prop for FM Radio SNR
+#
+service.brcm.fm.start_snr=41
+service.brcm.fm.stop_snr=20
+
+ro.tvout.enable=true
+
+net.streaming.rtsp.uaprof=http://wap.samsungmobile.com/uaprof/
+
+# Multimedia property for Smart View
+media.enable-commonsource=true
+#
+# ADDITIONAL_BUILD_PROPERTIES
+#
+ro.opengles.version=131072
+debug.hwui.render_dirty_regions=false
+brcm.graphics.async_errors=true
+brcm.hwc.no-hdmi-trans=1
+
+# TODO
+dalvik.vm.heapstartsize=5m
+dalvik.vm.heapgrowthlimit=56m
+dalvik.vm.heapsize=128m
+keyguard.no_require_sim=true
+ro.carrier=unknown
+ro.com.google.clientidbase=android-samsung
+ro.ril.hsxpa=1
+ro.ril.gprsclass=10
+ro.com.google.gmsversion=4.1_r4
+dalvik.vm.dexopt-flags=m=y
+dalvik.vm.stack-trace-file=/data/anr/traces.txt

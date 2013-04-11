@@ -1,0 +1,177 @@
+on init
+    write /sys/class/android_usb/android0/iSerial $ro.serialno
+    write /sys/class/android_usb/android0/f_rndis/manufacturer Samsung
+    write /sys/class/android_usb/android0/f_rndis/vendorID 04e8
+    chown system system /sys/bus/platform/devices/dwc_otg/host_force_fullspeed
+
+on boot
+    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
+    write /sys/class/android_usb/android0/iProduct $ro.product.model
+
+on property:sys.usb.config=mass_storage
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 685b
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/f_mass_storage/lun0/file /dev/block/mmcblk1p1
+    write /sys/class/android_usb/android0/enable 1
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=mass_storage,adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 685e
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/f_mass_storage/lun0/file /dev/block/mmcblk1p1
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=acm
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 685d
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/f_acm/instances 2
+    write /sys/class/android_usb/android0/enable 1
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=acm,adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 685d
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/f_acm/instances 2
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=ptp
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6865
+    write /sys/class/android_usb/android0/bDeviceClass ef
+    write /sys/class/android_usb/android0/bDeviceSubClass 02
+    write /sys/class/android_usb/android0/bDeviceProtocol 01
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/enable 1
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=ptp,adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6866
+    write /sys/class/android_usb/android0/bDeviceClass ef
+    write /sys/class/android_usb/android0/bDeviceSubClass 02
+    write /sys/class/android_usb/android0/bDeviceProtocol 01
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=mtp
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6860
+    write /sys/class/android_usb/android0/bDeviceClass EF
+    write /sys/class/android_usb/android0/bDeviceSubClass 02
+    write /sys/class/android_usb/android0/bDeviceProtocol 01
+    write /sys/class/android_usb/android0/functions mtp,acm
+    write /sys/class/android_usb/android0/f_acm/instances 2
+    write /sys/class/android_usb/android0/enable 1
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=mtp,adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6860
+    write /sys/class/android_usb/android0/bDeviceClass EF
+    write /sys/class/android_usb/android0/bDeviceSubClass 02
+    write /sys/class/android_usb/android0/bDeviceProtocol 01
+    write /sys/class/android_usb/android0/functions mtp,acm,adb
+    write /sys/class/android_usb/android0/f_acm/instances 2
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=mtp,acm
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6860
+    write /sys/class/android_usb/android0/bDeviceClass ef
+    write /sys/class/android_usb/android0/bDeviceSubClass 02
+    write /sys/class/android_usb/android0/bDeviceProtocol 01
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/f_acm/instances 2
+    write /sys/class/android_usb/android0/enable 1
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=mtp,acm,adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6860
+    write /sys/class/android_usb/android0/bDeviceClass ef
+    write /sys/class/android_usb/android0/bDeviceSubClass 02
+    write /sys/class/android_usb/android0/bDeviceProtocol 01
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/f_acm/instances 2
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=rndis
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6863
+    write /sys/class/android_usb/android0/bDeviceClass 02
+    write /sys/class/android_usb/android0/bDeviceSubClass 00
+    write /sys/class/android_usb/android0/bDeviceProtocol 00
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/enable 1
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=rndis,adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6864
+    write /sys/class/android_usb/android0/bDeviceClass 02
+    write /sys/class/android_usb/android0/bDeviceSubClass 00
+    write /sys/class/android_usb/android0/bDeviceProtocol 00
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state $sys.usb.config
+
+on property:sys.usb.config=adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct e680
+    write /sys/class/android_usb/android0/functions $sys.usb.config
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state $sys.usb.config
+
+#run usb network commands from root
+service usb_network /system/bin/sh /etc/usb_network.sh prop
+    oneshot
+    user root
+    group root
+    disabled
+
+# When coming up from a persistent rndis mode we need to
+# enable the rndis0 network
+# on property:persist.sys.usb.config=rndis
+#   setprop net.setcfg.rndis0 up
+# 
+# on property:persist.sys.usb.config=rndis,adb
+#   setprop net.setcfg.rndis0 up
+# 
+# on property:net.setcfg.rndis0=up
+#   ifup rndis0
+#   start usb_network
+# 
+# on property:net.setcfg.rndis0=down
+#   ifdown rndis0
+#   start usb_network
+
+

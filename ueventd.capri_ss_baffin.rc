@@ -1,0 +1,47 @@
+# vchiq
+/dev/vchiq                0666   system     system
+
+# videocore shared memory interface
+/dev/vcsm                 0666   system     system
+
+# display info
+/dev/vc-dnfo              0666   system     system
+
+# videocore memory access
+/dev/vc-mem               0666   system     system
+
+# videocore cma access
+/dev/vc-cma               0666   system     system
+
+# openmax configuration
+/dev/vc-omx               0666   system     system
+
+# videocore low memory killer
+/dev/vc-lmk               0666   system     system
+
+# HDMI hot-plug detection
+/dev/hdmi0                0666   system     system
+
+# HDMI information
+/dev/vc-hnfo              0666   system     system
+
+# sensors
+/dev/mpu                  0666   system     system
+/dev/mpuirq               0666   system     system
+/dev/timerirq             0666   system     system
+/dev/ami_sensor           0666   system     system
+
+# for flight mode optimization
+/dev/flightmode-opt       0666   system     system
+
+# videocore camera firwmare
+/dev/vc-cam               0666   system     system
+
+#Permission for NV(cal) partition 
+/dev/block/mmcblk0p1		0770	radio	system
+
+# SEC User Dump
+# /dev/sec_user_dump        0660   system     shell  
+
+# SYSTEM Status
+/dev/block/mmcblk0p11        0660   system     root  
