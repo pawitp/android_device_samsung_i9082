@@ -27,6 +27,7 @@ PRODUCT_COPY_FILES += \
 	device/samsung/i9082/init.bt.rc:root/init.bt.rc \
 	device/samsung/i9082/init.log.rc:root/init.log.rc \
 	device/samsung/i9082/init.recovery.capri_ss_baffin.rc:root/init.recovery.capri_ss_baffin.rc \
+	device/samsung/i9082/lpm.rc:root/lpm.rc \
 	device/samsung/i9082/ueventd.capri_ss_baffin.rc:root/ueventd.capri_ss_baffin.rc \
 	device/samsung/i9082/fstab.capri_ss_baffin:root/fstab.capri_ss_baffin \
 
@@ -93,7 +94,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
     mobiledata.interfaces=rmnet0 \
-    ro.telephony.ril_class=SamsungQualcommD2RIL \
+    ro.telephony.ril_class=SamsungBCMRIL \
 
 # TODO
 

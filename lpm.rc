@@ -1,0 +1,27 @@
+on early-init
+    start ueventd
+
+on init
+
+sysclktz 0
+
+on boot
+    # set cpu governor to powersave while in charging mode
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
+    # EHCI runtime enable for LPA
+    write /sys/devices/platform/s5p-ehci/power/control auto
+
+    chmod 0660 /proc/vc
+    chmod 0660 /proc/vc/display
+    chmod 0660 /proc/vc/display/vchiq_control
+    write /proc/vc/display/vchiq_control "earlysuspctrl "
+    write /proc/vc/display/vchiq_control "autosuspend "
+
+    class_start default
+
+## Daemon processes to be run by init.
+##
+service ueventd /sbin/ueventd
+    critical
+
+service battery_charger /charger
