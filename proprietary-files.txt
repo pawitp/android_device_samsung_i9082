@@ -311,7 +311,6 @@ lib/libWVphoneAPI.so
 lib/libWVStreamControlAPI_L3.so
 lib/libXIVSamsungGalleryCoder.so
 lib/libyamaha.so
-lib/modules/dhd.ko
 lib/modules/VoiceSolution.ko
 lib/soundfx/libaudiopreprocessing.so
 lib/soundfx/libbundlewrapper.so

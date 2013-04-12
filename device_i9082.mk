@@ -10,16 +10,6 @@ PRODUCT_LOCALES += hdpi
 
 DEVICE_PACKAGE_OVERLAYS += device/samsung/i9082/overlay
 
-LOCAL_PATH := device/samsung/i9082
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-	LOCAL_KERNEL := $(LOCAL_PATH)/kernel
-else
-	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
-
 # Init files
 PRODUCT_COPY_FILES += \
 	device/samsung/i9082/init.capri_ss_baffin.rc:root/init.capri_ss_baffin.rc \
