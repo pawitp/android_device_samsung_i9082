@@ -26,6 +26,7 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 4404019200
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 TARGET_PREBUILT_KERNEL := device/samsung/i9082/kernel
+# TODO: compile kernel from source and fix MTP
 
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_HAS_LARGE_FILESYSTEM := true
@@ -33,7 +34,9 @@ BOARD_HAS_LARGE_FILESYSTEM := true
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
-# TODO: BOARD_BLUEDROID_VENDOR_CONF := device/samsung/aries-common/libbt_vndcfg.txt
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/i9082/bluetooth
+BOARD_BLUEDROID_VENDOR_CONF := device/samsung/i9082/libbt_vndcfg.txt
+# TODO: Bluetooth LPM and such
 
 # Connectivity - Wi-Fi
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
@@ -64,6 +67,7 @@ COMMON_GLOBAL_CFLAGS += -DMR0_CAMERA_BLOB
 
 # Audio
 COMMON_GLOBAL_CFLAGS += -DMR0_AUDIO_BLOB
+# TODO: Fix microphone
 
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true

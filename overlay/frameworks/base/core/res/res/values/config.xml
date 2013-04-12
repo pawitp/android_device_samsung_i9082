@@ -183,7 +183,7 @@
     <bool name="config_sf_slowBlur">true</bool>
 
     <!-- The default iface on which to monitor data use -->
-    <string name="config_datause_iface">pdp0</string>
+    <string name="config_datause_iface">rmnet0</string>
 
     <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveNotificationLed">true</bool>

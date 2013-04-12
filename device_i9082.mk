@@ -92,7 +92,8 @@ PRODUCT_COPY_FILES += \
 # be reachable from resources or other mechanisms.
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
-    mobiledata.interfaces=pdp0,eth0,gprs,ppp0 \
+    mobiledata.interfaces=rmnet0 \
+    ro.telephony.ril_class=SamsungQualcommD2RIL \
 
 # TODO
 

@@ -59,6 +59,9 @@ on init
     
     symlink /dev/block/mmcblk0p11 /dev/block/param    
 
+    # We will create our own ril-daemon service with different perm and sockets
+    stop ril-daemon
+
 on post-fs-data
 # we will remap this as /storage/sdcard with the sdcard fuse tool
     mkdir /data/media 0770 media_rw media_rw
@@ -491,7 +494,7 @@ on boot
     mkdir /data/misc/radio/hatp 0775 radio system
 
 on fs
-    #mount_all /fstab.capri_ss_baffin
+    mount_all /fstab.capri_ss_baffin
     setprop ro.crypto.fuse_sdcard true
 
     # don't require sim
@@ -503,10 +506,6 @@ on fs
 
     #SEC_PARAM
 #    insmod sec_param.ko
-
-#exFAT module
-    insmod /system/lib/modules/exfat_core.ko
-    insmod /system/lib/modules/exfat_fs.ko
 
     # For NV Read/Write 
     chown radio system /dev/block/mmcblk0p1
@@ -628,14 +627,14 @@ service at_distributor /system/bin/at_distributor
 	group root
 	oneshot
 
-# service ril-daemon /system/bin/rild
-#     class main
-#     socket rild stream 660 root radio
-#     socket rild1 stream 660 root radio
-#     socket rild-debug stream 660 radio system
-#     user root
-#     group radio cache inet misc audio system sdcard_rw log sdcard_r
-#    onrestart restart cpboot-daemon
+service capri-ril-daemon /system/bin/rild
+    class main
+    socket rild stream 660 root radio
+    socket rild1 stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio system sdcard_rw log sdcard_r
+   onrestart restart cpboot-daemon
 
 # create virtual SD card at /storage/sdcard, based on the /data/media directory
 # daemon will drop to user/group system/media_rw after initializing

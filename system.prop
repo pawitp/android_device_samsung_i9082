@@ -46,3 +46,6 @@ ro.ril.gprsclass=10
 ro.com.google.gmsversion=4.1_r4
 dalvik.vm.dexopt-flags=m=y
 dalvik.vm.stack-trace-file=/data/anr/traces.txt
+
+# TODO - and no default APN?
+persist.sys.dataprefer.simid=0

@@ -34,6 +34,7 @@ bin/vdc
 bin/wlandutservice
 cameradata/datapattern_420sp.yuv
 cameradata/datapattern_front_420sp.yuv
+etc/asound.conf
 etc/audio/LVVEFS_Rx_Configuration.txt
 etc/audio/LVVEFS_Tx_Configuration.txt
 etc/audio/Rx_ControlParams_BLUETOOTH_HEADSET.txt
@@ -94,6 +95,7 @@ etc/wifi/bcmdhd_sta.bin_b2
 etc/wifi/nvram_mfg.txt
 etc/wifi/nvram_net.txt
 etc/wifi/wpa_supplicant.conf
+lib/hw/alsa.default.so
 lib/hw/audio.hdmi.capri.so
 lib/hw/audio.primary.capri.so
 lib/hw/audio.usb.capri.so
@@ -160,7 +162,6 @@ lib/libdwp.so
 lib/libedmnativehelper.so
 lib/libedmnativehelperservice.so
 lib/libEX_Engine_v.so
-lib/libexfat_utils.so
 lib/libfmradio_jni.so
 lib/libh263_dec_p3.so
 lib/libh263_enc_p3.so
@@ -311,8 +312,6 @@ lib/libWVStreamControlAPI_L3.so
 lib/libXIVSamsungGalleryCoder.so
 lib/libyamaha.so
 lib/modules/dhd.ko
-lib/modules/exfat_core.ko
-lib/modules/exfat_fs.ko
 lib/modules/VoiceSolution.ko
 lib/soundfx/libaudiopreprocessing.so
 lib/soundfx/libbundlewrapper.so
