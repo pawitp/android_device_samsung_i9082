@@ -1,5 +1,4 @@
 import init.bcm281x5.usb.rc
-import init.bt.rc
 import init.log.rc
 
 on early-init
@@ -147,12 +146,12 @@ on boot
 
 # Permissions for bluetooth
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
-    chown bluetooth bluetooth ro.bt.bdaddr_path
-#    chown bluetooth bluetooth /dev/ttySAC0
-#    chmod 0600 /dev/ttySAC0
+    chown bluetooth net_bt_stack ro.bt.bdaddr_path
+    chown bluetooth net_bt_stack /dev/ttyS2
+    chmod 0600 /dev/ttyS2
     chmod 0660 /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
 
 # <Sensors & NFC>
 # Input Events
@@ -332,10 +331,6 @@ on boot
 
 # allow user space (atx) access to kernel pm debug
     chown system system /sys/module/capri_pm_dbg/parameters/debug
-
-#for bluetooth. permission for host interface
-    chown root bluetooth /dev/ttyS2
-    chmod 0777 /dev/ttyS2
 
 #for fm radio    
     copy /system/etc/local.prop /data/local.prop
@@ -703,15 +698,7 @@ on property:persist.sys.dataprefer.simid=1
     write /data/atx/setsim.txt at*msetsim=2
     start set_simid
 
-#btld is only used for FM
-# Make sure we startup btld before hcid
-#service btld /system/bin/logwrapper /system/bin/btld -hb 3000000 -hp /dev/ttyS2 -lpm 0 -nice -7
-#service btld /system/bin/logwrapper /system/bin/btld -lpm 0 ;; low power mode on(1), off(0)
-service btld /system/bin/logwrapper /system/bin/btld -lpm 1
-    user root
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
+# TODO: btld is only used for FM
 
 # TVout
 service TvoutService_C /system/bin/bintvoutservice

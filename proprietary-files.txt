@@ -3,10 +3,8 @@ bin/atrace
 bin/atx
 bin/atxd
 bin/BCM4334B0_002.001.013.0679.0000_03_Samsung_BaffinSpurCancellAlwaysOn.hcd
-bin/bcm_dut
 bin/bintvoutservice
 bin/bkmgrd
-bin/btld
 bin/cate_rpc_util
 bin/drmserver
 bin/emma
@@ -16,12 +14,10 @@ bin/gpslogd
 bin/icd
 bin/immvibed
 bin/insthk
-bin/LE_dut
 bin/macloader
 bin/mfgloader
 bin/mttlogger
 bin/npsmobex
-bin/pand
 bin/rild
 bin/smd
 bin/tvserver

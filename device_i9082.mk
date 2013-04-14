@@ -14,7 +14,6 @@ DEVICE_PACKAGE_OVERLAYS += device/samsung/i9082/overlay
 PRODUCT_COPY_FILES += \
 	device/samsung/i9082/init.capri_ss_baffin.rc:root/init.capri_ss_baffin.rc \
 	device/samsung/i9082/init.bcm281x5.usb.rc:root/init.bcm281x5.usb.rc \
-	device/samsung/i9082/init.bt.rc:root/init.bt.rc \
 	device/samsung/i9082/init.log.rc:root/init.log.rc \
 	device/samsung/i9082/init.recovery.capri_ss_baffin.rc:root/init.recovery.capri_ss_baffin.rc \
 	device/samsung/i9082/lpm.rc:root/lpm.rc \
