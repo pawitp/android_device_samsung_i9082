@@ -82,8 +82,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=rmnet0 \
     ro.telephony.ril_class=SamsungBCMRIL \
 
-# TODO
-
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
 PRODUCT_PROPERTY_OVERRIDES += \

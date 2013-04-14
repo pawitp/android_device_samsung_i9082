@@ -46,10 +46,10 @@ BOARD_HOSTAPD_DRIVER        := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_bcmdhd
 BOARD_WLAN_DEVICE           := bcmdhd
 BOARD_WLAN_DEVICE_REV       := bcm4334
-WIFI_DRIVER_MODULE_NAME     := "bcm4334"
 WIFI_DRIVER_FW_PATH_PARAM   := "/sys/module/dhd/parameters/firmware_path"
 WIFI_DRIVER_FW_PATH_STA     := "/system/etc/wifi/bcmdhd_sta.bin_b2"
 WIFI_DRIVER_FW_PATH_AP      := "/system/etc/wifi/bcmdhd_apsta.bin_b2"
+WIFI_DRIVER_FW_PATH_P2P     := "/system/etc/wifi/bcmdhd_p2p.bin_b2"
 WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/dhd.ko"
 WIFI_DRIVER_MODULE_NAME     := "dhd"
 WIFI_DRIVER_MODULE_ARG      := "firmware_path=/system/etc/wifi/bcmdhd_sta.bin nvram_path=/system/etc/wifi/nvram_net.txt"
