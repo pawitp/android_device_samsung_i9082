@@ -34,10 +34,6 @@ debug.hwui.render_dirty_regions=false
 brcm.graphics.async_errors=true
 brcm.hwc.no-hdmi-trans=1
 
-# TODO
-dalvik.vm.heapstartsize=5m
-dalvik.vm.heapgrowthlimit=56m
-dalvik.vm.heapsize=128m
 keyguard.no_require_sim=true
 ro.carrier=unknown
 ro.com.google.clientidbase=android-samsung
