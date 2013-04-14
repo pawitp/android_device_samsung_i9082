@@ -13,7 +13,6 @@ on property:sys.usb.config=mass_storage
     write /sys/class/android_usb/android0/idVendor 04e8
     write /sys/class/android_usb/android0/idProduct 685b
     write /sys/class/android_usb/android0/functions $sys.usb.config
-    write /sys/class/android_usb/android0/f_mass_storage/lun0/file /dev/block/mmcblk1p1
     write /sys/class/android_usb/android0/enable 1
     setprop sys.usb.state $sys.usb.config
 
@@ -22,7 +21,6 @@ on property:sys.usb.config=mass_storage,adb
     write /sys/class/android_usb/android0/idVendor 04e8
     write /sys/class/android_usb/android0/idProduct 685e
     write /sys/class/android_usb/android0/functions $sys.usb.config
-    write /sys/class/android_usb/android0/f_mass_storage/lun0/file /dev/block/mmcblk1p1
     write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop sys.usb.state $sys.usb.config
@@ -150,28 +148,5 @@ on property:sys.usb.config=adb
     write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop sys.usb.state $sys.usb.config
-
-#run usb network commands from root
-service usb_network /system/bin/sh /etc/usb_network.sh prop
-    oneshot
-    user root
-    group root
-    disabled
-
-# When coming up from a persistent rndis mode we need to
-# enable the rndis0 network
-# on property:persist.sys.usb.config=rndis
-#   setprop net.setcfg.rndis0 up
-# 
-# on property:persist.sys.usb.config=rndis,adb
-#   setprop net.setcfg.rndis0 up
-# 
-# on property:net.setcfg.rndis0=up
-#   ifup rndis0
-#   start usb_network
-# 
-# on property:net.setcfg.rndis0=down
-#   ifdown rndis0
-#   start usb_network
 
 
