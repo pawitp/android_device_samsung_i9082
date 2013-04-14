@@ -32,10 +32,6 @@ PRODUCT_COPY_FILES += \
 	device/samsung/i9082/samsung-keypad.kl:system/usr/keylayout/samsung-keypad.kl \
 	device/samsung/i9082/sii9234_rcp.kl:system/usr/keylayout/sii9234_rcp.kl
 
-# Generated kcm keymaps
-PRODUCT_PACKAGES := \
-    bcm_keypad_v2.kcm
-
 # Filesystem management tools
 PRODUCT_PACKAGES += \
 	make_ext4fs \
