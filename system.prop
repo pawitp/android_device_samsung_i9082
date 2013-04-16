@@ -26,22 +26,15 @@ net.streaming.rtsp.uaprof=http://wap.samsungmobile.com/uaprof/
 
 # Multimedia property for Smart View
 media.enable-commonsource=true
-#
-# ADDITIONAL_BUILD_PROPERTIES
-#
+
 ro.opengles.version=131072
 debug.hwui.render_dirty_regions=false
 brcm.graphics.async_errors=true
 brcm.hwc.no-hdmi-trans=1
 
-keyguard.no_require_sim=true
-ro.carrier=unknown
-ro.com.google.clientidbase=android-samsung
 ro.ril.hsxpa=1
 ro.ril.gprsclass=10
 ro.com.google.gmsversion=4.1_r4
-dalvik.vm.dexopt-flags=m=y
-dalvik.vm.stack-trace-file=/data/anr/traces.txt
 
 # TODO - and no default APN?
 persist.sys.dataprefer.simid=0
