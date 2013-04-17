@@ -377,14 +377,6 @@ on post-fs
     chown radio system /efs
     chmod 0771 /efs
 
-    # TODO: Check what's in here
-# on property:persist.sys.storage_preload=1
-#     mount ext4 /dev/block/mmcblk0p20 /preload nosuid nodev noatime wait ro
-#     setprop storage.preload.complete 1
-#
-# on property:persist.sys.storage_preload=0
-#     exec /system/bin/umount /preload
-
 # create filesystem if necessary
 service setup_fs /system/bin/setup_fs \
             /dev/block/mmcblk0p17 \
