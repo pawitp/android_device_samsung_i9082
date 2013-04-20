@@ -477,15 +477,6 @@ on property:persist.sys.dataprefer.simid=1
 
 # TODO: btld is only used for FM
 
-# TVout
-service TvoutService_C /system/bin/bintvoutservice
-     class main
-     user system
-     group system
-
-on property:ro.tvout.enable=false
-	stop TvoutService_C
-
 service macloader /system/bin/macloader
 	class main
 	oneshot
