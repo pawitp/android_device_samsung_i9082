@@ -38,6 +38,7 @@ import java.util.ArrayList;
 public class SamsungBCMRIL extends RIL implements CommandsInterface {
     public SamsungBCMRIL(Context context, int networkMode, int cdmaSubscription) {
         super(context, networkMode, cdmaSubscription);
+        mQANElements = 5;
     }
 
     public void
