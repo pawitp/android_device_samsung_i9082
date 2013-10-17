@@ -19,7 +19,6 @@ bin/vcdbg
 bin/vclmk
 bin/vcos-version
 etc/asound.conf
-etc/audio_effects.conf
 etc/audio_policy.conf
 etc/camera_info.ini
 etc/DiamondVoice.txt
