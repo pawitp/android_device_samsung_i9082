@@ -14,6 +14,7 @@ $(call inherit-product, device/samsung/i9082/device_i9082.mk)
 PRODUCT_DEVICE := i9082
 PRODUCT_NAME := cm_i9082
 PRODUCT_BRAND := samsung
+PRODUCT_MANUFACTURER := samsung
 PRODUCT_MODEL := GT-I9082
 
 #Set build fingerprint / ID / Prduct Name ect.
