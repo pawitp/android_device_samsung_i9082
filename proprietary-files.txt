@@ -25,7 +25,6 @@ etc/DiamondVoice.txt
 etc/DiamondVoice_Filter.txt
 etc/gps/glconfig.xml
 etc/gps.conf
-etc/media_codecs.xml
 etc/media_profiles.xml
 etc/sensors.conf
 etc/srm.bin

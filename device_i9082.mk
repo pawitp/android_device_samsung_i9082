@@ -21,7 +21,7 @@ PRODUCT_COPY_FILES += \
 	device/samsung/i9082/fstab.capri_ss_baffin:root/fstab.capri_ss_baffin \
 
 PRODUCT_COPY_FILES += \
-	device/samsung/i9082/vold.fstab:system/etc/vold.fstab \
+	device/samsung/i9082/media_codecs.xml:system/etc/media_codecs.xml \
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
@@ -33,7 +33,6 @@ PRODUCT_COPY_FILES += \
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
-	make_ext4fs \
 	setup_fs
 
 # Usb accessory
@@ -75,6 +74,12 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 
+# Support for Browser's saved page feature. This allows
+# for pages saved on previous versions of the OS to be
+# viewed on the current OS.
+PRODUCT_PACKAGES += \
+    libskia_legacy
+
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
 # be reachable from resources or other mechanisms.
@@ -82,6 +87,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
     mobiledata.interfaces=rmnet0 \
     ro.telephony.ril_class=SamsungBCMRIL \
+    ro.zygote.disable_gl_preload=true \
 
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector

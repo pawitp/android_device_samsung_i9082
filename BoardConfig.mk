@@ -9,7 +9,7 @@ TARGET_BOARD_PLATFORM := capri
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
-ARCH_ARM_HAVE_TLS_REGISTER := true
+TARGET_CPU_VARIANT := cortex-a9
 
 TARGET_BOOTLOADER_BOARD_NAME := capri
 
@@ -65,8 +65,11 @@ BOARD_USES_SKTEXTBOX := true
 # Hardware rendering
 USE_OPENGL_RENDERER := true
 BOARD_EGL_CFG := device/samsung/i9082/egl.cfg
-BOARD_EGL_NEEDS_LEGACY_FB := true
-COMMON_GLOBAL_CFLAGS += -DMR0_CAMERA_BLOB
+BOARD_EGL_NEEDS_FNW := true
+BOARD_USE_MHEAP_SCREENSHOT := true
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
+TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
+COMMON_GLOBAL_CFLAGS += -DMR0_CAMERA_BLOB -DNEEDS_VECTORIMPL_SYMBOLS
 
 # Audio
 COMMON_GLOBAL_CFLAGS += -DMR0_AUDIO_BLOB -DSAMSUNG_BCM_AUDIO_BLOB
@@ -77,3 +80,13 @@ BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charg
 
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/i9082/ril/
+
+# Recovery
+TARGET_RECOVERY_FSTAB := device/samsung/i9082/fstab.capri_ss_baffin
+
+# SELinux
+BOARD_SEPOLICY_DIRS += \
+    device/samsung/i9082/sepolicy
+
+BOARD_SEPOLICY_UNION += \
+    file_contexts \
