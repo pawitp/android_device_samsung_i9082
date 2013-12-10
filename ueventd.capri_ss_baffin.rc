@@ -26,10 +26,7 @@
 /dev/vc-hnfo              0666   system     system
 
 # sensors
-/dev/mpu                  0666   system     system
-/dev/mpuirq               0666   system     system
-/dev/timerirq             0666   system     system
-/dev/ami_sensor           0666   system     system
+/dev/mpu6k                0660   root       system
 
 # for flight mode optimization
 /dev/flightmode-opt       0666   system     system

@@ -81,10 +81,19 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.BRCM.vc4.decoder.mpeg4.divx_drm" type="video/mp4v-es">
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
+        <MediaCodec name="OMX.BRCM.vc4.decoder.mpeg4" type="video/mp4v-es">
+            <Quirk name="requires-allocate-on-output-ports" />
+        </MediaCodec>
         <MediaCodec name="OMX.BRCM.vc4.decoder.h263" type="video/3gpp">
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
         <MediaCodec name="OMX.BRCM.vc4.decoder.avc" type="video/avc">
+            <Quirk name="requires-allocate-on-output-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.BRCM.vc4.decoder.mpeg2" type="video/mpeg2">
+            <Quirk name="requires-allocate-on-output-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.BRCM.vc4.decoder.spark" type="video/spark">
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
         <MediaCodec name="OMX.BRCM.vc4.decoder.wmv3" type="video/wmv3" >
@@ -100,8 +109,6 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.brcm.audio.mp3.decoder" type="audio/mpeg" />
         <MediaCodec name="OMX.brcm.audio.amrnb.decoder" type="audio/3gpp" />
         <MediaCodec name="OMX.brcm.audio.amrwb.decoder" type="audio/amr-wb" />
-        <MediaCodec name="OMX.brcm.audio.aac.decoder" type="audio/mp4a-latm" />
-        <MediaCodec name="OMX.brcm.audio.wma.decoder" type="audio/wma" />
 
         <MediaCodec name="OMX.google.mp3.decoder" type="audio/mpeg" />
         <MediaCodec name="OMX.google.amrnb.decoder" type="audio/3gpp" />
@@ -155,9 +162,6 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.google.aac.encoder" type="audio/mp4a-latm" />
         <MediaCodec name="OMX.google.flac.encoder" type="audio/flac" />
 
-        <MediaCodec name="OMX.brcm.audio.aac.encoder" type="audio/mp4a-latm">
-            <Quirk name="supports-multiple-frames-per-input-buffer" />
-        </MediaCodec>
         <MediaCodec name="OMX.brcm.audio.amrnb.encoder" type="audio/3gpp">
             <Quirk name="supports-multiple-frames-per-input-buffer" />
         </MediaCodec>

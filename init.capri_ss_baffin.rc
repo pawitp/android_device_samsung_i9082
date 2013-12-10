@@ -170,6 +170,68 @@ on boot
     chown system radio /sys/class/sensors/gyro_sensor/vendor
     chown system radio /sys/class/sensors/gyro_sensor/name
 
+    # accelerometer
+    chown system input /sys/class/input/input8/acc_enable
+    chown system input /sys/class/input/input8/acc_delay
+    chown system input /sys/class/input/input8/gyro_enable
+    chown system input /sys/class/input/input8/gyro_delay
+    chown system input /sys/class/input/input8/self_test
+    chown system input /sys/class/input/input8/accel_cal_open
+
+    # geomagnetic
+    chown system input /sys/class/input/input9/enable
+    chown system input /sys/class/input/input9/filter_enable
+    chown system input /sys/class/input/input9/filter_len
+    chown system input /sys/class/input/input9/filter_threshold
+    chown system input /sys/class/input/input9/filter_noise
+    chown system input /sys/class/input/input9/delay
+    chown system input /sys/class/input/input9/wake
+    chown system input /sys/class/input/input9/data
+    chown system input /sys/class/input/input9/status
+    chown system input /sys/class/input/input9/position
+
+    chmod 0660 /sys/class/input/input9/enable
+    chmod 0660 /sys/class/input/input9/filter_enable
+    chmod 0660 /sys/class/input/input9/filter_len
+    chmod 0660 /sys/class/input/input9/filter_threshold
+    chmod 0660 /sys/class/input/input9/filter_noise
+    chmod 0660 /sys/class/input/input9/delay
+    chmod 0660 /sys/class/input/input9/wake
+    chmod 0660 /sys/class/input/input9/data
+    chmod 0660 /sys/class/input/input9/status
+    chmod 0660 /sys/class/input/input9/position
+
+    # geomagnetic_raw
+    chown system input /sys/class/input/input10/threshold
+    chown system input /sys/class/input/input10/distortion
+    chown system input /sys/class/input/input10/shape
+    chown compass input /sys/class/input/input10/offsets
+    chown compass input /sys/class/input/input10/static_matrix
+    chown compass input /sys/class/input/input10/dynamic_matrix
+    chown compass input /sys/class/input/input10/ellipsoid_mode
+    write /sys/class/input/input10/distortion "100 15 13"
+
+    chmod 0660 /sys/class/input/input10/threshold
+    chmod 0660 /sys/class/input/input10/distortion
+    chmod 0660 /sys/class/input/input10/shape
+    chmod 0660 /sys/class/input/input10/offsets
+    chmod 0660 /sys/class/input/input10/static_matrix
+    chmod 0660 /sys/class/input/input10/dynamic_matrix
+    chmod 0660 /sys/class/input/input10/ellipsoid_mode
+
+    # orientation
+    chown system input /sys/class/input/input11/enable
+    chown system input /sys/class/input/input11/delay
+    chown system input /sys/class/input/input11/wake
+    chown system input /sys/class/input/input11/status
+    chown system input /sys/class/input/input11/data
+
+    chmod 0660 /sys/class/input/input11/enable
+    chmod 0660 /sys/class/input/input11/delay
+    chmod 0660 /sys/class/input/input11/wake
+    chmod 0660 /sys/class/input/input11/status
+    chmod 0660 /sys/class/input/input11/data
+
     # Vibetonz
     chmod 0660 /dev/tspdrv
     chown root shell /dev/tspdrv
@@ -254,15 +316,6 @@ on boot
     # allow user space (atx) access to kernel pm debug
     chown system system /sys/module/capri_pm_dbg/parameters/debug
 
-    # permissions for sensors
-    chown root system /dev/mpu
-    chown root system /dev/mpuirq
-    chown root system /dev/timerirq
-
-    chmod 0660 /dev/mpu
-    chmod 0660 /dev/mpuirq
-    chmod 0660 /dev/timerirq
-
     chown system system /dev/i2c-6
     chmod 0660 /dev/i2c-6
 
@@ -327,11 +380,19 @@ on boot
     chown system radio /sys/class/sec/switch/adc
 
     # Voice Solution
-    copy /system/etc/DiamondVoice.txt /data/DiamondVoice.txt
-    chmod 0777 /data/DiamondVoice.txt	
-    copy /system/etc/DiamondVoice_Filter.txt /data/DiamondVoice_Filter.txt
-    chmod 0777 /data/DiamondVoice_Filter.txt
-	insmod /system/lib/modules/VoiceSolution.ko
+    copy /system/etc/DiamondVoice_NB.txt /data/DiamondVoice_NB.txt
+    chmod 0777 /data/DiamondVoice_NB.txt
+    copy /system/etc/DiamondVoice_WB.txt /data/DiamondVoice_WB.txt
+    chmod 0777 /data/DiamondVoice_WB.txt
+    copy /system/etc/DiamondVoice_Filter_NB.txt /data/DiamondVoice_Filter_NB.txt
+    chmod 0777 /data/DiamondVoice_Filter_NB.txt
+    copy /system/etc/DiamondVoice_Filter_WB.txt /data/DiamondVoice_Filter_WB.txt
+    chmod 0777 /data/DiamondVoice_Filter_WB.txt
+    copy /system/etc/DiamondVoice_SF_Filter_NB.txt /data/DiamondVoice_SF_Filter_NB.txt
+    chmod 0777 /data/DiamondVoice_SF_Filter_NB.txt
+    copy /system/etc/DiamondVoice_SF_Filter_WB.txt /data/DiamondVoice_SF_Filter_WB.txt
+    chmod 0777 /data/DiamondVoice_SF_Filter_WB.txt
+    insmod /system/lib/modules/VoiceSolution.ko
 
     # permission for HDMI audio path
     chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
@@ -392,6 +453,12 @@ service at_distributor /system/bin/at_distributor
 	user root
 	group root
 	oneshot
+
+# geomagneticd
+service geomagneticd /system/bin/geomagneticd
+    class main
+    user compass
+    group system input
 
 service capri-ril-daemon /system/bin/rild
     class main
