@@ -56,8 +56,6 @@ WIFI_BAND                   := 802_11_ABG
 
 # Wi-Fi Tethering
 BOARD_HAVE_SAMSUNG_WIFI := true
-BOARD_LEGACY_NL80211_STA_EVENTS := true
-BOARD_NO_APSME_ATTR := true
 
 # SkTextBox for libtvout
 BOARD_USES_SKTEXTBOX := true
