@@ -617,6 +617,7 @@ service set_simid /system/bin/atx --fordev=ACM --runcmd=/data/atx/setsim.txt
 on property:dev.bootcomplete=1
     write /sys/module/capri_pwr_mgr/parameters/pm_late_init 1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+    write /sys/block/mmcblk0/queue/scheduler cfq
 
 # Vibetonz
 service immvibed /system/bin/immvibed
