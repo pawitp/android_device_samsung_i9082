@@ -105,11 +105,7 @@ Only the three quirks included above are recognized at this point:
             <Quirk name="requires-allocate-on-output-ports" />
         </MediaCodec>
 
-        <!-- Audio Hardware -->
-        <MediaCodec name="OMX.brcm.audio.mp3.decoder" type="audio/mpeg" />
-        <MediaCodec name="OMX.brcm.audio.amrnb.decoder" type="audio/3gpp" />
-        <MediaCodec name="OMX.brcm.audio.amrwb.decoder" type="audio/amr-wb" />
-
+        <!-- Audio Software -->
         <MediaCodec name="OMX.google.mp3.decoder" type="audio/mpeg" />
         <MediaCodec name="OMX.google.amrnb.decoder" type="audio/3gpp" />
         <MediaCodec name="OMX.google.amrwb.decoder" type="audio/amr-wb" />
@@ -155,18 +151,10 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.google.mpeg4.encoder" type="video/mp4v-es" />
         <MediaCodec name="OMX.google.vp8.encoder" type="video/x-vnd.on2.vp8" />
 
-        <!-- Audio Hardware -->
         <!-- Audio Software -->
 		<MediaCodec name="OMX.google.amrwb.encoder" type="audio/amr-wb" />
         <MediaCodec name="OMX.google.amrnb.encoder" type="audio/3gpp" />
         <MediaCodec name="OMX.google.aac.encoder" type="audio/mp4a-latm" />
         <MediaCodec name="OMX.google.flac.encoder" type="audio/flac" />
-
-        <MediaCodec name="OMX.brcm.audio.amrnb.encoder" type="audio/3gpp">
-            <Quirk name="supports-multiple-frames-per-input-buffer" />
-        </MediaCodec>
-        <MediaCodec name="OMX.brcm.audio.amrwb.encoder" type="audio/amr-wb">
-            <Quirk name="supports-multiple-frames-per-input-buffer" />
-        </MediaCodec>
     </Encoders>
 </MediaCodecs>
