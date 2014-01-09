@@ -82,6 +82,9 @@ TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_stora
 # healthd
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.capri
 
+# CMHW
+BOARD_HARDWARE_CLASS := device/samsung/i9082/cmhw/
+
 # SELinux
 BOARD_SEPOLICY_DIRS += \
     device/samsung/i9082/sepolicy
