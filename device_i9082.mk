@@ -88,6 +88,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=rmnet0 \
     ro.telephony.ril_class=SamsungBCMRIL \
     ro.zygote.disable_gl_preload=true \
+    ro.cm.hardware.cabc=/sys/class/mdnie/mdnie/cabc \
 
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
