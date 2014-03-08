@@ -535,18 +535,6 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
     disabled
     oneshot
 
-# When the default SIM for data connections is updated,
-# also update the DUN AT channel with the default SIM.
-on property:persist.sys.dataprefer.simid=0
-    write /data/atx/setsim.txt at*msetsim=1
-    start set_simid
-
-# When the default SIM for data connections is updated,
-# also update the DUN AT channel with the default SIM.
-on property:persist.sys.dataprefer.simid=1
-    write /data/atx/setsim.txt at*msetsim=2
-    start set_simid
-
 # TODO: btld is only used for FM
 
 service macloader /system/bin/macloader
@@ -604,14 +592,6 @@ service vclmk /system/bin/vclmk -s
     class main
     user system
     group system root audio graphics
-
-# When the default SIM for data connections is updated,
-# also update the DUN AT channel with the default SIM.
-service set_simid /system/bin/atx --fordev=ACM --runcmd=/data/atx/setsim.txt
-    disabled
-    oneshot
-    user system
-    group input vpn net_admin net_raw radio system sdcard_rw log mount
 
 # Indicate boot complete to PM to complete PM initialization
 on property:dev.bootcomplete=1
