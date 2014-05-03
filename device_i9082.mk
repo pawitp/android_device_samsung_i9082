@@ -42,7 +42,8 @@ PRODUCT_PACKAGES += \
 # Misc other modules
 PRODUCT_PACKAGES += \
 	audio.a2dp.default \
-	audio.usb.default
+	audio.usb.default \
+	audio_policy.capri
 
 # Device-specific packages
 PRODUCT_PACKAGES += \
