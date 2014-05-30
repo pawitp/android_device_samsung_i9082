@@ -338,15 +338,6 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
             dc = new DriverCall();
 
             dc.state = DriverCall.stateFromCLCC(p.readInt());
-
-            if (dc.state == DriverCall.State.INCOMING) {
-                // Fake UNSOL_CALL_RING here since the RIL doesn't send any
-                if (mRingRegistrant != null) {
-                    mRingRegistrant.notifyRegistrant(
-                            new AsyncResult (null, null, null));
-                }
-            }
-
             dc.index = p.readInt();
             dc.TOA = p.readInt();
             dc.isMpty = (0 != p.readInt());
