@@ -290,9 +290,6 @@ on boot
 #    write /sys/devices/platform/reg-virt-consumer.1/min_microvolts 1320000
 #    write /sys/kernel/debug/clock/proc_ccu/arm_clk/rate 1100000000
 
-    # phone
-    setprop ro.telephony.call_ring.multiple 0
-
     # create data/gps for GPS demon
     mkdir /data/gps 0770 gps system
     chown gps system /data/gps
