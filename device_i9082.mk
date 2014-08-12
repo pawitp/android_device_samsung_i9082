@@ -27,6 +27,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/samsung/i9082/bcm_headset.kl:system/usr/keylayout/bcm_headset.kl \
 	device/samsung/i9082/bcm_keypad_v2.kl:system/usr/keylayout/bcm_keypad_v2.kl \
+	device/samsung/i9082/cyttsp4_btn.kl:system/usr/keylayout/cyttsp4_btn.kl \
 	device/samsung/i9082/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
 	device/samsung/i9082/samsung-keypad.kl:system/usr/keylayout/samsung-keypad.kl \
 	device/samsung/i9082/sii9234_rcp.kl:system/usr/keylayout/sii9234_rcp.kl
