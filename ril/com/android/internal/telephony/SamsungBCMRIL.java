@@ -36,6 +36,9 @@ import java.util.ArrayList;
  * {@hide}
  */
 public class SamsungBCMRIL extends RIL implements CommandsInterface {
+
+    private Message mPendingGetSimStatus;
+
     public SamsungBCMRIL(Context context, int networkMode, int cdmaSubscription) {
         this(context, networkMode, cdmaSubscription, null);
     }
@@ -93,16 +96,21 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
         }
     }
 
-    public void setDataSubscription(Message result) {
-        int simId = mInstanceId == null ? 0 : mInstanceId;
-        if (RILJ_LOGD) riljLog("Setting data subscription to " + simId);
-        invokeOemRilRequestBrcm((byte) 0, (byte)(0x30 + simId), result);
+    @Override
+    public void setDataAllowed(boolean allowed, Message result) {
+        if (allowed == true) {
+            int simId = mInstanceId == null ? 0 : mInstanceId;
+            if (RILJ_LOGD) riljLog("Setting data subscription to " + simId);
+            invokeOemRilRequestBrcm((byte) 0, (byte)(0x30 + simId), result);
+        } else {
+            if (result != null) {
+                AsyncResult.forMessage(result, 0, null);
+                result.sendToTarget();
+            }
+        }
     }
 
-    public void setDefaultVoiceSub(int subIndex, Message response) {
-        // No need to inform the RIL on Broadcom
-        AsyncResult.forMessage(response, 0, null);
-        response.sendToTarget();
+    public void setDataSubscription(Message result) {
     }
 
     @Override
@@ -349,7 +357,7 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
             // hack taken from smdk4210ril class
             voiceSettings = p.readInt();
             //printing it to cosole for later investigation
-            Rlog.d(LOG_TAG, "Samsung magic = " + voiceSettings);
+            Rlog.d(RILJ_LOG_TAG, "Samsung magic = " + voiceSettings);
             dc.isVoicePrivacy = (0 != p.readInt());
             dc.number = p.readString();
             int np = p.readInt();
@@ -392,4 +400,30 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
 
         return response;
     }
+
+    // Hack for Lollipop
+    // The system now queries for SIM status before radio on, resulting
+    // in getting an APPSTATE_DETECTED state. The RIL does not send an
+    // RIL_UNSOL_RESPONSE_SIM_STATUS_CHANGED message after the SIM is
+    // initialized, so delay the message until the radio is on.
+    @Override
+    public void
+    getIccCardStatus(Message result) {
+        if (mState != RadioState.RADIO_ON) {
+            mPendingGetSimStatus = result;
+        } else {
+            super.getIccCardStatus(result);
+        }
+    }
+
+    @Override
+    protected void switchToRadioState(RadioState newState) {
+        super.switchToRadioState(newState);
+
+        if (newState == RadioState.RADIO_ON && mPendingGetSimStatus != null) {
+            super.getIccCardStatus(mPendingGetSimStatus);
+            mPendingGetSimStatus = null;
+        }
+    }
+
 }
