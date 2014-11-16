@@ -18,12 +18,12 @@ key 227   STAR
 key 352   DPAD_CENTER       
 key 108   DPAD_DOWN
 key 103   DPAD_UP
-key 102   HOME              WAKE
+key 102   HOME
 key 105   DPAD_LEFT
 key 106   DPAD_RIGHT
 key 115   VOLUME_UP         
 key 114   VOLUME_DOWN       
-key 116   POWER             WAKE
+key 116   POWER
 key 212   CAMERA
 
 key 16    Q
@@ -81,5 +81,5 @@ key 215   AT
 key 207   MUSIC 
 
 # On an AT keyboard: ESC, F10
-key 1     BACK              WAKE_DROPPED
-key 68    MENU              WAKE_DROPPED
+key 1     BACK
+key 68    MENU
