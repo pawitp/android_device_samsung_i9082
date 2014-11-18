@@ -58,6 +58,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
 	charger_res_images
 
+# Wi-Fi
+PRODUCT_PACKAGES += \
+	dhcpcd.conf \
+	hostapd \
+	wpa_supplicant \
+	wpa_supplicant.conf
+
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
