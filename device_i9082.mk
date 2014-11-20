@@ -124,6 +124,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp
 
+# Override phone-hdpi-512-dalvik-heap to match value on stock
+# - helps pass CTS com.squareup.okhttp.internal.spdy.Spdy3Test#tooLargeDataFrame)
+# (property override must come before included property)
+PRODUCT_PROPERTY_OVERRIDES += \
+    dalvik.vm.heapgrowthlimit=56m \
+
 # Dalvik heap config
 include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
 
