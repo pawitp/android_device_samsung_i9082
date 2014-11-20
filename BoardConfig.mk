@@ -106,6 +106,9 @@ TARGET_SPECIFIC_HEADER_PATH := device/samsung/i9082/include
 # Compat
 TARGET_USES_LOGD := false
 
+# jemalloc causes a lot of random crash on free()
+MALLOC_IMPL := dlmalloc
+
 # SELinux
 BOARD_SEPOLICY_DIRS += \
     device/samsung/i9082/sepolicy
