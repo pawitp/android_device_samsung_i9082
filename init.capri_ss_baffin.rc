@@ -456,13 +456,6 @@ service setup_fs /system/bin/setup_fs \
     group root
     oneshot
 
-#at_distributor for making file for factory.
-service at_distributor /system/bin/at_distributor
-	class main
-	user root
-	group root
-	oneshot
-
 # geomagneticd
 service geomagneticd /system/bin/geomagneticd
     class main
@@ -567,14 +560,6 @@ service gpsd /system/bin/glgps -c /system/etc/gps/glconfig.xml
     user gps
     group system sdcard_rw inet root radio wifi
 
-# Run ATX over UART
-service console_atx /system/bin/atx -l -d
-    class main
-    console
-#    oneshot
-    user system
-    group vpn net_admin net_raw radio system sdcard_rw log mount
-
 # tvserver
 service tvserver /system/bin/tvserver
     class main
@@ -594,12 +579,6 @@ service bkmgrd /system/bin/bkmgrd
     oneshot
     user root
     group radio system log
-
-## Run atxd daemon, which needs group permissions to run in non-root mode.
-#service atxd /system/bin/atxd
-#    class main
-#    user system
-#    group input vpn net_admin net_raw radio system sdcard_rw
 
 # Add VCLMK (Videocore Low Memory Killer) service
 service vclmk /system/bin/vclmk -s

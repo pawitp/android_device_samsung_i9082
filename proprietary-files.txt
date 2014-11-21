@@ -1,7 +1,4 @@
-bin/at_distributor
 bin/atrace
-bin/atx
-bin/atxd
 bin/BCM4334B0_002.001.013.0679.0000_03_Samsung_BaffinSpurCancellAlwaysOn.hcd
 bin/bkmgrd
 bin/cate_rpc_util
@@ -51,7 +48,6 @@ lib/lib_SamsungRec_V01006.so
 lib/lib_SoundAlive_V01013n.so
 lib/libat.so
 lib/libat_stubs.so
-lib/libatlog.so
 lib/libbrcm_ril.so
 lib/libbrcmcutils.so
 lib/libbrcmparser.so
