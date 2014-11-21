@@ -1,0 +1,7 @@
+type vclmk, domain;
+type vclmk_exec, file_type, exec_type;
+
+init_daemon_domain(vclmk)
+
+allow vclmk gpu_device:chr_file rw_file_perms;
+allow vclmk video_device:chr_file rw_file_perms;

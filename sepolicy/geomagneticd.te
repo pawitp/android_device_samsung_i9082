@@ -1,0 +1,11 @@
+type geomagneticd, domain;
+type geomagneticd_exec, file_type, exec_type;
+
+init_daemon_domain(geomagneticd)
+
+allow geomagneticd input_device:chr_file r_file_perms;
+allow geomagneticd input_device:dir r_dir_perms;
+allow geomagneticd sysfs:file rw_file_perms;
+
+# yas.cfg
+allow geomagneticd system_data_file:file rw_file_perms;

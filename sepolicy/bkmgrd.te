@@ -1,0 +1,8 @@
+type bkmgrd, domain;
+type bkmgrd_exec, file_type, exec_type;
+
+init_daemon_domain(bkmgrd)
+
+allow bkmgrd radio_device:chr_file rw_file_perms;
+allow bkmgrd self:capability setuid;
+allow bkmgrd system_data_file:file rw_file_perms;

@@ -1,0 +1,8 @@
+type tvserver, domain;
+type tvserver_exec, file_type, exec_type;
+
+init_daemon_domain(tvserver)
+binder_use(tvserver)
+
+allow tvserver gpu_device:chr_file rw_file_perms;
+allow tvserver system_server_service:service_manager add;

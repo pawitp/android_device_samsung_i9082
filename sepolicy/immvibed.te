@@ -1,0 +1,4 @@
+type immvibed, domain;
+type immvibed_exec, file_type, exec_type;
+
+init_daemon_domain(immvibed)

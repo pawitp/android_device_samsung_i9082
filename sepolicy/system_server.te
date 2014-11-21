@@ -1,0 +1,5 @@
+# Access /efs/wifi/.mac.info
+allow system_server efs_file:file { read open };
+
+# Not sure why
+allow system_server efs_file:dir search;

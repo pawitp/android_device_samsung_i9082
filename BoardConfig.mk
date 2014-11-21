@@ -115,3 +115,18 @@ BOARD_SEPOLICY_DIRS += \
 
 BOARD_SEPOLICY_UNION += \
     file_contexts \
+    property_contexts \
+    service_contexts \
+    bkmgrd.te \
+    device.te \
+    geomagneticd.te \
+    gpsd.te \
+    init.te \
+    immvibed.te \
+    kernel.te \
+    macloader.te \
+    rild.te \
+    shell.te \
+    system_server.te \
+    tvserver.te \
+    vclmk.te \

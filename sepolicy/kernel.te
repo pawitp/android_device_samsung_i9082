@@ -1,0 +1,6 @@
+# Create mmcblk1
+allow kernel device:blk_file { create setattr };
+allow kernel self:capability mknod;
+
+# kcamfwcheck drivers/char/broadcom/vc_cam/vc_cam.c
+allow kernel cam_block_device:blk_file rw_file_perms;

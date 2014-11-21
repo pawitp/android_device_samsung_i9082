@@ -264,7 +264,6 @@ on boot
     chown system system /proc/bcm_fuse_net_config
     chown system system /dev/block/mmcblk0
     chmod 0660 /dev/block/mmcblk0
-    chown system system /dev/mem
 
     # 1280x720 TV for now
     setprop brcm.hwc.external-res 1280x720
@@ -444,6 +443,7 @@ on fs
     chown system radio /sys/class/sec/switch/adc
 
 on post-fs
+    restorecon_recursive /efs
     chown radio system /efs
     chmod 0771 /efs
 
@@ -481,7 +481,7 @@ service charger /sbin/healthd -c
 service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
     class late_start
 
-service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
+service wpa_supplicant /system/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf \
     -e/data/misc/wifi/entropy.bin \
@@ -495,7 +495,7 @@ service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
     disabled
     oneshot
 
-service p2p_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
+service p2p_supplicant /system/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf -N \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \

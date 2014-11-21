@@ -1,0 +1,2 @@
+service.brcm.bt.mac     u:object_r:radio_prop:s0
+persist.sys.pdpcontext. u:object_r:radio_prop:s0

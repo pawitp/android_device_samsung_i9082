@@ -1,0 +1,14 @@
+allow rild self:capability dac_override;
+
+allow rild gps_data_file:fifo_file { write read open setattr };
+allow rild gps_data_file:dir search;
+
+allow rild system_data_file:sock_file { create setattr unlink };
+allow rild system_data_file:dir rw_dir_perms;
+
+allow rild self:packet_socket { create ioctl };
+
+allow rild block_device:dir search;
+
+# /proc/bcm_fuse_net_config
+allow rild proc:file write;

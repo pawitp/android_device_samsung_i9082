@@ -1,0 +1,36 @@
+/dev/vchiq                                          u:object_r:gpu_device:s0
+/dev/vc-lmk                                         u:object_r:gpu_device:s0
+/dev/vcsm                                           u:object_r:gpu_device:s0
+/dev/vc-dnfo                                        u:object_r:gpu_device:s0
+/dev/vc-hnfo                                        u:object_r:gpu_device:s0
+/dev/vc-omx                                         u:object_r:gpu_device:s0
+/dev/vc-cma                                         u:object_r:gpu_device:s0
+/dev/vc-mem                                         u:object_r:gpu_device:s0
+
+/dev/vc-cam                                         u:object_r:video_device:s0
+
+/dev/bcm_irpc                                       u:object_r:radio_device:s0
+/dev/mpu6k                                          u:object_r:sensors_device:s0
+/dev/proximity                                      u:object_r:sensors_device:s0
+
+/efs/bluetooth/bt_addr                              u:object_r:bluetooth_efs_file:s0
+/sys/devices/platform/bcmbt-rfkill.1/rfkill/rfkill0/state -- u:object_r:sysfs_bluetooth_writable:s0
+/sys/devices/platform/bcmbt-rfkill.1/rfkill/rfkill0/type -- u:object_r:sysfs_bluetooth_writable:s0
+
+/dev/ttyS2                                          u:object_r:hci_attach_dev:s0
+
+/dev/bcm_log                                        u:object_r:radio_device:s0
+/dev/block/mmcblk0p1                                u:object_r:radio_device:s0
+
+/dev/block/mmcblk0p15                               u:object_r:cam_block_device:s0
+
+/dev/socket/rild1                                   u:object_r:rild_socket:s0
+
+# /system files
+/system/bin/geomagneticd                            u:object_r:geomagneticd_exec:s0
+/system/bin/immvibed                                u:object_r:immvibed_exec:s0
+/system/bin/macloader                               u:object_r:macloader_exec:s0
+/system/bin/tvserver                                u:object_r:tvserver_exec:s0
+/system/bin/bkmgrd                                  u:object_r:bkmgrd_exec:s0
+/system/bin/vclmk                                   u:object_r:vclmk_exec:s0
+/system/bin/glgps                                   u:object_r:gpsd_exec:s0
