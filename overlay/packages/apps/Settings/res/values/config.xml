@@ -17,7 +17,7 @@
 
 <resources xmlns:xliff="urnasis:names:tc:xliff:document:1.2 ">
     <!-- Show Expanded Desktop preference -->
-    <bool name="config_show_expandedDesktop">true</bool>
-    <bool name="has_led_flash">true</bool>
-    <bool name="config_show_volumeRockerWake">true</bool>
+    <!-- <bool name="config_show_expandedDesktop">true</bool> -->
+    <!-- <bool name="has_led_flash">true</bool> -->
+    <!-- <bool name="config_show_volumeRockerWake">true</bool> -->
 </resources>
