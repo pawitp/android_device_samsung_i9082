@@ -110,9 +110,6 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
         }
     }
 
-    public void setDataSubscription(Message result) {
-    }
-
     @Override
     protected void notifyRegistrantsRilConnectionChanged(int rilVer) {
         super.notifyRegistrantsRilConnectionChanged(rilVer);
@@ -122,7 +119,7 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
                 invokeOemRilRequestBrcm((byte) 3, (byte) 1, null);
             } else {
                 // Set data subscription to allow data in either SIM slot when using single SIM mode
-                setDataSubscription(null);
+                setDataAllowed(true, null);
             }
         }
     }
