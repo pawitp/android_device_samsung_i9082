@@ -5,5 +5,5 @@ init_daemon_domain(bkmgrd)
 
 allow bkmgrd radio_device:chr_file rw_file_perms;
 allow bkmgrd self:capability setuid;
-allow bkmgrd system_data_file:file rw_file_perms;
+allow bkmgrd system_data_file:file create_file_perms;
 allow bkmgrd system_data_file:dir rw_dir_perms;
