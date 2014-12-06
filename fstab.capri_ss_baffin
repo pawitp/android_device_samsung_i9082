@@ -16,4 +16,6 @@
 /dev/block/mmcblk0p20   /preload            ext4      defaults                                              recoveryonly
 
 # Vold
-/devices/platform/sdhci.3/mmc_host/mmc2 auto    auto  defaults                                              voldmanaged=sdcard1:auto
+# noemulatedsd is supposed to be used to indicated that there's no emulatedsd
+# but we do have one and it's kind of abused here to mark the storage for app2sd
+/devices/platform/sdhci.3/mmc_host/mmc2 auto    auto  defaults                                              voldmanaged=sdcard1:auto,noemulatedsd
