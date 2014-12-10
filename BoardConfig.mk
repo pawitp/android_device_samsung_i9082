@@ -127,6 +127,7 @@ BOARD_SEPOLICY_UNION += \
     macloader.te \
     rild.te \
     shell.te \
+    system_app.te \
     system_server.te \
     tvserver.te \
     vclmk.te \

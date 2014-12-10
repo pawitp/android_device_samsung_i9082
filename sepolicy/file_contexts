@@ -28,6 +28,8 @@
 
 /dev/socket/rild1                                   u:object_r:rild_socket:s0
 
+/sys/devices/platform/mdnie/mdnie/mdnie/cabc --     u:object_r:sysfs_writable:s0
+
 # /system files
 /system/bin/geomagneticd                            u:object_r:geomagneticd_exec:s0
 /system/bin/immvibed                                u:object_r:immvibed_exec:s0

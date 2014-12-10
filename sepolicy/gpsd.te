@@ -1,3 +1,5 @@
 allow gpsd system_data_file:dir rw_dir_perms;
 allow gpsd system_data_file:file create_file_perms;
 allow gpsd system_data_file:fifo_file { rw_file_perms create unlink setattr };
+
+wakelock_use(gpsd)
