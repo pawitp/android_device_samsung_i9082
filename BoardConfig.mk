@@ -23,10 +23,10 @@ TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 8388608
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 8388608
 
-# This is actually 1610612736, but reducing to 1090 MB to support users using repartition.
+# This is actually 1610612736, but reducing to 1049 MB to support users using repartition.
 # Feel free to increase when needed
 # See: http://forum.xda-developers.com/showpost.php?p=55293011&postcount=1
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1142947840
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1099956224
 
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 4404019200
 BOARD_CACHEIMAGE_PARTITION_SIZE := 1073741824
