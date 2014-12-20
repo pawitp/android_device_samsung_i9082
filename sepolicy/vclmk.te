@@ -7,11 +7,8 @@ allow vclmk gpu_device:chr_file rw_file_perms;
 allow vclmk video_device:chr_file rw_file_perms;
 
 # Access app data in /proc/pid
-allow vclmk appdomain:dir r_dir_perms;
-allow vclmk appdomain:file r_file_perms;
-
-# Don't allow other types of access
-neverallow vclmk { domain -appdomain -vclmk }:dir search;
+allow vclmk domain:dir r_dir_perms;
+allow vclmk domain:file r_file_perms;
 
 # Kill apps
 allow vclmk appdomain:process { sigkill sigstop signal };
