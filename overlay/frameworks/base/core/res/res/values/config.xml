@@ -216,4 +216,7 @@
 
     <!--  Whether Multiuser UI should be shown -->
     <bool name="config_enableMultiUserUI">true</bool>
+
+    <!-- Support Miracast -->
+    <bool name="config_enableWifiDisplay">true</bool>
 </resources>

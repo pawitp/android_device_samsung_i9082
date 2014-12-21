@@ -17,7 +17,6 @@ bin/vcdbg
 bin/vclmk
 bin/vcos-version
 etc/asound.conf
-etc/audio_policy.conf
 etc/camera_info.ini
 etc/DiamondVoice_Filter_NB.txt
 etc/DiamondVoice_Filter_WB.txt
