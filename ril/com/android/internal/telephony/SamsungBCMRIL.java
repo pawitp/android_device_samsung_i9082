@@ -31,11 +31,13 @@ import android.telephony.PhoneNumberUtils;
 import java.util.ArrayList;
 
 /**
- * Custom RIL to handle unique behavior of D2 radio
+ * Custom RIL to handle unique behavior of BCM RIL
  *
  * {@hide}
  */
 public class SamsungBCMRIL extends RIL implements CommandsInterface {
+
+    private static int sEnabledDataSimId = -1;
 
     public SamsungBCMRIL(Context context, int networkMode, int cdmaSubscription) {
         this(context, networkMode, cdmaSubscription, null);
@@ -96,11 +98,20 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
 
     @Override
     public void setDataAllowed(boolean allowed, Message result) {
-        if (allowed == true) {
-            int simId = mInstanceId == null ? 0 : mInstanceId;
+        int simId = mInstanceId == null ? 0 : mInstanceId;
+        if (!allowed) {
+            // Deactivate data call. This happens when switching data SIM
+            // and the framework will wait for data call to be deactivated.
+            // Emulate this by switching to the other SIM.
+            simId = 1 - simId;
+        }
+
+        if (sEnabledDataSimId != simId) {
             if (RILJ_LOGD) riljLog("Setting data subscription to " + simId);
             invokeOemRilRequestBrcm((byte) 0, (byte)(0x30 + simId), result);
+            sEnabledDataSimId = simId;
         } else {
+            if (RILJ_LOGD) riljLog("Data subscription is already set to " + simId);
             if (result != null) {
                 AsyncResult.forMessage(result, 0, null);
                 result.sendToTarget();
