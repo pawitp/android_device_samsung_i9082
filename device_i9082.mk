@@ -2,9 +2,11 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 $(call inherit-product-if-exists, vendor/samsung/i9082/i9082-vendor.mk)
 
-# Use high-density artwork where available
-PRODUCT_AAPT_CONFIG := normal hdpi
-PRODUCT_AAPT_PREF_CONFIG := hdpi
+# FIXME: This allows only hdpi resources to be included, saving space.
+#        However, some bug caused holo apps' menu, checkboxes and
+#        other widgets to be transparent.
+# PRODUCT_AAPT_CONFIG := normal hdpi
+# PRODUCT_AAPT_PREF_CONFIG := hdpi
 
 DEVICE_PACKAGE_OVERLAYS += device/samsung/i9082/overlay
 
