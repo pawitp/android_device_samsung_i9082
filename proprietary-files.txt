@@ -57,6 +57,7 @@ lib/libcate_rpc.so
 lib/libcontainers.so
 lib/libdebug_sym.so
 lib/libdispmanx.so
+lib/libdrmdecrypt.so
 lib/libhdcp.so
 lib/libhdcp2.so
 lib/libHDCPKeyManager.so
@@ -100,9 +101,14 @@ usr/lib/alsa-lib/libasound_module_pcm_bcmfilter.so
 usr/lib/alsa-lib/libbcm_hp_filter.so
 usr/lib/alsa-lib/libbcm_test_filter.so
 usr/share/alsa/alsa.conf
+vendor/lib/drm/libdrmwvmplugin.so
 vendor/lib/egl/libGLES_vc4.so
 vendor/lib/hw/camera.capri.so
 vendor/lib/hw/gralloc.capri.so
 vendor/lib/hw/hwcomposer.capri.so
 vendor/lib/hw/lights.capri.so
 vendor/lib/hw/power.capri.so
+vendor/lib/libwvdrm_L3.so
+vendor/lib/libwvm.so
+vendor/lib/libWVStreamControlAPI_L3.so
+vendor/lib/mediadrm/libwvdrmengine.so
