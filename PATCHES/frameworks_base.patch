@@ -1,0 +1,382 @@
+From 5ffeb71bfdebe31c56cb2e4b76301f08dbac997e Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 15 Nov 2014 14:50:29 +0700
+Subject: [PATCH 1/6] TelephonyManager: set properties in Broadcom-style as
+ expected by RIL
+
+For i9082
+
+Change-Id: I475fdd164b3316720387fefb14a3e12fbc262b39
+---
+ .../java/android/telephony/TelephonyManager.java   | 63 +++++++---------------
+ 1 file changed, 19 insertions(+), 44 deletions(-)
+
+diff --git a/telephony/java/android/telephony/TelephonyManager.java b/telephony/java/android/telephony/TelephonyManager.java
+index db0da61..f22e300 100644
+--- a/telephony/java/android/telephony/TelephonyManager.java
++++ b/telephony/java/android/telephony/TelephonyManager.java
+@@ -2876,49 +2876,19 @@ public class TelephonyManager {
+      * @hide
+      */
+     public static void setTelephonyProperty(int phoneId, String property, String value) {
+-        String propVal = "";
+-        String p[] = null;
+-        String prop = SystemProperties.get(property);
+-
+-        if (value == null) {
+-            value = "";
+-        }
+-
+-        if (prop != null) {
+-            p = prop.split(",");
+-        }
+-
+         if (!SubscriptionManager.isValidPhoneId(phoneId)) {
+             Rlog.d(TAG, "setTelephonyProperty: invalid phoneId=" + phoneId +
+-                    " property=" + property + " value: " + value + " prop=" + prop);
++                    " property=" + property + " value: " + value);
+             return;
+         }
+ 
+-        for (int i = 0; i < phoneId; i++) {
+-            String str = "";
+-            if ((p != null) && (i < p.length)) {
+-                str = p[i];
+-            }
+-            propVal = propVal + str + ",";
+-        }
+-
+-        propVal = propVal + value;
+-        if (p != null) {
+-            for (int i = phoneId + 1; i < p.length; i++) {
+-                propVal = propVal + "," + p[i];
+-            }
+-        }
+-
+-        if (property.length() > SystemProperties.PROP_NAME_MAX
+-                || propVal.length() > SystemProperties.PROP_VALUE_MAX) {
+-            Rlog.d(TAG, "setTelephonyProperty: property to long phoneId=" + phoneId +
+-                    " property=" + property + " value: " + value + " propVal=" + propVal);
+-            return;
++        if (phoneId > 0) {
++            property += "_" + phoneId;
+         }
+ 
+         Rlog.d(TAG, "setTelephonyProperty: success phoneId=" + phoneId +
+-                " property=" + property + " value: " + value + " propVal=" + propVal);
+-        SystemProperties.set(property, propVal);
++                " property=" + property + " value: " + value);
++        SystemProperties.set(property, value);
+     }
+ 
+     /**
+@@ -3015,17 +2985,22 @@ public class TelephonyManager {
+      * @hide
+      */
+     public static String getTelephonyProperty(int phoneId, String property, String defaultVal) {
+-        String propVal = null;
+-        String prop = SystemProperties.get(property);
+-        if ((prop != null) && (prop.length() > 0)) {
+-            String values[] = prop.split(",");
+-            if ((phoneId >= 0) && (phoneId < values.length) && (values[phoneId] != null)) {
+-                propVal = values[phoneId];
+-            }
++        if (!SubscriptionManager.isValidPhoneId(phoneId)) {
++            Rlog.d(TAG, "getTelephonyProperty: invalid phoneId=" + phoneId +
++                    " property=" + property);
++            return defaultVal;
+         }
++
++        if (phoneId > 0) {
++            property += "_" + phoneId;
++        }
++
++        String propVal = SystemProperties.get(property);
++
+         Rlog.d(TAG, "getTelephonyProperty: return propVal='" + propVal + "' phoneId=" + phoneId
+-                + " property='" + property + "' defaultVal='" + defaultVal + "' prop=" + prop);
+-        return propVal == null ? defaultVal : propVal;
++                + " property='" + property + "' defaultVal='" + defaultVal);
++
++        return propVal.isEmpty() ? defaultVal : propVal;
+     }
+ 
+     /** @hide */
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 45ccaa8d0281d9e803d15a98d24e48f5794317c4 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 15 Nov 2014 22:33:16 +0700
+Subject: [PATCH 2/6] Camera: HACK: i9082: API hacks
+
+CTS 5.0 requires the presence of an auto mode, so applications
+may try to use auto without checking.
+
+Also change ENODEV to MAX_CAMERAS_IN_USE to please the CTS
+
+Change-Id: I929feffa4f79c69e9d7be7d1acacb3c228280bfe
+---
+ core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java | 2 +-
+ core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java  | 2 +-
+ core/java/android/hardware/camera2/utils/CameraBinderDecorator.java | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
+index 347db05..5acf583d 100644
+--- a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
++++ b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
+@@ -1100,7 +1100,7 @@ public class LegacyMetadataMapper {
+                 return CONTROL_AE_ANTIBANDING_MODE_OFF;
+             }
+             case Camera.Parameters.ANTIBANDING_50HZ: {
+-                return CONTROL_AE_ANTIBANDING_MODE_50HZ;
++                return /* CONTROL_AE_ANTIBANDING_MODE_50HZ */ CONTROL_AE_ANTIBANDING_MODE_AUTO;
+             }
+             case Camera.Parameters.ANTIBANDING_60HZ: {
+                 return CONTROL_AE_ANTIBANDING_MODE_60HZ;
+diff --git a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
+index 61f7b8b..f370103 100644
+--- a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
++++ b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
+@@ -617,7 +617,7 @@ public class LegacyRequestMapper {
+                 return Parameters.ANTIBANDING_60HZ;
+             }
+             case CONTROL_AE_ANTIBANDING_MODE_AUTO: {
+-                return Parameters.ANTIBANDING_AUTO;
++                return Parameters.ANTIBANDING_50HZ /* Parameters.ANTIBANDING_AUTO */;
+             }
+             default: {
+                 return null;
+diff --git a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
+index d461bca..a34a758 100644
+--- a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
++++ b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
+@@ -124,7 +124,7 @@ public class CameraBinderDecorator {
+             case EUSERS:
+                 throw new CameraRuntimeException(MAX_CAMERAS_IN_USE);
+             case ENODEV:
+-                throw new CameraRuntimeException(CAMERA_DISCONNECTED);
++                throw new CameraRuntimeException(/*CAMERA_DISCONNECTED*/ MAX_CAMERAS_IN_USE);
+             case EOPNOTSUPP:
+                 throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
+             case INVALID_OPERATION:
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From ecc5e1156fb8beaa2a8454bdda3abecbe4b9f597 Mon Sep 17 00:00:00 2001
+From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Date: Mon, 4 Nov 2013 02:22:43 +0000
+Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
+
+[pawitp: port to Lollipop]
+
+Change-Id: I08d169bc466df290fca838b09f6b0fbea2ac82a8
+---
+ core/res/res/values/config.xml                                  | 3 +++
+ core/res/res/values/symbols.xml                                 | 2 ++
+ telephony/java/com/android/internal/telephony/RILConstants.java | 1 +
+ 3 files changed, 6 insertions(+)
+
+diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
+index 68df6f1..d9c94f6 100755
+--- a/core/res/res/values/config.xml
++++ b/core/res/res/values/config.xml
+@@ -2028,4 +2028,7 @@
+ 
+     <!-- Whether to start in touch mode -->
+     <bool name="config_defaultInTouchMode">true</bool>
++
++    <!-- Boolean to enable stk functionality on Samsung phones -->
++    <bool name="config_samsung_stk">false</bool>
+ </resources>
+diff --git a/core/res/res/values/symbols.xml b/core/res/res/values/symbols.xml
+index 1055547..abe517f 100755
+--- a/core/res/res/values/symbols.xml
++++ b/core/res/res/values/symbols.xml
+@@ -2137,6 +2137,8 @@
+   <java-symbol type="bool" name="config_defaultWindowFeatureOptionsPanel" />
+   <java-symbol type="bool" name="config_defaultWindowFeatureContextMenu" />
+ 
++  <java-symbol type="bool" name="config_samsung_stk" />
++
+   <java-symbol type="layout" name="simple_account_item" />
+   <java-symbol type="id" name="scrollIndicatorUp" />
+   <java-symbol type="id" name="scrollIndicatorDown" />
+diff --git a/telephony/java/com/android/internal/telephony/RILConstants.java b/telephony/java/com/android/internal/telephony/RILConstants.java
+index 082e8bb..11f35cb 100644
+--- a/telephony/java/com/android/internal/telephony/RILConstants.java
++++ b/telephony/java/com/android/internal/telephony/RILConstants.java
+@@ -354,4 +354,5 @@ cat include/telephony/ril.h | \
+     int RIL_UNSOL_RADIO_CAPABILITY = 1042;
+     int RIL_UNSOL_ON_SS = 1043;
+     int RIL_UNSOL_STK_CC_ALPHA_NOTIFY = 1044;
++    int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002; /* Samsung STK */
+ }
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 2c97943c6465700130f1bbc8a6b67291c0ef8e98 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 15 Nov 2014 14:47:35 +0700
+Subject: [PATCH 4/6] frameworks: base: add KEYCODE_HOME to wake keys
+
+Change-Id: I77d70df2263dd9c75b02efde18d91585b1ad29f9
+---
+ core/java/android/view/KeyEvent.java | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/core/java/android/view/KeyEvent.java b/core/java/android/view/KeyEvent.java
+index 243a0fc..691c342 100644
+--- a/core/java/android/view/KeyEvent.java
++++ b/core/java/android/view/KeyEvent.java
+@@ -1809,6 +1809,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
+             case KeyEvent.KEYCODE_SLEEP:
+             case KeyEvent.KEYCODE_WAKEUP:
+             case KeyEvent.KEYCODE_PAIRING:
++            case KeyEvent.KEYCODE_HOME:
+                 return true;
+         }
+         return false;
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 4c2cd444af4a4399726fb43e1ecfb79da3d76b9c Mon Sep 17 00:00:00 2001
+From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Date: Fri, 23 Nov 2012 14:23:16 +0000
+Subject: [PATCH 5/6] Reintroduce button-backlight (and respective inactivity
+ timeout)
+
+The power manager rewrite from Change I1d7a52e98f0449f76d70bf421f6a7f245957d1d7
+completely removed support for control of the button backlights, which makes
+all capacitive buttons out there stay dark. The commit message in that change
+mentions it hasn't been implemented _yet_, so this fix should be temporary
+until upstream does their own implementation
+
+[RC: Updated to 5.0]
+
+Change-Id: I6094c446e0b8c23f57d30652a3cbd35dee5e821a
+---
+ .../com/android/server/display/DisplayPowerController.java     |  2 ++
+ .../java/com/android/server/power/PowerManagerService.java     | 10 ++++++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
+index 78610ff..49cc524 100644
+--- a/services/core/java/com/android/server/display/DisplayPowerController.java
++++ b/services/core/java/com/android/server/display/DisplayPowerController.java
+@@ -584,6 +584,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+         // Use zero brightness when screen is off.
+         if (state == Display.STATE_OFF) {
+             brightness = PowerManager.BRIGHTNESS_OFF;
++            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(brightness);
+         }
+ 
+         // Configure auto-brightness.
+@@ -632,6 +633,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+         if (brightness < 0 && (state == Display.STATE_DOZE
+                 || state == Display.STATE_DOZE_SUSPEND)) {
+             brightness = mScreenBrightnessDozeConfig;
++            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(PowerManager.BRIGHTNESS_OFF);
+         }
+ 
+         // Apply manual brightness.
+diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
+index 9786b42..f1b00b0 100644
+--- a/services/core/java/com/android/server/power/PowerManagerService.java
++++ b/services/core/java/com/android/server/power/PowerManagerService.java
+@@ -148,6 +148,8 @@ public final class PowerManagerService extends SystemService
+     private static final int POWER_HINT_INTERACTION = 2;
+     private static final int POWER_HINT_LOW_POWER = 5;
+ 
++    private static final int BUTTON_ON_DURATION = 5 * 1000;
++
+     private final Context mContext;
+     private final ServiceThread mHandlerThread;
+     private final PowerManagerHandler mHandler;
+@@ -163,6 +165,7 @@ public final class PowerManagerService extends SystemService
+     private SettingsObserver mSettingsObserver;
+     private DreamManagerInternal mDreamManager;
+     private Light mAttentionLight;
++    private Light mButtonsLight;
+ 
+     private final Object mLock = new Object();
+ 
+@@ -510,6 +513,7 @@ public final class PowerManagerService extends SystemService
+ 
+             mLightsManager = getLocalService(LightsManager.class);
+             mAttentionLight = mLightsManager.getLight(LightsManager.LIGHT_ID_ATTENTION);
++            mButtonsLight = mLightsManager.getLight(LightsManager.LIGHT_ID_BUTTONS);
+ 
+             // Initialize display power management.
+             mDisplayManagerInternal.initPowerManagement(
+@@ -1457,6 +1461,12 @@ public final class PowerManagerService extends SystemService
+                     nextTimeout = mLastUserActivityTime
+                             + screenOffTimeout - screenDimDuration;
+                     if (now < nextTimeout) {
++                        if (now > mLastUserActivityTime + BUTTON_ON_DURATION) {
++                            mButtonsLight.setBrightness(0);
++                        } else {
++                            mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
++                            nextTimeout = now + BUTTON_ON_DURATION;
++                        }
+                         mUserActivitySummary = USER_ACTIVITY_SCREEN_BRIGHT;
+                     } else {
+                         nextTimeout = mLastUserActivityTime + screenOffTimeout;
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From e07f733026a6d58e64d3139fcca7aa0af89c4241 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 14 Mar 2015 22:53:50 +0700
+Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any
+ button is pressed
+
+This more closely emulates stock Samsung behavior
+
+Change-Id: I6b15c45b713bcbc290a1026805c46109060f9990
+---
+ .../core/java/com/android/server/power/PowerManagerService.java   | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
+index f1b00b0..749f2a3 100644
+--- a/services/core/java/com/android/server/power/PowerManagerService.java
++++ b/services/core/java/com/android/server/power/PowerManagerService.java
+@@ -206,6 +206,7 @@ public final class PowerManagerService extends SystemService
+     // Timestamp of the last call to user activity.
+     private long mLastUserActivityTime;
+     private long mLastUserActivityTimeNoChangeLights;
++    private long mLastButtonActivityTime;
+ 
+     // Timestamp of last interactive power hint.
+     private long mLastInteractivePowerHintTime;
+@@ -988,6 +989,11 @@ public final class PowerManagerService extends SystemService
+                     return true;
+                 }
+             } else {
++                if (eventTime > mLastButtonActivityTime && (event & PowerManager.USER_ACTIVITY_EVENT_BUTTON) != 0) {
++                    mLastButtonActivityTime = eventTime;
++                    mDirty |= DIRTY_USER_ACTIVITY;
++                }
++
+                 if (eventTime > mLastUserActivityTime) {
+                     mLastUserActivityTime = eventTime;
+                     mDirty |= DIRTY_USER_ACTIVITY;
+@@ -1461,7 +1467,7 @@ public final class PowerManagerService extends SystemService
+                     nextTimeout = mLastUserActivityTime
+                             + screenOffTimeout - screenDimDuration;
+                     if (now < nextTimeout) {
+-                        if (now > mLastUserActivityTime + BUTTON_ON_DURATION) {
++                        if (now > mLastButtonActivityTime + BUTTON_ON_DURATION) {
+                             mButtonsLight.setBrightness(0);
+                         } else {
+                             mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
+-- 
+1.9.5 (Apple Git-50.3)
+

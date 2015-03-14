@@ -1,0 +1,43 @@
+From 065b8d2571468fa4ba8af6e4bf88f35293e20c01 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Tue, 10 Dec 2013 20:09:12 +0700
+Subject: [PATCH] libbt: switch to N_BRCM_HCI line disclipline for userial
+ ioctl
+
+Change-Id: I12c297c6b26fc0cb6f0a36ed8f5d04d4d36a4092
+---
+ src/userial_vendor.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/src/userial_vendor.c b/src/userial_vendor.c
+index 0f3f527..f4278ab 100644
+--- a/src/userial_vendor.c
++++ b/src/userial_vendor.c
+@@ -195,6 +195,10 @@ int userial_vendor_open(tUSERIAL_CFG *p_cfg)
+     uint16_t parity;
+     uint8_t stop_bits;
+ 
++#if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
++    int ldisc;
++#endif
++
+     vnd_userial.fd = -1;
+ 
+     if (!userial_to_tcio_baud(p_cfg->baud, &baud))
+@@ -264,6 +268,13 @@ int userial_vendor_open(tUSERIAL_CFG *p_cfg)
+     tcsetattr(vnd_userial.fd, TCSANOW, &vnd_userial.termios);
+ 
+ #if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
++    // TODO: check for breakage on tuna (Galaxy Nexus). It defines this,
++    //       but does not contain the kernel code to support it.
++
++    // Switch to N_BRCM_HCI line disclipline for ioctl to work
++    ldisc = 25; // N_BRCM_HCI
++    ioctl(vnd_userial.fd, TIOCSETD, &ldisc);
++
+     userial_ioctl_init_bt_wake(vnd_userial.fd);
+ #endif
+ 
+-- 
+1.9.5 (Apple Git-50.3)
+

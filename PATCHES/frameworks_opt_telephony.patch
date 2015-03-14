@@ -1,0 +1,1303 @@
+From 4fac1fde3c5d847e339bf0737eeb1cc14af02f8c Mon Sep 17 00:00:00 2001
+From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Date: Thu, 22 Nov 2012 06:02:18 +0000
+Subject: [PATCH 1/8] Allow a device to include its own RIL subclass
+
+For cases where a single device needs a subclass, there's no need to
+pollute the common core with it: just stick it in the device's own
+repository, and add something like
+"BOARD_RIL_CLASS := ../../../device/manuf/model/ril/" to the BoardConfig
+
+Change-Id: I9d01ceb6e5587382eb216341e2e373ec0c52848f
+---
+ Android.mk | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Android.mk b/Android.mk
+index 449faa0..d312fec 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -25,6 +25,11 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src/java) \
+ 	$(call all-logtags-files-under, src/java)
+ 
+ LOCAL_JAVA_LIBRARIES := voip-common ims-common
++
++ifneq ($(BOARD_RIL_CLASS),)
++LOCAL_SRC_FILES += $(call find-other-java-files,$(BOARD_RIL_CLASS))
++endif
++
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_MODULE := telephony-common
+ 
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From ea2bd50db4d1bdb8d3fb706e1e3e0e2f3f1cd654 Mon Sep 17 00:00:00 2001
+From: Ricardo Cerqueira <github@cerqueira.org>
+Date: Thu, 22 Nov 2012 17:47:31 +0100
+Subject: [PATCH 2/8] RIL: Make RIL subclassable
+
+Change-Id: I9144ef279ca9c8cb9e657a28342f0f4cb3e7debd
+
+Conflicts:
+	src/java/com/android/internal/telephony/RIL.java
+---
+ src/java/com/android/internal/telephony/RIL.java | 86 ++++++++++++------------
+ 1 file changed, 43 insertions(+), 43 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 76dd32b..296b6ab 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -223,7 +223,7 @@ class RILRequest {
+  *
+  * {@hide}
+  */
+-public final class RIL extends BaseCommands implements CommandsInterface {
++public class RIL extends BaseCommands implements CommandsInterface {
+     static final String RILJ_LOG_TAG = "RILJ";
+     static final boolean RILJ_LOGD = true;
+     static final boolean RILJ_LOGV = false; // STOPSHIP if true
+@@ -2227,7 +2227,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         }
+     }
+ 
+-    private void sendScreenState(boolean on) {
++    protected void sendScreenState(boolean on) {
+         RILRequest rr = RILRequest.obtain(RIL_REQUEST_SCREEN_STATE, null);
+         rr.mParcel.writeInt(1);
+         rr.mParcel.writeInt(on ? 1 : 0);
+@@ -2246,7 +2246,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         updateScreenState();
+    }
+ 
+-    private RadioState getRadioStateFromInt(int stateInt) {
++    protected RadioState getRadioStateFromInt(int stateInt) {
+         RadioState state;
+ 
+         /* RIL_RadioState ril.h */
+@@ -2262,7 +2262,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return state;
+     }
+ 
+-    private void switchToRadioState(RadioState newState) {
++    protected void switchToRadioState(RadioState newState) {
+         setRadioState(newState);
+     }
+ 
+@@ -2313,7 +2313,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         }
+     }
+ 
+-    private void
++    protected void
+     send(RILRequest rr) {
+         Message msg;
+ 
+@@ -2330,7 +2330,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         msg.sendToTarget();
+     }
+ 
+-    private void
++    protected void
+     processResponse (Parcel p) {
+         int type;
+ 
+@@ -2352,7 +2352,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+      * @param error is the RIL_Errno sent back
+      * @param loggable true means to print all requests in mRequestList
+      */
+-    private void clearRequestList(int error, boolean loggable) {
++    protected void clearRequestList(int error, boolean loggable) {
+         RILRequest rr;
+         synchronized (mRequestList) {
+             int count = mRequestList.size();
+@@ -2376,7 +2376,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         }
+     }
+ 
+-    private RILRequest findAndRemoveRequestFromList(int serial) {
++    protected RILRequest findAndRemoveRequestFromList(int serial) {
+         RILRequest rr = null;
+         synchronized (mRequestList) {
+             rr = mRequestList.get(serial);
+@@ -2388,7 +2388,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return rr;
+     }
+ 
+-    private RILRequest
++    protected RILRequest
+     processSolicited (Parcel p) {
+         int serial, error;
+         boolean found = false;
+@@ -2701,7 +2701,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return s;
+     }
+ 
+-    private void
++    protected void
+     processUnsolicited (Parcel p) {
+         int response;
+         Object ret;
+@@ -3209,7 +3209,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+      *
+      * @param rilVer is the version of the ril or -1 if disconnected.
+      */
+-    private void notifyRegistrantsRilConnectionChanged(int rilVer) {
++    protected void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         mRilVersion = rilVer;
+         if (mRilConnectedRegistrants != null) {
+             mRilConnectedRegistrants.notifyRegistrants(
+@@ -3217,7 +3217,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         }
+     }
+ 
+-    private Object
++    protected Object
+     responseInts(Parcel p) {
+         int numInts;
+         int response[];
+@@ -3234,12 +3234,12 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+     }
+ 
+ 
+-    private Object
++    protected Object
+     responseVoid(Parcel p) {
+         return null;
+     }
+ 
+-    private Object
++    protected Object
+     responseCallForward(Parcel p) {
+         int numInfos;
+         CallForwardInfo infos[];
+@@ -3262,7 +3262,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return infos;
+     }
+ 
+-    private Object
++    protected Object
+     responseSuppServiceNotification(Parcel p) {
+         SuppServiceNotification notification = new SuppServiceNotification();
+ 
+@@ -3275,7 +3275,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return notification;
+     }
+ 
+-    private Object
++    protected Object
+     responseCdmaSms(Parcel p) {
+         SmsMessage sms;
+         sms = SmsMessage.newFromParcel(p);
+@@ -3283,7 +3283,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return sms;
+     }
+ 
+-    private Object
++    protected Object
+     responseString(Parcel p) {
+         String response;
+ 
+@@ -3292,7 +3292,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseStrings(Parcel p) {
+         int num;
+         String response[];
+@@ -3302,7 +3302,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseRaw(Parcel p) {
+         int num;
+         byte response[];
+@@ -3312,7 +3312,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseSMS(Parcel p) {
+         int messageRef, errorCode;
+         String ackPDU;
+@@ -3327,7 +3327,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+     }
+ 
+ 
+-    private Object
++    protected Object
+     responseICC_IO(Parcel p) {
+         int sw1, sw2;
+         Message ret;
+@@ -3364,7 +3364,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return new IccIoResult(sw1, sw2, android.util.Base64.decode(s, android.util.Base64.DEFAULT));
+     }
+ 
+-    private Object
++    protected Object
+     responseIccCardStatus(Parcel p) {
+         IccCardApplicationStatus appStatus;
+ 
+@@ -3396,7 +3396,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return cardStatus;
+     }
+ 
+-    private Object
++    protected Object
+     responseSimRefresh(Parcel p) {
+         IccRefreshResponse response = new IccRefreshResponse();
+ 
+@@ -3406,7 +3406,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseCallList(Parcel p) {
+         int num;
+         int voiceSettings;
+@@ -3484,7 +3484,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private DataCallResponse getDataCallResponse(Parcel p, int version) {
++    protected DataCallResponse getDataCallResponse(Parcel p, int version) {
+         DataCallResponse dataCall = new DataCallResponse();
+ 
+         dataCall.version = version;
+@@ -3532,7 +3532,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return dataCall;
+     }
+ 
+-    private Object
++    protected Object
+     responseDataCallList(Parcel p) {
+         ArrayList<DataCallResponse> response;
+ 
+@@ -3548,7 +3548,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseSetupDataCall(Parcel p) {
+         int ver = p.readInt();
+         int num = p.readInt();
+@@ -3602,7 +3602,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return dataCall;
+     }
+ 
+-    private Object
++    protected Object
+     responseOperatorInfos(Parcel p) {
+         String strings[] = (String [])responseStrings(p);
+         ArrayList<OperatorInfo> ret;
+@@ -3627,7 +3627,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return ret;
+     }
+ 
+-    private Object
++    protected Object
+     responseCellList(Parcel p) {
+        int num, rssi;
+        String location;
+@@ -3655,7 +3655,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+        return response;
+     }
+ 
+-    private Object responseGetPreferredNetworkType(Parcel p) {
++    protected Object responseGetPreferredNetworkType(Parcel p) {
+        int [] response = (int[]) responseInts(p);
+ 
+        if (response.length >= 1) {
+@@ -3667,7 +3667,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+        return response;
+     }
+ 
+-    private Object responseGmsBroadcastConfig(Parcel p) {
++    protected Object responseGmsBroadcastConfig(Parcel p) {
+         int num;
+         ArrayList<SmsBroadcastConfigInfo> response;
+         SmsBroadcastConfigInfo info;
+@@ -3689,7 +3689,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseCdmaBroadcastConfig(Parcel p) {
+         int numServiceCategories;
+         int response[];
+@@ -3728,7 +3728,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseSignalStrength(Parcel p) {
+         // Assume this is gsm, but doesn't matter as ServiceStateTracker
+         // sets the proper value.
+@@ -3736,7 +3736,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return signalStrength;
+     }
+ 
+-    private ArrayList<CdmaInformationRecords>
++    protected ArrayList<CdmaInformationRecords>
+     responseCdmaInformationRecord(Parcel p) {
+         int numberOfInfoRecs;
+         ArrayList<CdmaInformationRecords> response;
+@@ -3756,7 +3756,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseCdmaCallWaiting(Parcel p) {
+         CdmaCallWaitingNotification notification = new CdmaCallWaitingNotification();
+ 
+@@ -3775,7 +3775,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return notification;
+     }
+ 
+-    private Object
++    protected Object
+     responseCallRing(Parcel p){
+         char response[] = new char[4];
+ 
+@@ -3787,7 +3787,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private void
++    protected void
+     notifyRegistrantsCdmaInfoRec(CdmaInformationRecords infoRec) {
+         int response = RIL_UNSOL_CDMA_INFO_REC;
+         if (infoRec.record instanceof CdmaInformationRecords.CdmaDisplayInfoRec) {
+@@ -4116,29 +4116,29 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         }
+     }
+ 
+-    private void riljLog(String msg) {
++    protected void riljLog(String msg) {
+         Rlog.d(RILJ_LOG_TAG, msg
+                 + (mInstanceId != null ? (" [SUB" + mInstanceId + "]") : ""));
+     }
+ 
+-    private void riljLogv(String msg) {
++    protected void riljLogv(String msg) {
+         Rlog.v(RILJ_LOG_TAG, msg
+                 + (mInstanceId != null ? (" [SUB" + mInstanceId + "]") : ""));
+     }
+ 
+-    private void unsljLog(int response) {
++    protected void unsljLog(int response) {
+         riljLog("[UNSL]< " + responseToString(response));
+     }
+ 
+-    private void unsljLogMore(int response, String more) {
++    protected void unsljLogMore(int response, String more) {
+         riljLog("[UNSL]< " + responseToString(response) + " " + more);
+     }
+ 
+-    private void unsljLogRet(int response, Object ret) {
++    protected void unsljLogRet(int response, Object ret) {
+         riljLog("[UNSL]< " + responseToString(response) + " " + retToString(response, ret));
+     }
+ 
+-    private void unsljLogvRet(int response, Object ret) {
++    protected void unsljLogvRet(int response, Object ret) {
+         riljLogv("[UNSL]< " + responseToString(response) + " " + retToString(response, ret));
+     }
+ 
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From cbf0f0207caedcbc6779f957fc669df66dfe0b2d Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 8 Mar 2014 19:35:17 +0700
+Subject: [PATCH 3/8] RIL: mark mInstanceId as protected
+
+To use in RIL subclasses
+
+Change-Id: I4ab1ea79079e3b03670b1e985f7a574df1f16658
+---
+ src/java/com/android/internal/telephony/RIL.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 296b6ab..beb4aee 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -256,7 +256,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+     // When we are testing emergency calls
+     AtomicBoolean mTestingEmergencyCall = new AtomicBoolean(false);
+ 
+-    private Integer mInstanceId;
++    protected Integer mInstanceId;
+ 
+     //***** Events
+ 
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 394d9933f2cbf170e7b7334c3567be65515a4108 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 31 May 2014 12:34:56 +0700
+Subject: [PATCH 4/8] telephony: support for RIL that does not send
+ UNSOL_CALL_RING
+
+Samsung Broadcom RIL does not send UNSOL_CALL_RING at all, so it
+needs to be faked or non loop (e.g. Digital Phone) ringtones
+won't work.
+
+Change-Id: Ib7373d32777f6c42ee488972a7aa63ae8e1cd09b
+---
+ .../com/android/internal/telephony/PhoneBase.java     | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/src/java/com/android/internal/telephony/PhoneBase.java b/src/java/com/android/internal/telephony/PhoneBase.java
+index ce69689..ec61632 100644
+--- a/src/java/com/android/internal/telephony/PhoneBase.java
++++ b/src/java/com/android/internal/telephony/PhoneBase.java
+@@ -200,6 +200,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+     boolean mDnsCheckDisabled;
+     public DcTrackerBase mDcTracker;
+     boolean mDoesRilSendMultipleCallRing;
++    boolean mDoesRilSendCallRing;
+     int mCallRingContinueToken;
+     int mCallRingDelay;
+     public boolean mIsTheCurrentActivePhone = true;
+@@ -411,6 +412,11 @@ public abstract class PhoneBase extends Handler implements Phone {
+                 TelephonyProperties.PROPERTY_RIL_SENDS_MULTIPLE_CALL_RING, true);
+         Rlog.d(LOG_TAG, "mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
+ 
++        // Some RIL do not even send a single RIL_UNSOL_CALL_RING
++        mDoesRilSendCallRing = SystemProperties.getBoolean(
++                "ro.telephony.call_ring", true);
++        Rlog.d(LOG_TAG, "mDoesRilSendCallRing=" + mDoesRilSendCallRing);
++
+         mCallRingDelay = SystemProperties.getInt(
+                 TelephonyProperties.PROPERTY_CALL_RING_DELAY, 3000);
+         Rlog.d(LOG_TAG, "mCallRingDelay=" + mCallRingDelay);
+@@ -1749,6 +1755,18 @@ public abstract class PhoneBase extends Handler implements Phone {
+     public void notifyNewRingingConnectionP(Connection cn) {
+         if (!mIsVoiceCapable)
+             return;
++
++        // Fake RIL_UNSOL_CALL_RING if the RIL doesn't send it.
++        // Note that we need the delay to prevent the request from
++        // being sent after CallTracker detects "RINGING" state, but
++        // before the correct contact-specific ringtone is queried.
++        // Otherwise, the incorrect ringtone will be used
++        if (!mDoesRilSendCallRing) {
++            int token = ++mCallRingContinueToken;
++            sendMessageDelayed(
++                    obtainMessage(EVENT_CALL_RING_CONTINUE, token, 0), mCallRingDelay);
++        }
++
+         AsyncResult ar = new AsyncResult(null, cn, null);
+         mNewRingingConnectionRegistrants.notifyRegistrants(ar);
+     }
+@@ -2136,6 +2154,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+         pw.println(" mDnsCheckDisabled=" + mDnsCheckDisabled);
+         pw.println(" mDcTracker=" + mDcTracker);
+         pw.println(" mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
++        pw.println(" mDoesRilSendCallRing=" + mDoesRilSendCallRing);
+         pw.println(" mCallRingContinueToken=" + mCallRingContinueToken);
+         pw.println(" mCallRingDelay=" + mCallRingDelay);
+         pw.println(" mIsTheCurrentActivePhone=" + mIsTheCurrentActivePhone);
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From f00b9f7782650d461189f6dd74095fd192c479ad Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 15 Nov 2014 17:39:50 +0700
+Subject: [PATCH 5/8] telephony: RIL: i9082: set correct rild names
+
+Change-Id: Idf8e98ae2f36f30b84be04b7b062ca4b52cebd8a
+---
+ src/java/com/android/internal/telephony/RIL.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index beb4aee..6593cb4 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -270,7 +270,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+     static final int RESPONSE_SOLICITED = 0;
+     static final int RESPONSE_UNSOLICITED = 1;
+ 
+-    static final String[] SOCKET_NAME_RIL = {"rild", "rild2", "rild3"};
++    static final String[] SOCKET_NAME_RIL = {"rild", "rild1", "rild2"};
+ 
+     static final int SOCKET_OPEN_RETRY_MILLIS = 4 * 1000;
+ 
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From f361b4e4872846eca8d408137857d7197bd76263 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Wed, 17 Dec 2014 21:19:34 +0700
+Subject: [PATCH 6/8] Forward port Samsung STK support
+ (frameworks/opt/telephony)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Squashed commit of the following:
+
+commit 7940f7ced44976f03171d09c2ba8b1d29bc9432e
+Author: Flamefire <alex@grundis.de>
+Date:   Sat Nov 15 21:26:33 2014 +0100
+
+    Fix crash of Samsung phones
+
+    Using an alternative SMS app like chompSMS leads to a crash as
+    sendResult is an array without any entries (sendResult[0] is accessed)
+    The default SMS app does not show this because mCurrntCmd == null
+
+    Change-Id: Icfef6d20f9082dd1f64ed29b67031d2575896513
+
+commit ed0cac138315b4dd5b36c35651ba6d23f1a47ae0
+Author: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date:   Tue Dec 11 17:22:30 2012 +0700
+
+    Samsung STK: Fix SMS-based STK
+
+    SEND_SMS was falling through to SEND_USSD (which used to do nothing
+    until USSD support was added) causing an Exception because cmdParams
+    is not an instance of SendUSSDParams.
+
+    Fix by using type-checking instead of checking if Samsung STK is
+    enabled (because SendSMSParams and SendUSSDParams will only be
+    created if Samsung STK is enabled.)
+
+    Change-Id: I671014e295e9e529aad25a8b6fbd5a2e5788fc44
+
+commit 7a9f16293abc6e216004d0c80822d39dac98db98
+Author: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date:   Fri Nov 30 21:35:50 2012 +0700
+
+    Samsung STK: Add USSD support
+
+    Allow USSD-based STK applications to work
+
+    Change-Id: I483f37a44a6c3ed43eefcf979e17b84877d03f93
+
+commit b5ade3b5a527193ffc6e71f6ce55d3a96a83792a
+Author: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date:   Fri Nov 30 19:30:08 2012 +0700
+
+    Add Samsung STK support (telephony part)
+
+    Support for SMS-based SIM applications.
+    Partially rewritten the original patch by Jüri Schultz to be less intrusive.
+
+    Change-Id: I15d2de1781a2823e24941dd792db3d372578aa9f
+
+Change-Id: I476959cfadab0ab14f5ed32adf51adca1e3b26b4
+---
+ .../android/internal/telephony/BaseCommands.java   |  10 ++
+ .../internal/telephony/CommandsInterface.java      |   8 ++
+ src/java/com/android/internal/telephony/RIL.java   |  15 +++
+ .../internal/telephony/cat/CallControlResult.java  |  44 +++++++
+ .../android/internal/telephony/cat/CatService.java | 127 +++++++++++++++++++++
+ .../internal/telephony/cat/CommandParams.java      |  21 ++++
+ .../telephony/cat/CommandParamsFactory.java        |  43 ++++++-
+ .../internal/telephony/cat/ValueParser.java        |  99 ++++++++++++++++
+ 8 files changed, 366 insertions(+), 1 deletion(-)
+ create mode 100644 src/java/com/android/internal/telephony/cat/CallControlResult.java
+
+diff --git a/src/java/com/android/internal/telephony/BaseCommands.java b/src/java/com/android/internal/telephony/BaseCommands.java
+index 45f720c..de5807f 100644
+--- a/src/java/com/android/internal/telephony/BaseCommands.java
++++ b/src/java/com/android/internal/telephony/BaseCommands.java
+@@ -86,6 +86,7 @@ public abstract class BaseCommands implements CommandsInterface {
+     protected Registrant mCatProCmdRegistrant;
+     protected Registrant mCatEventRegistrant;
+     protected Registrant mCatCallSetUpRegistrant;
++    protected Registrant mCatSendSmsResultRegistrant;
+     protected Registrant mIccSmsFullRegistrant;
+     protected Registrant mEmergencyCallbackModeRegistrant;
+     protected Registrant mRingRegistrant;
+@@ -450,6 +451,15 @@ public abstract class BaseCommands implements CommandsInterface {
+         }
+     }
+ 
++    // For Samsung STK
++    public void setOnCatSendSmsResult(Handler h, int what, Object obj) {
++        mCatSendSmsResultRegistrant = new Registrant(h, what, obj);
++    }
++
++    public void unSetOnCatSendSmsResult(Handler h) {
++        mCatSendSmsResultRegistrant.clear();
++    }
++
+     @Override
+     public void setOnIccSmsFull(Handler h, int what, Object obj) {
+         mIccSmsFullRegistrant = new Registrant (h, what, obj);
+diff --git a/src/java/com/android/internal/telephony/CommandsInterface.java b/src/java/com/android/internal/telephony/CommandsInterface.java
+index 42b0338..4e09746 100644
+--- a/src/java/com/android/internal/telephony/CommandsInterface.java
++++ b/src/java/com/android/internal/telephony/CommandsInterface.java
+@@ -1971,4 +1971,12 @@ public interface CommandsInterface {
+      * @param h Handler to be removed from the registrant list.
+      */
+     public void unregisterForRadioCapabilityChanged(Handler h);
++
++    /**
++     * @hide
++     * samsung stk service implementation - set up registrant for sending
++     * sms send result from modem(RIL) to catService
++     */
++    void setOnCatSendSmsResult(Handler h, int what, Object obj);
++    void unSetOnCatSendSmsResult(Handler h);
+ }
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 6593cb4..d1048df 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -29,6 +29,7 @@ import android.content.BroadcastReceiver;
+ import android.content.Context;
+ import android.content.Intent;
+ import android.content.IntentFilter;
++import android.content.res.Resources;
+ import android.hardware.display.DisplayManager;
+ import android.net.ConnectivityManager;
+ import android.net.LocalSocket;
+@@ -2759,6 +2760,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+                     ret = responseRadioCapability(p); break;
+             case RIL_UNSOL_ON_SS: ret =  responseSsData(p); break;
+             case RIL_UNSOL_STK_CC_ALPHA_NOTIFY: ret =  responseString(p); break;
++            case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseInts(p); break; // Samsung STK
+ 
+             default:
+                 throw new RuntimeException("Unrecognized unsol response: " + response);
+@@ -3184,6 +3186,18 @@ public class RIL extends BaseCommands implements CommandsInterface {
+                                         new AsyncResult (null, ret, null));
+                 }
+                 break;
++            // Samsung STK
++            case RIL_UNSOL_STK_SEND_SMS_RESULT:
++                if (Resources.getSystem().
++                        getBoolean(com.android.internal.R.bool.config_samsung_stk)) {
++                    if (RILJ_LOGD) unsljLogRet(response, ret);
++
++                    if (mCatSendSmsResultRegistrant != null) {
++                        mCatSendSmsResultRegistrant.notifyRegistrant(
++                                new AsyncResult (null, ret, null));
++                    }
++                }
++                break;
+         }
+     }
+ 
+@@ -4112,6 +4126,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+                     return "RIL_UNSOL_RADIO_CAPABILITY";
+             case RIL_UNSOL_ON_SS: return "UNSOL_ON_SS";
+             case RIL_UNSOL_STK_CC_ALPHA_NOTIFY: return "UNSOL_STK_CC_ALPHA_NOTIFY";
++            case RIL_UNSOL_STK_SEND_SMS_RESULT: return "RIL_UNSOL_STK_SEND_SMS_RESULT";
+             default: return "<unknown response>";
+         }
+     }
+diff --git a/src/java/com/android/internal/telephony/cat/CallControlResult.java b/src/java/com/android/internal/telephony/cat/CallControlResult.java
+new file mode 100644
+index 0000000..2dbc0d4
+--- /dev/null
++++ b/src/java/com/android/internal/telephony/cat/CallControlResult.java
+@@ -0,0 +1,44 @@
++/*
++ * Copyright (C) 2007 The Android Open Source Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.internal.telephony.cat;
++
++
++public enum CallControlResult {
++
++    CALL_CONTROL_NO_CONTROL(0x00),
++    CALL_CONTROL_ALLOWED_NO_MOD(0x01),
++    CALL_CONTROL_NOT_ALLOWED(0x02),
++    CALL_CONTROL_ALLOWED_WITH_MOD(0x03);
++    private int mValue;
++
++    CallControlResult(int value) {
++        mValue = value;
++    }
++
++    public static CallControlResult fromInt(int value) {
++        for (CallControlResult e : CallControlResult.values()) {
++            if (e.mValue == value) {
++                return e;
++            }
++        }
++        return null;
++    }
++
++    public int value() {
++        return mValue;
++    }
++}
+diff --git a/src/java/com/android/internal/telephony/cat/CatService.java b/src/java/com/android/internal/telephony/cat/CatService.java
+index 1ffe08c..bec7ae9 100644
+--- a/src/java/com/android/internal/telephony/cat/CatService.java
++++ b/src/java/com/android/internal/telephony/cat/CatService.java
+@@ -95,6 +95,10 @@ public class CatService extends Handler implements AppInterface {
+     private UiccController mUiccController;
+     private CardState mCardState = CardState.CARDSTATE_ABSENT;
+ 
++    // Samsung STK
++    private int mTimeoutDest = 0;
++    private int mCallControlResultCode = 0;
++
+     // Service constants.
+     protected static final int MSG_ID_SESSION_END              = 1;
+     protected static final int MSG_ID_PROACTIVE_COMMAND        = 2;
+@@ -108,6 +112,8 @@ public class CatService extends Handler implements AppInterface {
+     protected static final int MSG_ID_ALPHA_NOTIFY   = 9;
+ 
+     static final int MSG_ID_RIL_MSG_DECODED          = 10;
++    static final int MSG_ID_TIMEOUT                  = 11; // Samsung STK
++    static final int MSG_ID_SEND_SMS_RESULT          = 12; // Samsung STK
+ 
+     // Events to signal SIM presence or absent in the device.
+     private static final int MSG_ID_ICC_RECORDS_LOADED       = 20;
+@@ -126,6 +132,14 @@ public class CatService extends Handler implements AppInterface {
+     private HandlerThread mHandlerThread;
+     private int mSlotId;
+ 
++    // Samsung STK SEND_SMS
++    static final int WAITING_SMS_RESULT = 2;
++    static final int WAITING_SMS_RESULT_TIME = 60000;
++
++    static final int SMS_SEND_OK = 0;
++    static final int SMS_SEND_FAIL = 32790;
++    static final int SMS_SEND_RETRY = 32810;
++
+     /* For multisim catservice should not be singleton */
+     private CatService(CommandsInterface ci, UiccCardApplication ca, IccRecords ir,
+             Context context, IccFileHandler fh, UiccCard ic, int slotId) {
+@@ -153,6 +167,7 @@ public class CatService extends Handler implements AppInterface {
+         mCmdIf.setOnCatProactiveCmd(this, MSG_ID_PROACTIVE_COMMAND, null);
+         mCmdIf.setOnCatEvent(this, MSG_ID_EVENT_NOTIFY, null);
+         mCmdIf.setOnCatCallSetUp(this, MSG_ID_CALL_SETUP, null);
++        mCmdIf.setOnCatSendSmsResult(this, MSG_ID_SEND_SMS_RESULT, null); // Samsung STK
+         //mCmdIf.setOnSimRefresh(this, MSG_ID_REFRESH, null);
+ 
+         mCmdIf.registerForIccRefresh(this, MSG_ID_ICC_REFRESH, null);
+@@ -246,6 +261,7 @@ public class CatService extends Handler implements AppInterface {
+             mCmdIf.unSetOnCatEvent(this);
+             mCmdIf.unSetOnCatCallSetUp(this);
+             mCmdIf.unSetOnCatCcAlphaNotify(this);
++            mCmdIf.unSetOnCatSendSmsResult(this);
+ 
+             mCmdIf.unregisterForIccRefresh(this);
+             if (mUiccController != null) {
+@@ -420,8 +436,17 @@ public class CatService extends Handler implements AppInterface {
+                 break;
+             case SEND_DTMF:
+             case SEND_SMS:
++                // Samsung STK
++                if (cmdParams instanceof SendSMSParams) {
++                    handleProactiveCommandSendSMS((SendSMSParams) cmdParams);
++                }
++                // Fall through
+             case SEND_SS:
+             case SEND_USSD:
++                // Samsung STK
++                if (cmdParams instanceof SendUSSDParams) {
++                    handleProactiveCommandSendUSSD((SendUSSDParams) cmdParams);
++                }
+                 if ((((DisplayTextParams)cmdParams).mTextMsg.text != null)
+                         && (((DisplayTextParams)cmdParams).mTextMsg.text.equals(STK_DEFAULT))) {
+                     message = mContext.getText(com.android.internal.R.string.sending);
+@@ -841,6 +866,76 @@ public class CatService extends Handler implements AppInterface {
+                 CatLog.d(this, "CAT Alpha message: msg.obj is null");
+             }
+             break;
++        case MSG_ID_TIMEOUT: // Should only be called for Samsung STK
++            if (mTimeoutDest == WAITING_SMS_RESULT) {
++                CatLog.d(this, "SMS SEND TIMEOUT");
++                if (CallControlResult.fromInt(mCallControlResultCode) ==
++                        CallControlResult.CALL_CONTROL_NOT_ALLOWED)
++                    sendTerminalResponse(mCurrntCmd.mCmdDet,
++                            ResultCode.USIM_CALL_CONTROL_PERMANENT, true, 1, null);
++                else
++                    sendTerminalResponse(mCurrntCmd.mCmdDet,
++                            ResultCode.TERMINAL_CRNTLY_UNABLE_TO_PROCESS, false, 0, null);
++                break;
++            }
++            break;
++        case MSG_ID_SEND_SMS_RESULT: // Samsung STK SEND_SMS
++            if (mContext.getResources().
++                        getBoolean(com.android.internal.R.bool.config_samsung_stk)) {
++                int[] sendResult;
++                AsyncResult ar;
++                CatLog.d(this, "handleMsg : MSG_ID_SEND_SMS_RESULT");
++                cancelTimeOut();
++                CatLog.d(this, "The Msg ID data:" + msg.what);
++                ar = (AsyncResult) msg.obj;
++                if (ar == null || ar.result == null || mCurrntCmd == null || mCurrntCmd.mCmdDet == null)
++                    break;
++                sendResult = (int[]) ar.result;
++                if (sendResult.length == 0)
++                    break;
++                switch (sendResult[0]) {
++                    default:
++                        CatLog.d(this, "SMS SEND GENERIC FAIL");
++                        if (CallControlResult.fromInt(mCallControlResultCode) ==
++                                CallControlResult.CALL_CONTROL_NOT_ALLOWED)
++                            sendTerminalResponse(mCurrntCmd.mCmdDet,
++                                    ResultCode.USIM_CALL_CONTROL_PERMANENT, true, 1, null);
++                        else
++                            sendTerminalResponse(mCurrntCmd.mCmdDet,
++                                    ResultCode.TERMINAL_CRNTLY_UNABLE_TO_PROCESS, false, 0, null);
++                        break;
++                    case SMS_SEND_OK: // '\0'
++                        CatLog.d(this, "SMS SEND OK");
++                        if (CallControlResult.fromInt(mCallControlResultCode) ==
++                                CallControlResult.CALL_CONTROL_NOT_ALLOWED)
++                            sendTerminalResponse(mCurrntCmd.mCmdDet,
++                                    ResultCode.USIM_CALL_CONTROL_PERMANENT, true, 1, null);
++                        else
++                            sendTerminalResponse(mCurrntCmd.mCmdDet, ResultCode.OK, false, 0, null);
++                        break;
++                    case SMS_SEND_FAIL:
++                        CatLog.d(this, "SMS SEND FAIL - MEMORY NOT AVAILABLE");
++                        if (CallControlResult.fromInt(mCallControlResultCode) ==
++                                CallControlResult.CALL_CONTROL_NOT_ALLOWED)
++                            sendTerminalResponse(mCurrntCmd.mCmdDet,
++                                    ResultCode.USIM_CALL_CONTROL_PERMANENT, true, 1, null);
++                        else
++                            sendTerminalResponse(mCurrntCmd.mCmdDet,
++                                    ResultCode.TERMINAL_CRNTLY_UNABLE_TO_PROCESS, false, 0, null);
++                        break;
++                    case SMS_SEND_RETRY:
++                        CatLog.d(this, "SMS SEND FAIL RETRY");
++                        if (CallControlResult.fromInt(mCallControlResultCode) ==
++                                CallControlResult.CALL_CONTROL_NOT_ALLOWED)
++                            sendTerminalResponse(mCurrntCmd.mCmdDet,
++                                    ResultCode.USIM_CALL_CONTROL_PERMANENT, true, 1, null);
++                        else
++                            sendTerminalResponse(mCurrntCmd.mCmdDet,
++                                    ResultCode.NETWORK_CRNTLY_UNABLE_TO_PROCESS, false, 0, null);
++                        break;
++                    }
++            }
++            break;
+         default:
+             throw new AssertionError("Unrecognized CAT command: " + msg.what);
+         }
+@@ -1104,4 +1199,36 @@ public class CatService extends Handler implements AppInterface {
+             mCmdIf.reportStkServiceIsRunning(null);
+         }
+     }
++
++    /**
++     * Samsung STK SEND_SMS
++     * @param cmdPar
++     */
++    private void handleProactiveCommandSendSMS(SendSMSParams cmdPar) {
++        CatLog.d(this, "The smscaddress is: " + cmdPar.smscAddress);
++        CatLog.d(this, "The SMS tpdu is: " + cmdPar.pdu);
++        mCmdIf.sendSMS(cmdPar.smscAddress, cmdPar.pdu, null);
++        startTimeOut(WAITING_SMS_RESULT, WAITING_SMS_RESULT_TIME);
++    }
++
++    /**
++     * Samsung STK SEND_USSD
++     * @param cmdPar
++     */
++    private void handleProactiveCommandSendUSSD(SendUSSDParams cmdPar) {
++        CatLog.d(this, "The USSD is: " + cmdPar.ussdString);
++        mCmdIf.sendUSSD(cmdPar.ussdString, null);
++        // Sent USSD, let framework handle the rest
++    }
++
++    private void cancelTimeOut() {
++        removeMessages(MSG_ID_TIMEOUT);
++        mTimeoutDest = 0;
++    }
++
++    private void startTimeOut(int timeout, int delay) {
++        cancelTimeOut();
++        mTimeoutDest = timeout;
++        sendMessageDelayed(obtainMessage(MSG_ID_TIMEOUT), delay);
++    }
+ }
+diff --git a/src/java/com/android/internal/telephony/cat/CommandParams.java b/src/java/com/android/internal/telephony/cat/CommandParams.java
+index 2f9d0fd..68754a8 100644
+--- a/src/java/com/android/internal/telephony/cat/CommandParams.java
++++ b/src/java/com/android/internal/telephony/cat/CommandParams.java
+@@ -212,3 +212,24 @@ class BIPClientParams extends CommandParams {
+         return false;
+     }
+ }
++
++// Samsung STK
++class SendSMSParams extends DisplayTextParams {
++    String pdu;
++    String smscAddress;
++
++    SendSMSParams(CommandDetails cmdDet, TextMessage textmessage, String smscaddress, String smsPdu) {
++        super(cmdDet, textmessage);
++        smscAddress = smscaddress;
++        pdu = smsPdu;
++    }
++}
++
++class SendUSSDParams extends DisplayTextParams {
++    String ussdString;
++
++    SendUSSDParams(CommandDetails cmdDet, TextMessage textmessage, String ussdstring) {
++        super(cmdDet, textmessage);
++        ussdString = ussdstring;
++    }
++}
+diff --git a/src/java/com/android/internal/telephony/cat/CommandParamsFactory.java b/src/java/com/android/internal/telephony/cat/CommandParamsFactory.java
+index 882741f..e01b5c3 100644
+--- a/src/java/com/android/internal/telephony/cat/CommandParamsFactory.java
++++ b/src/java/com/android/internal/telephony/cat/CommandParamsFactory.java
+@@ -16,6 +16,7 @@
+ 
+ package com.android.internal.telephony.cat;
+ 
++import android.content.res.Resources;
+ import android.graphics.Bitmap;
+ import android.os.Handler;
+ import android.os.Message;
+@@ -662,7 +663,47 @@ class CommandParamsFactory extends Handler {
+         }
+ 
+         textMsg.responseNeeded = false;
+-        mCmdParams = new DisplayTextParams(cmdDet, textMsg);
++        // Samsung STK
++        AppInterface.CommandType cmdType = AppInterface.CommandType.fromInt(cmdDet.typeOfCommand);
++        boolean isSamsungStk = Resources.getSystem().getBoolean(com.android.internal.R.bool.config_samsung_stk);
++        if (cmdType == AppInterface.CommandType.SEND_SMS && isSamsungStk) {
++            String smscAddress = null;
++            String pdu = null;
++
++            ctlv = searchForTag(ComprehensionTlvTag.ADDRESS, ctlvs);
++            if (ctlv != null) {
++                smscAddress = ValueParser.retrieveSMSCaddress(ctlv);
++                CatLog.d(this, "The smsc address is " + smscAddress);
++            }
++            else {
++                CatLog.d(this, "The smsc address is null");
++            }
++
++            ctlv = searchForTag(ComprehensionTlvTag.SMS_TPDU, ctlvs);
++            if (ctlv != null) {
++                pdu = ValueParser.retrieveSMSTPDU(ctlv);
++                CatLog.d(this, "The SMS tpdu is " + pdu);
++            }
++            else {
++                CatLog.d(this, "The SMS tpdu is null");
++            }
++            mCmdParams = new SendSMSParams(cmdDet, textMsg, smscAddress, pdu);
++        }
++        else if (cmdType == AppInterface.CommandType.SEND_USSD && isSamsungStk) {
++            String ussdString = null;
++            ctlv = searchForTag(ComprehensionTlvTag.USSD_STRING, ctlvs);
++            if (ctlv != null) {
++                ussdString = ValueParser.retrieveUSSDString(ctlv);
++                CatLog.d(this, "The ussd string is " + ussdString);
++            }
++            else {
++                CatLog.d(this, "The ussd string is null");
++            }
++            mCmdParams = new SendUSSDParams(cmdDet, textMsg, ussdString);
++        }
++        else {
++            mCmdParams = new DisplayTextParams(cmdDet, textMsg);
++        }
+ 
+         if (iconId != null) {
+             mIconLoadState = LOAD_SINGLE_ICON;
+diff --git a/src/java/com/android/internal/telephony/cat/ValueParser.java b/src/java/com/android/internal/telephony/cat/ValueParser.java
+index 91a6fd6..bd39358 100644
+--- a/src/java/com/android/internal/telephony/cat/ValueParser.java
++++ b/src/java/com/android/internal/telephony/cat/ValueParser.java
+@@ -354,4 +354,103 @@ abstract class ValueParser {
+             throw new ResultException(ResultCode.CMD_DATA_NOT_UNDERSTOOD);
+         }
+     }
++
++    /**
++     * Samsung STK: Read SMSC Address
++     *
++     * @param ctlv A SMSC Address COMPREHENSION-TLV object
++     * @return A Java String object decoded from the SMSC Address object
++     * @throws ResultException
++     */
++    static String retrieveSMSCaddress(ComprehensionTlv ctlv)
++        throws ResultException {
++        byte[] rawValue = ctlv.getRawValue();
++        int valueIndex = ctlv.getValueIndex();
++        int length = ctlv.getLength();
++        byte[] outputValue = new byte[length + 1];
++
++        for (int k = 0; k <= length; k++) {
++            try {
++                outputValue[k] = rawValue[k + (valueIndex - 1)];
++            }
++            catch (IndexOutOfBoundsException indexoutofboundsexception) {
++                throw new ResultException(ResultCode.CMD_DATA_NOT_UNDERSTOOD);
++            }
++        }
++        if (length != 0)
++            return IccUtils.bytesToHexString(outputValue);
++        else
++            throw new ResultException(ResultCode.CMD_DATA_NOT_UNDERSTOOD);
++    }
++
++    /**
++     * Samsung STK: Read SMS TPDU Address
++     *
++     * @param ctlv A SMS TPDU COMPREHENSION-TLV object
++     * @return A Java String object decoded from the SMS TPDU object
++     * @throws ResultException
++     */
++    static String retrieveSMSTPDU(ComprehensionTlv ctlv)
++            throws ResultException {
++        byte[] rawValue = ctlv.getRawValue();
++        int valueIndex = ctlv.getValueIndex();
++        int pduLength = ctlv.getLength();
++        byte[] outputValue;
++        int k;
++        String result;
++        if (rawValue[valueIndex + 2] % 2 == 0)
++            k = rawValue[valueIndex + 2] / 2;
++        else
++            k = (1 + rawValue[valueIndex + 2]) / 2;
++
++        if (pduLength == k + 6)
++            outputValue = new byte[pduLength + 1];
++        else
++            outputValue = new byte[pduLength];
++
++        for (int l = 0; l < pduLength; l++) {
++            try {
++                outputValue[l] = rawValue[valueIndex + l];
++            }
++            catch (IndexOutOfBoundsException ex) {
++                throw new ResultException(ResultCode.CMD_DATA_NOT_UNDERSTOOD);
++            }
++        }
++        if (pduLength != 0)
++            result = IccUtils.bytesToHexString(outputValue);
++        else
++            throw new ResultException(ResultCode.CMD_DATA_NOT_UNDERSTOOD);
++
++        return result;
++    }
++
++    /**
++     * Samsung STK: Read USSD String
++     *
++     * @param ctlv A USSD String COMPREHENSION-TLV object
++     * @return A String object decoded from the USSD String object
++     * @throws ResultException
++     */
++    static String retrieveUSSDString(ComprehensionTlv ctlv) throws ResultException {
++        byte[] rawValue = ctlv.getRawValue();
++        int valueIndex = ctlv.getValueIndex();
++        int length = ctlv.getLength();
++
++        // If length is 0 (shouldn't be), return null
++        if (length == 0) {
++            return null;
++        }
++
++        // Should be 0x0f
++        if (rawValue[valueIndex] != 0x0f) {
++            throw new ResultException(ResultCode.CMD_DATA_NOT_UNDERSTOOD);
++        }
++
++        try {
++            return GsmAlphabet.gsm7BitPackedToString(rawValue,
++                    valueIndex + 1, ((length - 1) * 8) / 7);
++        } catch (IndexOutOfBoundsException e) {
++            throw new ResultException(ResultCode.CMD_DATA_NOT_UNDERSTOOD);
++        }
++    }
+ }
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 3e629617c879a839f8c1e3adfd815461af1bb25a Mon Sep 17 00:00:00 2001
+From: Mike Kasick <mike@kasick.org>
+Date: Sat, 14 Mar 2015 20:20:39 +0700
+Subject: [PATCH 7/8] RILs: Eliminate repeated overrides of
+ responseOperatorInfos.
+
+- Add mQANElements field, default to 4 in RIL, use in responseOperatorInfos.
+  This may be set to 5 in subclassed RIL constructors.
+
+- Remove repeated overrides of responseOperatorInfos by subclassed RILs, as
+  there's no logic change, just a disagreement as to whether the
+  QUERY_AVAILABLE_NETWORKS response is an array with 4 or 5 per-network
+  elements.
+
+- Size OperatorInfo ArrayList appropriately in SemcRIL and SonyQualcommRIL.
+
+Change-Id: I1254a670d8611f76aad13a6f197c67012c7d4c47
+---
+ src/java/com/android/internal/telephony/RIL.java | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index d1048df..d7c0b7d 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -259,6 +259,11 @@ public class RIL extends BaseCommands implements CommandsInterface {
+ 
+     protected Integer mInstanceId;
+ 
++    // Number of per-network elements expected in QUERY_AVAILABLE_NETWORKS's response.
++    // 4 elements is default, but many RILs actually return 5, making it impossible to
++    // divide the response array without prior knowledge of the number of elements.
++    protected int mQANElements = 4;
++
+     //***** Events
+ 
+     static final int EVENT_SEND                 = 1;
+@@ -3621,15 +3626,15 @@ public class RIL extends BaseCommands implements CommandsInterface {
+         String strings[] = (String [])responseStrings(p);
+         ArrayList<OperatorInfo> ret;
+ 
+-        if (strings.length % 4 != 0) {
++        if (strings.length % mQANElements != 0) {
+             throw new RuntimeException(
+                 "RIL_REQUEST_QUERY_AVAILABLE_NETWORKS: invalid response. Got "
+-                + strings.length + " strings, expected multible of 4");
++                + strings.length + " strings, expected multiple of " + mQANElements);
+         }
+ 
+-        ret = new ArrayList<OperatorInfo>(strings.length / 4);
++        ret = new ArrayList<OperatorInfo>(strings.length / mQANElements);
+ 
+-        for (int i = 0 ; i < strings.length ; i += 4) {
++        for (int i = 0 ; i < strings.length ; i += mQANElements) {
+             ret.add (
+                 new OperatorInfo(
+                     strings[i+0],
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 1d760862ac507a23db5135aeea1300adfed48d86 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Thu, 22 Nov 2012 19:01:13 +0100
+Subject: [PATCH 8/8] telephony: Use reflection to create command interface
+ (RIL class)
+
+Change-Id: Icdc02eaa74b89dbde4ddfb989cc62481d6423312
+
+PhoneFactory: fall back to default RIL if custom RIL Class fails
+
+If the ro.telephony.ril_class property is set to an invalid class it will cause
+Phone to repeatedly FC and make the device unuseable. This allows it to handle the
+exceptions gracefully and fall back on the default RIL.
+
+Change-Id: Ic9c309aff173de5267aa7ef633bfff87243f24fd
+
+PhoneFactory: Block radio init if the device's custom class can't be used
+
+Trap the initialization process in a 10 second error loop. The device
+will be normally usable, and have a dead radio. The radio log buffer
+will have the full stack dump explaining what went wrong during the
+custom class instantiation
+
+Change-Id: Id47d51737a9fb78e6d43a179ba304b1ba03c4219
+---
+ .../android/internal/telephony/PhoneFactory.java   | 27 ++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/PhoneFactory.java b/src/java/com/android/internal/telephony/PhoneFactory.java
+index 9f02433..82ab0c2 100644
+--- a/src/java/com/android/internal/telephony/PhoneFactory.java
++++ b/src/java/com/android/internal/telephony/PhoneFactory.java
+@@ -45,6 +45,7 @@ import com.android.internal.telephony.uicc.UiccController;
+ 
+ import java.io.FileDescriptor;
+ import java.io.PrintWriter;
++import java.lang.reflect.Constructor;
+ 
+ /**
+  * {@hide}
+@@ -128,6 +129,8 @@ public class PhoneFactory {
+                 int[] networkModes = new int[numPhones];
+                 sProxyPhones = new PhoneProxy[numPhones];
+                 sCommandsInterfaces = new RIL[numPhones];
++                String sRILClassname = SystemProperties.get("ro.telephony.ril_class", "RIL").trim();
++                Rlog.i(LOG_TAG, "RILClassname is " + sRILClassname);
+ 
+                 for (int i = 0; i < numPhones; i++) {
+                     // reads the system properties and makes commandsinterface
+@@ -135,8 +138,20 @@ public class PhoneFactory {
+                     networkModes[i] = RILConstants.PREFERRED_NETWORK_MODE;
+ 
+                     Rlog.i(LOG_TAG, "Network Mode set to " + Integer.toString(networkModes[i]));
+-                    sCommandsInterfaces[i] = new RIL(context, networkModes[i],
+-                            cdmaSubscription, i);
++                    // Use reflection to construct the RIL class (defaults to RIL)
++                    try {
++                        sCommandsInterfaces[i] = instantiateCustomRIL(
++                                                     sRILClassname, context, networkModes[i], cdmaSubscription, i);
++                    } catch (Exception e) {
++                        // 6 different types of exceptions are thrown here that it's
++                        // easier to just catch Exception as our "error handling" is the same.
++                        // Yes, we're blocking the whole thing and making the radio unusable. That's by design.
++                        // The log message should make it clear why the radio is broken
++                        while (true) {
++                            Rlog.e(LOG_TAG, "Unable to construct custom RIL class", e);
++                            try {Thread.sleep(10000);} catch (InterruptedException ie) {}
++                        }
++                    }
+                 }
+                 Rlog.i(LOG_TAG, "Creating SubscriptionController");
+                 SubscriptionController.init(context, sCommandsInterfaces);
+@@ -208,6 +223,14 @@ public class PhoneFactory {
+         }
+     }
+ 
++    private static <T> T instantiateCustomRIL(
++                      String sRILClassname, Context context, int networkMode, int cdmaSubscription, Integer instanceId)
++                      throws Exception {
++        Class<?> clazz = Class.forName("com.android.internal.telephony." + sRILClassname);
++        Constructor<?> constructor = clazz.getConstructor(Context.class, int.class, int.class, Integer.class);
++        return (T) clazz.cast(constructor.newInstance(context, networkMode, cdmaSubscription, instanceId));
++    }
++
+     public static Phone getDefaultPhone() {
+         synchronized (sLockProxyPhones) {
+             if (!sMadeDefaults) {
+-- 
+1.9.5 (Apple Git-50.3)
+

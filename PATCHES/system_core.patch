@@ -1,0 +1,451 @@
+From 9ff79c741ae671c168e4b088964f4661d4968556 Mon Sep 17 00:00:00 2001
+From: Dave Burke <daveburke@google.com>
+Date: Wed, 24 Oct 2012 17:30:31 -0700
+Subject: [PATCH 1/7] Revert "Revert "put back the unused virtuals in
+ Vector<>""
+
+This reverts commit 225c66a48cdc3acef21ee380dc134449749d3cb3
+
+Change-Id: If31a04b81052cbc7dd7bf237c07107c33066d03d
+
+Conditionally Revert "put back the unused virtuals in Vector<>"
+
+These symbols are needed for MR2 camera.tegra and other blobs,
+but they conflict with KK blobs so define it for devices that
+need it by setting COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
+
+Change-Id: I59e66074526f013918a29c3afc10e52b9812778c
+---
+ include/utils/VectorImpl.h | 26 +++++++++++++++++++++++++-
+ libutils/VectorImpl.cpp    | 22 ++++++++++++++++++++++
+ 2 files changed, 47 insertions(+), 1 deletion(-)
+
+diff --git a/include/utils/VectorImpl.h b/include/utils/VectorImpl.h
+index 21ad71c..cab95be 100644
+--- a/include/utils/VectorImpl.h
++++ b/include/utils/VectorImpl.h
+@@ -105,7 +105,19 @@ protected:
+     virtual void            do_splat(void* dest, const void* item, size_t num) const = 0;
+     virtual void            do_move_forward(void* dest, const void* from, size_t num) const = 0;
+     virtual void            do_move_backward(void* dest, const void* from, size_t num) const = 0;
+-    
++
++#if NEEDS_VECTORIMPL_SYMBOLS
++    // take care of FBC...
++    virtual void            reservedVectorImpl1();
++    virtual void            reservedVectorImpl2();
++    virtual void            reservedVectorImpl3();
++    virtual void            reservedVectorImpl4();
++    virtual void            reservedVectorImpl5();
++    virtual void            reservedVectorImpl6();
++    virtual void            reservedVectorImpl7();
++    virtual void            reservedVectorImpl8();
++#endif
++
+ private:
+         void* _grow(size_t where, size_t amount);
+         void  _shrink(size_t where, size_t amount);
+@@ -156,6 +168,18 @@ public:
+ protected:
+     virtual int             do_compare(const void* lhs, const void* rhs) const = 0;
+ 
++#if NEEDS_VECTORIMPL_SYMBOLS
++    // take care of FBC...
++    virtual void            reservedSortedVectorImpl1();
++    virtual void            reservedSortedVectorImpl2();
++    virtual void            reservedSortedVectorImpl3();
++    virtual void            reservedSortedVectorImpl4();
++    virtual void            reservedSortedVectorImpl5();
++    virtual void            reservedSortedVectorImpl6();
++    virtual void            reservedSortedVectorImpl7();
++    virtual void            reservedSortedVectorImpl8();
++#endif
++
+ private:
+             ssize_t         _indexOrderOf(const void* item, size_t* order = 0) const;
+ 
+diff --git a/libutils/VectorImpl.cpp b/libutils/VectorImpl.cpp
+index 30ca663..0bfc1f0 100644
+--- a/libutils/VectorImpl.cpp
++++ b/libutils/VectorImpl.cpp
+@@ -516,6 +516,17 @@ void VectorImpl::_do_move_backward(void* dest, const void* from, size_t num) con
+     do_move_backward(dest, from, num);
+ }
+ 
++#if NEEDS_VECTORIMPL_SYMBOLS
++void VectorImpl::reservedVectorImpl1() { }
++void VectorImpl::reservedVectorImpl2() { }
++void VectorImpl::reservedVectorImpl3() { }
++void VectorImpl::reservedVectorImpl4() { }
++void VectorImpl::reservedVectorImpl5() { }
++void VectorImpl::reservedVectorImpl6() { }
++void VectorImpl::reservedVectorImpl7() { }
++void VectorImpl::reservedVectorImpl8() { }
++#endif
++
+ /*****************************************************************************/
+ 
+ SortedVectorImpl::SortedVectorImpl(size_t itemSize, uint32_t flags)
+@@ -631,6 +642,17 @@ ssize_t SortedVectorImpl::remove(const void* item)
+     return i;
+ }
+ 
++#if NEEDS_VECTORIMPL_SYMBOLS
++void SortedVectorImpl::reservedSortedVectorImpl1() { };
++void SortedVectorImpl::reservedSortedVectorImpl2() { };
++void SortedVectorImpl::reservedSortedVectorImpl3() { };
++void SortedVectorImpl::reservedSortedVectorImpl4() { };
++void SortedVectorImpl::reservedSortedVectorImpl5() { };
++void SortedVectorImpl::reservedSortedVectorImpl6() { };
++void SortedVectorImpl::reservedSortedVectorImpl7() { };
++void SortedVectorImpl::reservedSortedVectorImpl8() { };
++#endif
++
+ /*****************************************************************************/
+ 
+ }; // namespace android
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From b06cb1443b897f6de763025a49aae2bb580dbe68 Mon Sep 17 00:00:00 2001
+From: Arne Coucheron <arco68@gmail.com>
+Date: Wed, 3 Dec 2014 06:14:55 +0100
+Subject: [PATCH 2/7] libutils: Properly #ifdef NEEDS_VECTORIMPL_SYMBOLS
+
+ * Compile error might occur otherwise
+
+Change-Id: I982e5f72ea4e84594e415394cceed44f90045526
+---
+ include/utils/VectorImpl.h | 4 ++--
+ libutils/VectorImpl.cpp    | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/utils/VectorImpl.h b/include/utils/VectorImpl.h
+index cab95be..88c3a05 100644
+--- a/include/utils/VectorImpl.h
++++ b/include/utils/VectorImpl.h
+@@ -106,7 +106,7 @@ protected:
+     virtual void            do_move_forward(void* dest, const void* from, size_t num) const = 0;
+     virtual void            do_move_backward(void* dest, const void* from, size_t num) const = 0;
+ 
+-#if NEEDS_VECTORIMPL_SYMBOLS
++#ifdef NEEDS_VECTORIMPL_SYMBOLS
+     // take care of FBC...
+     virtual void            reservedVectorImpl1();
+     virtual void            reservedVectorImpl2();
+@@ -168,7 +168,7 @@ public:
+ protected:
+     virtual int             do_compare(const void* lhs, const void* rhs) const = 0;
+ 
+-#if NEEDS_VECTORIMPL_SYMBOLS
++#ifdef NEEDS_VECTORIMPL_SYMBOLS
+     // take care of FBC...
+     virtual void            reservedSortedVectorImpl1();
+     virtual void            reservedSortedVectorImpl2();
+diff --git a/libutils/VectorImpl.cpp b/libutils/VectorImpl.cpp
+index 0bfc1f0..c4944cf 100644
+--- a/libutils/VectorImpl.cpp
++++ b/libutils/VectorImpl.cpp
+@@ -516,7 +516,7 @@ void VectorImpl::_do_move_backward(void* dest, const void* from, size_t num) con
+     do_move_backward(dest, from, num);
+ }
+ 
+-#if NEEDS_VECTORIMPL_SYMBOLS
++#ifdef NEEDS_VECTORIMPL_SYMBOLS
+ void VectorImpl::reservedVectorImpl1() { }
+ void VectorImpl::reservedVectorImpl2() { }
+ void VectorImpl::reservedVectorImpl3() { }
+@@ -642,7 +642,7 @@ ssize_t SortedVectorImpl::remove(const void* item)
+     return i;
+ }
+ 
+-#if NEEDS_VECTORIMPL_SYMBOLS
++#ifdef NEEDS_VECTORIMPL_SYMBOLS
+ void SortedVectorImpl::reservedSortedVectorImpl1() { };
+ void SortedVectorImpl::reservedSortedVectorImpl2() { };
+ void SortedVectorImpl::reservedSortedVectorImpl3() { };
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 1a16fd9340d8032e5944249ed3075718b21f8fc3 Mon Sep 17 00:00:00 2001
+From: codeworkx <codeworkx@cyanogenmod.org>
+Date: Sat, 27 Jul 2013 08:18:42 +0200
+Subject: [PATCH 3/7] libutils: refbase: jellybean mr1 compat
+
+[mikeioannina]: Update for L
+Can be enabled with global cflag REFBASE_JB_MR1_COMPAT_SYMBOLS
+
+Change-Id: Ideee0c3814a17b47f70fd612d27067fe19ae698d
+---
+ include/utils/RefBase.h | 9 +++++++++
+ libutils/RefBase.cpp    | 7 +++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/include/utils/RefBase.h b/include/utils/RefBase.h
+index 8e15c19..5afdf92 100644
+--- a/include/utils/RefBase.h
++++ b/include/utils/RefBase.h
+@@ -53,6 +53,15 @@ inline bool operator _op_ (const U* o) const {                  \
+ 
+ // ---------------------------------------------------------------------------
+ 
++#ifdef REFBASE_JB_MR1_COMPAT_SYMBOLS
++class ReferenceConverterBase {
++public:
++    virtual size_t getReferenceTypeSize() const = 0;
++    virtual void* getReferenceBase(void const*) const = 0;
++    inline virtual ~ReferenceConverterBase() { }
++};
++#endif
++
+ class ReferenceRenamer {
+ protected:
+     // destructor is purposedly not virtual so we avoid code overhead from
+diff --git a/libutils/RefBase.cpp b/libutils/RefBase.cpp
+index 02907ad..b0ca12e 100644
+--- a/libutils/RefBase.cpp
++++ b/libutils/RefBase.cpp
+@@ -630,6 +630,13 @@ void RefBase::onLastWeakRef(const void* /*id*/)
+ 
+ // ---------------------------------------------------------------------------
+ 
++#ifdef REFBASE_JB_MR1_COMPAT_SYMBOLS
++extern "C" void _ZN7android7RefBase14moveReferencesEPvPKvjRKNS_22ReferenceConverterBaseE(void* /*dst*/, void const* /*src*/, size_t /*n*/,
++        const ReferenceConverterBase& /*caster*/)
++{
++}
++#endif
++
+ #if DEBUG_REFS
+ void RefBase::renameRefs(size_t n, const ReferenceRenamer& renamer) {
+     for (size_t i=0 ; i<n ; i++) {
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 18ff5b50fcfb1bfb2ee3207e5f85e0af264caa1c Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 17 Dec 2011 17:26:54 -0500
+Subject: [PATCH 4/7] init: add detection of charging mode
+
+Based on Prashant Somashekar's patch which is in turn based on techomancer's
+patch http://goo.gl/I19GG.
+
+When BOARD_CHARGING_MODE_BOOTING_LPM is set, init will read that
+value (usually from /sys) and enable charging mode when set to 1.
+
+This differs from the original patch in that Samsung-specific lpm.rc
+is not loaded, but instead, init.rc is loaded using the "charger" class,
+which is how AOSP devices handle charging.
+
+The change is because the either the SELinux or the init.rc changes is
+causing lpm.rc to not work, and porting lpm.rc to the Android system
+is easier than trying to fix it.
+
+Change-Id: Ice7a074da7e982f9a64aaa97de28bfcbccdc8b91
+
+Conflicts:
+	init/init.c
+---
+ init/Android.mk |  8 ++++++++
+ init/init.c     | 21 ++++++++++++++++++++-
+ 2 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/init/Android.mk b/init/Android.mk
+index 489dc93..9cf29d8 100644
+--- a/init/Android.mk
++++ b/init/Android.mk
+@@ -31,6 +31,14 @@ endif
+ # Enable ueventd logging
+ #LOCAL_CFLAGS += -DLOG_UEVENTS=1
+ 
++SYSTEM_CORE_INIT_DEFINES := BOARD_CHARGING_MODE_BOOTING_LPM
++
++$(foreach system_core_init_define,$(SYSTEM_CORE_INIT_DEFINES), \
++  $(if $($(system_core_init_define)), \
++    $(eval LOCAL_CFLAGS += -D$(system_core_init_define)=\"$($(system_core_init_define))\") \
++  ) \
++)
++
+ LOCAL_MODULE:= init
+ 
+ LOCAL_FORCE_STATIC_EXECUTABLE := true
+diff --git a/init/init.c b/init/init.c
+index bd1db7a..80cb347 100644
+--- a/init/init.c
++++ b/init/init.c
+@@ -998,6 +998,25 @@ static void selinux_initialize(void)
+     security_setenforce(is_enforcing);
+ }
+ 
++static int charging_mode_booting(void)
++{
++#ifndef BOARD_CHARGING_MODE_BOOTING_LPM
++    return 0;
++#else
++    int f;
++    char cmb;
++    f = open(BOARD_CHARGING_MODE_BOOTING_LPM, O_RDONLY);
++    if (f < 0)
++        return 0;
++
++    if (1 != read(f, (void *)&cmb,1))
++        return 0;
++
++    close(f);
++    return ('1' == cmb);
++#endif
++}
++
+ int main(int argc, char **argv)
+ {
+     int fd_count = 0;
+@@ -1068,7 +1087,7 @@ int main(int argc, char **argv)
+     restorecon("/dev/__properties__");
+     restorecon_recursive("/sys");
+ 
+-    is_charger = !strcmp(bootmode, "charger");
++    is_charger = !strcmp(bootmode, "charger") || charging_mode_booting();
+ 
+     INFO("property init\n");
+     property_load_boot_defaults();
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 1d6d0c7061dee6d93d48c297b464e42d4bcf99a9 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 14 Mar 2015 10:48:07 +0700
+Subject: [PATCH 5/7] disable recovery flash
+
+We don't want to flash AOSP's recovery
+
+Change-Id: Icb999b58879f71f39b64b6e85afc5869c2e7d92e
+---
+ rootdir/init.rc | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index cbcb842..a370bfd 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -589,10 +589,10 @@ service installd /system/bin/installd
+     class main
+     socket installd stream 600 system system
+ 
+-service flash_recovery /system/bin/install-recovery.sh
+-    class main
+-    seclabel u:r:install_recovery:s0
+-    oneshot
++# service flash_recovery /system/bin/install-recovery.sh
++#     class main
++#     seclabel u:r:install_recovery:s0
++#     oneshot
+ 
+ service racoon /system/bin/racoon
+     class main
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From afa634abbebb3004eedf1814002658da0f2a5e2b Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Fri, 12 Apr 2013 11:40:15 +0700
+Subject: [PATCH 6/7] libnetutils: add ifc_set_mtu
+
+Change-Id: I3031e9ee38583648350f2c46baa7a9a714b9ea1e
+---
+ libnetutils/ifc_utils.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/libnetutils/ifc_utils.c b/libnetutils/ifc_utils.c
+index 913f51e..e726339 100644
+--- a/libnetutils/ifc_utils.c
++++ b/libnetutils/ifc_utils.c
+@@ -702,3 +702,19 @@ ifc_configure(const char *ifname,
+ 
+     return 0;
+ }
++
++// Required for Broadcom RILD
++int ifc_set_mtu(const char *name, int mtuSz)
++{
++    struct ifreq ifr;
++    int ret;
++    ifc_init_ifr(name, &ifr);
++    ifr.ifr_mtu = mtuSz;
++
++    ret = ioctl(ifc_ctl_sock, SIOCSIFMTU, &ifr);
++    if (ret < 0) {
++        printerr("ifc_set_mtu: SIOCSIFMTU failed: %d\n", ret);
++    }
++
++    return ret;
++}
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 583c56e50272a308ba3065431087d7ffd36d2ac8 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Tue, 18 Nov 2014 22:36:32 +0700
+Subject: [PATCH 7/7] charger: allow home button to wake
+
+A squashed commit of the following:
+
+commit 6ce21d726a967b2cc942476758b9ab3851ff39f1
+Author: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date:   Sun Feb 3 22:21:32 2013 +0700
+
+    charger: do not suspend when handling home
+
+    When using Google's suspend implementation, home press should also wake
+    the device from suspend
+
+    Change-Id: I51f3e45c5cb418b0b3718e7223a1336876379043
+
+commit 75a7cf84df719d8cf5cd77093b3f9fee3c09017e
+Author: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date:   Sat Jul 21 22:09:37 2012 +0700
+
+    charger: allow home button to wake
+
+    On certain devices (e.g. galaxysmtd), the user expects the physical
+    home button to be able to wake the device as well as the power button.
+
+    Change-Id: If764f36aba3810dfa5233af8baf0a740b04889e0
+
+Change-Id: I362b227e26bc864a2cad471df799bce2d682ecee
+---
+ healthd/healthd_mode_charger.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/healthd/healthd_mode_charger.cpp b/healthd/healthd_mode_charger.cpp
+index 5039649..108b4e9 100644
+--- a/healthd/healthd_mode_charger.cpp
++++ b/healthd/healthd_mode_charger.cpp
+@@ -539,6 +539,11 @@ static void process_key(struct charger *charger, int code, int64_t now)
+                 kick_animation(charger->batt_anim);
+             }
+         }
++    } else {
++        if (key->pending) {
++            request_suspend(false);
++            kick_animation(charger->batt_anim);
++        }
+     }
+ 
+     key->pending = false;
+@@ -547,6 +552,7 @@ static void process_key(struct charger *charger, int code, int64_t now)
+ static void handle_input_state(struct charger *charger, int64_t now)
+ {
+     process_key(charger, KEY_POWER, now);
++    process_key(charger, KEY_HOME, now);
+ 
+     if (charger->next_key_check != -1 && now > charger->next_key_check)
+         charger->next_key_check = -1;
+-- 
+1.9.5 (Apple Git-50.3)
+

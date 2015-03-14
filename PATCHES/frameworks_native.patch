@@ -1,0 +1,1147 @@
+From 1c955fdc12c4a3d5d5092fe0bb020f738f074f7a Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Tue, 18 Nov 2014 08:38:33 +0700
+Subject: [PATCH 1/8] Bring back support for glReadPixels screenshot path
+
+Squashed commit of the following:
+
+commit 012d3fe41d1d6cd38a0858b59145e9a4447641fa
+Author: Hashcode <hashcode0f@gmail.com>
+Date:   Sun Dec 8 19:36:50 2013 +0000
+
+    sf: Always use opengles for screen capture
+
+    Go back to the usage of GRALLOC_USAGE_HW_TEXTURE and GRALLOC_USAGE_HW_RENDERER
+    in captureScreenImplLocked regardless of useReadPixels value
+
+    This fixes the EGL_NO_IMAGE_KHR error returned from
+    eglCreateImageKHR (blank images returned from screenshot path)
+
+    Change-Id: I62fe90a081607b9e89c67f3dcfd34c84efc89d35
+
+commit 4866ddf98ac98d8e22a1cd6a21894bb17f274588
+Author: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Date:   Thu Oct 31 03:53:39 2013 +0000
+
+    Revert "remove support for glReadPixels screenshot path"
+
+    This reverts commit 3ca76f416bc8665a97636ca8a2d0128b9da9d92c.
+
+    Conflicts:
+    	include/gui/ISurfaceComposer.h
+    	libs/gui/ISurfaceComposer.cpp
+    	libs/gui/SurfaceComposerClient.cpp
+    	services/surfaceflinger/SurfaceFlinger.cpp
+    	services/surfaceflinger/SurfaceFlinger.h
+
+    Change-Id: I8c239e533757af770e418dbb198f5a86c736961f
+
+Change-Id: I8c239e533757af770e418dbb198f5a86c736961f
+---
+ include/gui/ISurfaceComposer.h                     |  3 +-
+ libs/gui/ISurfaceComposer.cpp                      |  8 +++-
+ libs/gui/SurfaceComposerClient.cpp                 |  5 ++-
+ .../RenderEngine/GLES11RenderEngine.cpp            | 43 +++++++++++++++-------
+ .../RenderEngine/GLES11RenderEngine.h              |  4 +-
+ .../RenderEngine/GLES20RenderEngine.cpp            | 41 +++++++++++++++------
+ .../RenderEngine/GLES20RenderEngine.h              |  5 ++-
+ .../surfaceflinger/RenderEngine/RenderEngine.cpp   |  8 ++--
+ .../surfaceflinger/RenderEngine/RenderEngine.h     |  7 ++--
+ services/surfaceflinger/SurfaceFlinger.cpp         | 26 ++++++++++---
+ services/surfaceflinger/SurfaceFlinger.h           |  6 ++-
+ 11 files changed, 108 insertions(+), 48 deletions(-)
+
+diff --git a/include/gui/ISurfaceComposer.h b/include/gui/ISurfaceComposer.h
+index 51717a4..640f4b3 100644
+--- a/include/gui/ISurfaceComposer.h
++++ b/include/gui/ISurfaceComposer.h
+@@ -145,7 +145,8 @@ public:
+             Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+             uint32_t minLayerZ, uint32_t maxLayerZ,
+             bool useIdentityTransform,
+-            Rotation rotation = eRotateNone) = 0;
++            Rotation rotation,
++            bool isCpuConsumer) = 0;
+ 
+     /* Clears the frame statistics for animations.
+      *
+diff --git a/libs/gui/ISurfaceComposer.cpp b/libs/gui/ISurfaceComposer.cpp
+index ebb687a..0bb6ff2 100644
+--- a/libs/gui/ISurfaceComposer.cpp
++++ b/libs/gui/ISurfaceComposer.cpp
+@@ -108,7 +108,8 @@ public:
+             Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+             uint32_t minLayerZ, uint32_t maxLayerZ,
+             bool useIdentityTransform,
+-            ISurfaceComposer::Rotation rotation)
++            ISurfaceComposer::Rotation rotation,
++            bool isCpuConsumer)
+     {
+         Parcel data, reply;
+         data.writeInterfaceToken(ISurfaceComposer::getInterfaceDescriptor());
+@@ -121,6 +122,7 @@ public:
+         data.writeInt32(maxLayerZ);
+         data.writeInt32(static_cast<int32_t>(useIdentityTransform));
+         data.writeInt32(static_cast<int32_t>(rotation));
++        data.writeInt32(isCpuConsumer);
+         remote()->transact(BnSurfaceComposer::CAPTURE_SCREEN, data, &reply);
+         return reply.readInt32();
+     }
+@@ -359,11 +361,13 @@ status_t BnSurfaceComposer::onTransact(
+             uint32_t maxLayerZ = data.readInt32();
+             bool useIdentityTransform = static_cast<bool>(data.readInt32());
+             uint32_t rotation = data.readInt32();
++            bool isCpuConsumer = data.readInt32();
+ 
+             status_t res = captureScreen(display, producer,
+                     sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
+                     useIdentityTransform,
+-                    static_cast<ISurfaceComposer::Rotation>(rotation));
++                    static_cast<ISurfaceComposer::Rotation>(rotation),
++                    isCpuConsumer);
+             reply->writeInt32(res);
+             return NO_ERROR;
+         }
+diff --git a/libs/gui/SurfaceComposerClient.cpp b/libs/gui/SurfaceComposerClient.cpp
+index 6446926..22832ee 100644
+--- a/libs/gui/SurfaceComposerClient.cpp
++++ b/libs/gui/SurfaceComposerClient.cpp
+@@ -692,7 +692,8 @@ status_t ScreenshotClient::capture(
+     sp<ISurfaceComposer> s(ComposerService::getComposerService());
+     if (s == NULL) return NO_INIT;
+     return s->captureScreen(display, producer, sourceCrop,
+-            reqWidth, reqHeight, minLayerZ, maxLayerZ, useIdentityTransform);
++            reqWidth, reqHeight, minLayerZ, maxLayerZ, useIdentityTransform,
++            ISurfaceComposer::eRotateNone, false);
+ }
+ 
+ ScreenshotClient::ScreenshotClient()
+@@ -730,7 +731,7 @@ status_t ScreenshotClient::update(const sp<IBinder>& display,
+ 
+     status_t err = s->captureScreen(display, mProducer, sourceCrop,
+             reqWidth, reqHeight, minLayerZ, maxLayerZ, useIdentityTransform,
+-            static_cast<ISurfaceComposer::Rotation>(rotation));
++            static_cast<ISurfaceComposer::Rotation>(rotation), true);
+ 
+     if (err == NO_ERROR) {
+         err = mCpuConsumer->lockNextBuffer(&mBuffer);
+diff --git a/services/surfaceflinger/RenderEngine/GLES11RenderEngine.cpp b/services/surfaceflinger/RenderEngine/GLES11RenderEngine.cpp
+index c2768f3..ff0036f 100644
+--- a/services/surfaceflinger/RenderEngine/GLES11RenderEngine.cpp
++++ b/services/surfaceflinger/RenderEngine/GLES11RenderEngine.cpp
+@@ -216,28 +216,45 @@ void GLES11RenderEngine::disableBlending() {
+ }
+ 
+ void GLES11RenderEngine::bindImageAsFramebuffer(EGLImageKHR image,
+-        uint32_t* texName, uint32_t* fbName, uint32_t* status) {
++        uint32_t* texName, uint32_t* fbName, uint32_t* status,
++        bool useReadPixels, int reqWidth, int reqHeight) {
+     GLuint tname, name;
+-    // turn our EGLImage into a texture
+-    glGenTextures(1, &tname);
+-    glBindTexture(GL_TEXTURE_2D, tname);
+-    glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, (GLeglImageOES)image);
+-
+-    // create a Framebuffer Object to render into
+-    glGenFramebuffersOES(1, &name);
+-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, name);
+-    glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES,
+-            GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, tname, 0);
++    if (!useReadPixels) {
++        // turn our EGLImage into a texture
++        glGenTextures(1, &tname);
++        glBindTexture(GL_TEXTURE_2D, tname);
++        glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, (GLeglImageOES)image);
++
++        // create a Framebuffer Object to render into
++        glGenFramebuffersOES(1, &name);
++        glBindFramebufferOES(GL_FRAMEBUFFER_OES, name);
++        glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES,
++                GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, tname, 0);
++    } else {
++        // since we're going to use glReadPixels() anyways,
++        // use an intermediate renderbuffer instead
++        glGenRenderbuffersOES(1, &tname);
++        glBindRenderbufferOES(GL_RENDERBUFFER_OES, tname);
++        glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_RGBA8_OES, reqWidth, reqHeight);
++        // create a FBO to render into
++        glGenFramebuffersOES(1, &name);
++        glBindFramebufferOES(GL_FRAMEBUFFER_OES, name);
++        glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, tname);
++    }
+ 
+     *status = glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES);
+     *texName = tname;
+     *fbName = name;
+ }
+ 
+-void GLES11RenderEngine::unbindFramebuffer(uint32_t texName, uint32_t fbName) {
++void GLES11RenderEngine::unbindFramebuffer(uint32_t texName, uint32_t fbName,
++        bool useReadPixels) {
+     glBindFramebufferOES(GL_FRAMEBUFFER_OES, 0);
+     glDeleteFramebuffersOES(1, &fbName);
+-    glDeleteTextures(1, &texName);
++    if (!useReadPixels)
++        glDeleteTextures(1, &texName);
++    else
++        glDeleteRenderbuffersOES(1, &texName);
+ }
+ 
+ void GLES11RenderEngine::setupFillWithColor(float r, float g, float b, float a) {
+diff --git a/services/surfaceflinger/RenderEngine/GLES11RenderEngine.h b/services/surfaceflinger/RenderEngine/GLES11RenderEngine.h
+index 87eb3e4..5c3fdec 100644
+--- a/services/surfaceflinger/RenderEngine/GLES11RenderEngine.h
++++ b/services/surfaceflinger/RenderEngine/GLES11RenderEngine.h
+@@ -40,8 +40,8 @@ class GLES11RenderEngine : public RenderEngine {
+     GLint mMaxTextureSize;
+ 
+     virtual void bindImageAsFramebuffer(EGLImageKHR image,
+-            uint32_t* texName, uint32_t* fbName, uint32_t* status);
+-    virtual void unbindFramebuffer(uint32_t texName, uint32_t fbName);
++            uint32_t* texName, uint32_t* fbName, uint32_t* status, bool useReadPixels, int reqWidth, int reqHeight);
++    virtual void unbindFramebuffer(uint32_t texName, uint32_t fbName, bool useReadPixels);
+ 
+ public:
+     GLES11RenderEngine();
+diff --git a/services/surfaceflinger/RenderEngine/GLES20RenderEngine.cpp b/services/surfaceflinger/RenderEngine/GLES20RenderEngine.cpp
+index 8ebafbc..a9887cb 100644
+--- a/services/surfaceflinger/RenderEngine/GLES20RenderEngine.cpp
++++ b/services/surfaceflinger/RenderEngine/GLES20RenderEngine.cpp
+@@ -185,27 +185,44 @@ void GLES20RenderEngine::disableBlending() {
+ 
+ 
+ void GLES20RenderEngine::bindImageAsFramebuffer(EGLImageKHR image,
+-        uint32_t* texName, uint32_t* fbName, uint32_t* status) {
++        uint32_t* texName, uint32_t* fbName, uint32_t* status,
++        bool useReadPixels, int reqWidth, int reqHeight) {
+     GLuint tname, name;
+-    // turn our EGLImage into a texture
+-    glGenTextures(1, &tname);
+-    glBindTexture(GL_TEXTURE_2D, tname);
+-    glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, (GLeglImageOES)image);
+-
+-    // create a Framebuffer Object to render into
+-    glGenFramebuffers(1, &name);
+-    glBindFramebuffer(GL_FRAMEBUFFER, name);
+-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tname, 0);
++    if (!useReadPixels) {
++        // turn our EGLImage into a texture
++        glGenTextures(1, &tname);
++        glBindTexture(GL_TEXTURE_2D, tname);
++        glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, (GLeglImageOES)image);
++
++        // create a Framebuffer Object to render into
++        glGenFramebuffers(1, &name);
++        glBindFramebuffer(GL_FRAMEBUFFER, name);
++        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tname, 0);
++    } else {
++        // since we're going to use glReadPixels() anyways,
++        // use an intermediate renderbuffer instead
++        glGenRenderbuffers(1, &tname);
++        glBindRenderbuffer(GL_RENDERBUFFER, tname);
++        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, reqWidth, reqHeight);
++        // create a FBO to render into
++        glGenFramebuffers(1, &name);
++        glBindFramebuffer(GL_FRAMEBUFFER, name);
++        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, tname);
++    }
+ 
+     *status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+     *texName = tname;
+     *fbName = name;
+ }
+ 
+-void GLES20RenderEngine::unbindFramebuffer(uint32_t texName, uint32_t fbName) {
++void GLES20RenderEngine::unbindFramebuffer(uint32_t texName, uint32_t fbName,
++        bool useReadPixels) {
+     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+     glDeleteFramebuffers(1, &fbName);
+-    glDeleteTextures(1, &texName);
++    if (!useReadPixels)
++        glDeleteTextures(1, &texName);
++    else
++        glDeleteRenderbuffers(1, &texName);
+ }
+ 
+ void GLES20RenderEngine::setupFillWithColor(float r, float g, float b, float a) {
+diff --git a/services/surfaceflinger/RenderEngine/GLES20RenderEngine.h b/services/surfaceflinger/RenderEngine/GLES20RenderEngine.h
+index 3d6243e..4cdd41d 100644
+--- a/services/surfaceflinger/RenderEngine/GLES20RenderEngine.h
++++ b/services/surfaceflinger/RenderEngine/GLES20RenderEngine.h
+@@ -55,8 +55,9 @@ class GLES20RenderEngine : public RenderEngine {
+     Vector<Group> mGroupStack;
+ 
+     virtual void bindImageAsFramebuffer(EGLImageKHR image,
+-            uint32_t* texName, uint32_t* fbName, uint32_t* status);
+-    virtual void unbindFramebuffer(uint32_t texName, uint32_t fbName);
++            uint32_t* texName, uint32_t* fbName, uint32_t* status,
++            bool useReadPixels, int reqWidth, int reqHeight);
++    virtual void unbindFramebuffer(uint32_t texName, uint32_t fbName, bool useReadPixels);
+ 
+ public:
+     GLES20RenderEngine();
+diff --git a/services/surfaceflinger/RenderEngine/RenderEngine.cpp b/services/surfaceflinger/RenderEngine/RenderEngine.cpp
+index a77e0e9..ee0c243 100644
+--- a/services/surfaceflinger/RenderEngine/RenderEngine.cpp
++++ b/services/surfaceflinger/RenderEngine/RenderEngine.cpp
+@@ -262,9 +262,11 @@ void RenderEngine::dump(String8& result) {
+ // ---------------------------------------------------------------------------
+ 
+ RenderEngine::BindImageAsFramebuffer::BindImageAsFramebuffer(
+-        RenderEngine& engine, EGLImageKHR image) : mEngine(engine)
++        RenderEngine& engine, EGLImageKHR image, bool useReadPixels,
++        int reqWidth, int reqHeight) : mEngine(engine), mUseReadPixels(useReadPixels)
+ {
+-    mEngine.bindImageAsFramebuffer(image, &mTexName, &mFbName, &mStatus);
++    mEngine.bindImageAsFramebuffer(image, &mTexName, &mFbName, &mStatus,
++            useReadPixels, reqWidth, reqHeight);
+ 
+     ALOGE_IF(mStatus != GL_FRAMEBUFFER_COMPLETE_OES,
+             "glCheckFramebufferStatusOES error %d", mStatus);
+@@ -272,7 +274,7 @@ RenderEngine::BindImageAsFramebuffer::BindImageAsFramebuffer(
+ 
+ RenderEngine::BindImageAsFramebuffer::~BindImageAsFramebuffer() {
+     // back to main framebuffer
+-    mEngine.unbindFramebuffer(mTexName, mFbName);
++    mEngine.unbindFramebuffer(mTexName, mFbName, mUseReadPixels);
+ }
+ 
+ status_t RenderEngine::BindImageAsFramebuffer::getStatus() const {
+diff --git a/services/surfaceflinger/RenderEngine/RenderEngine.h b/services/surfaceflinger/RenderEngine/RenderEngine.h
+index 8d7529c..cd22373 100644
+--- a/services/surfaceflinger/RenderEngine/RenderEngine.h
++++ b/services/surfaceflinger/RenderEngine/RenderEngine.h
+@@ -51,8 +51,8 @@ class RenderEngine {
+     EGLContext mEGLContext;
+     void setEGLHandles(EGLConfig config, EGLContext ctxt);
+ 
+-    virtual void bindImageAsFramebuffer(EGLImageKHR image, uint32_t* texName, uint32_t* fbName, uint32_t* status) = 0;
+-    virtual void unbindFramebuffer(uint32_t texName, uint32_t fbName) = 0;
++    virtual void bindImageAsFramebuffer(EGLImageKHR image, uint32_t* texName, uint32_t* fbName, uint32_t* status, bool useReadPixels, int reqWidth, int reqHeight) = 0;
++    virtual void unbindFramebuffer(uint32_t texName, uint32_t fbName, bool useReadPixels) = 0;
+ 
+ protected:
+     RenderEngine();
+@@ -83,8 +83,9 @@ public:
+         RenderEngine& mEngine;
+         uint32_t mTexName, mFbName;
+         uint32_t mStatus;
++        bool mUseReadPixels;
+     public:
+-        BindImageAsFramebuffer(RenderEngine& engine, EGLImageKHR image);
++        BindImageAsFramebuffer(RenderEngine& engine, EGLImageKHR image, bool useReadPixels, int reqWidth, int reqHeight);
+         ~BindImageAsFramebuffer();
+         int getStatus() const;
+     };
+diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
+index 80d3cc2..9e5c77a 100644
+--- a/services/surfaceflinger/SurfaceFlinger.cpp
++++ b/services/surfaceflinger/SurfaceFlinger.cpp
+@@ -3001,7 +3001,8 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+         const sp<IGraphicBufferProducer>& producer,
+         Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+         uint32_t minLayerZ, uint32_t maxLayerZ,
+-        bool useIdentityTransform, ISurfaceComposer::Rotation rotation) {
++        bool useIdentityTransform, ISurfaceComposer::Rotation rotation,
++        bool useReadPixels) {
+ 
+     if (CC_UNLIKELY(display == 0))
+         return BAD_VALUE;
+@@ -3051,6 +3052,7 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+         uint32_t minLayerZ,maxLayerZ;
+         bool useIdentityTransform;
+         Transform::orientation_flags rotation;
++        bool useReadPixels;
+         status_t result;
+     public:
+         MessageCaptureScreen(SurfaceFlinger* flinger,
+@@ -3058,12 +3060,14 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+                 const sp<IGraphicBufferProducer>& producer,
+                 Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+                 uint32_t minLayerZ, uint32_t maxLayerZ,
+-                bool useIdentityTransform, Transform::orientation_flags rotation)
++                bool useIdentityTransform, Transform::orientation_flags rotation,
++                bool useReadPixels)
+             : flinger(flinger), display(display), producer(producer),
+               sourceCrop(sourceCrop), reqWidth(reqWidth), reqHeight(reqHeight),
+               minLayerZ(minLayerZ), maxLayerZ(maxLayerZ),
+               useIdentityTransform(useIdentityTransform),
+               rotation(rotation),
++              useReadPixels(useReadPixels),
+               result(PERMISSION_DENIED)
+         {
+         }
+@@ -3073,9 +3077,10 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+         virtual bool handler() {
+             Mutex::Autolock _l(flinger->mStateLock);
+             sp<const DisplayDevice> hw(flinger->getDisplayDevice(display));
++            bool useReadPixels = this->useReadPixels && !flinger->mGpuToCpuSupported;
+             result = flinger->captureScreenImplLocked(hw, producer,
+                     sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
+-                    useIdentityTransform, rotation);
++                    useIdentityTransform, rotation, useReadPixels);
+             static_cast<GraphicProducerWrapper*>(producer->asBinder().get())->exit(result);
+             return true;
+         }
+@@ -3098,7 +3103,7 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+     sp<MessageBase> msg = new MessageCaptureScreen(this,
+             display, IGraphicBufferProducer::asInterface( wrapper ),
+             sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
+-            useIdentityTransform, rotationFlags);
++            useIdentityTransform, rotationFlags, useReadPixels);
+ 
+     status_t res = postMessageAsync(msg);
+     if (res == NO_ERROR) {
+@@ -3181,7 +3186,8 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+         const sp<IGraphicBufferProducer>& producer,
+         Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+         uint32_t minLayerZ, uint32_t maxLayerZ,
+-        bool useIdentityTransform, Transform::orientation_flags rotation)
++        bool useIdentityTransform, Transform::orientation_flags rotation,
++        bool useReadPixels)
+ {
+     ATRACE_CALL();
+ 
+@@ -3229,7 +3235,7 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+                 if (image != EGL_NO_IMAGE_KHR) {
+                     // this binds the given EGLImage as a framebuffer for the
+                     // duration of this scope.
+-                    RenderEngine::BindImageAsFramebuffer imageBond(getRenderEngine(), image);
++                    RenderEngine::BindImageAsFramebuffer imageBond(getRenderEngine(), image, useReadPixels, reqWidth, reqHeight);
+                     if (imageBond.getStatus() == NO_ERROR) {
+                         // this will in fact render into our dequeued buffer
+                         // via an FBO, which means we didn't have to create
+@@ -3276,6 +3282,14 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+                                 ALOGW("captureScreen: error creating EGL fence: %#x", eglGetError());
+                             }
+                         }
++                        if (useReadPixels) {
++                            sp<GraphicBuffer> buf = static_cast<GraphicBuffer*>(buffer);
++                            void* vaddr;
++                            if (buf->lock(GRALLOC_USAGE_SW_WRITE_OFTEN, &vaddr) == NO_ERROR) {
++                                getRenderEngine().readPixels(0, 0, buffer->stride, reqHeight, (uint32_t *)vaddr);
++                                buf->unlock();
++                            }
++                        }
+                         if (DEBUG_SCREENSHOTS) {
+                             uint32_t* pixels = new uint32_t[reqWidth*reqHeight];
+                             getRenderEngine().readPixels(0, 0, reqWidth, reqHeight, pixels);
+diff --git a/services/surfaceflinger/SurfaceFlinger.h b/services/surfaceflinger/SurfaceFlinger.h
+index 4deb815..d58627f 100644
+--- a/services/surfaceflinger/SurfaceFlinger.h
++++ b/services/surfaceflinger/SurfaceFlinger.h
+@@ -205,7 +205,8 @@ private:
+             const sp<IGraphicBufferProducer>& producer,
+             Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+             uint32_t minLayerZ, uint32_t maxLayerZ,
+-            bool useIdentityTransform, ISurfaceComposer::Rotation rotation);
++            bool useIdentityTransform, ISurfaceComposer::Rotation rotation,
++            bool isCpuConsumer);
+     virtual status_t getDisplayStats(const sp<IBinder>& display,
+             DisplayStatInfo* stats);
+     virtual status_t getDisplayConfigs(const sp<IBinder>& display,
+@@ -327,7 +328,8 @@ private:
+             const sp<IGraphicBufferProducer>& producer,
+             Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+             uint32_t minLayerZ, uint32_t maxLayerZ,
+-            bool useIdentityTransform, Transform::orientation_flags rotation);
++            bool useIdentityTransform, Transform::orientation_flags rotation,
++            bool useReadPixels);
+ 
+     /* ------------------------------------------------------------------------
+      * EGL
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 92f14b0a81bee305ab2c4bd73ce45e481d92bb38 Mon Sep 17 00:00:00 2001
+From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Date: Tue, 6 Aug 2013 16:11:06 +0100
+Subject: [PATCH 2/8] libgui: Bring back support for mHeap-based screenshots
+
+Older graphics libraries throw a hissy fit when trying to lock
+buffers for Surface-based screenshots, on at least Tegra2/3 and
+Exynos4 hardware.
+
+This patch depends on the BOARD_USE_MHEAP_SCREENSHOT board flag
+and requires the ro.bq.gpu_to_cpu_unsupported property set to 1
+in order to work.
+
+[pawitp: port to Lollipop]
+
+Change-Id: I7db955e2cdd120018e349c14290e975788e70ed3
+---
+ include/gui/ISurfaceComposer.h             |  15 +++
+ include/gui/SurfaceComposerClient.h        |   6 ++
+ libs/gui/Android.mk                        |   4 +
+ libs/gui/ISurfaceComposer.cpp              |  52 ++++++++++
+ libs/gui/SurfaceComposerClient.cpp         |  26 +++++
+ services/surfaceflinger/Android.mk         |   4 +
+ services/surfaceflinger/SurfaceFlinger.cpp | 159 ++++++++++++++++++++++++++++-
+ services/surfaceflinger/SurfaceFlinger.h   |  16 +++
+ 8 files changed, 279 insertions(+), 3 deletions(-)
+
+diff --git a/include/gui/ISurfaceComposer.h b/include/gui/ISurfaceComposer.h
+index 640f4b3..aaf1d46 100644
+--- a/include/gui/ISurfaceComposer.h
++++ b/include/gui/ISurfaceComposer.h
+@@ -148,6 +148,18 @@ public:
+             Rotation rotation,
+             bool isCpuConsumer) = 0;
+ 
++#ifdef USE_MHEAP_SCREENSHOT
++    /* Capture the specified screen. requires READ_FRAME_BUFFER permission
++     * This function will fail if there is a secure window on screen.
++     */
++    virtual status_t captureScreen(const sp<IBinder>& display, sp<IMemoryHeap>* heap,
++            uint32_t* width, uint32_t* height,
++            Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
++            uint32_t minLayerZ, uint32_t maxLayerZ,
++            bool useIdentityTransform,
++            Rotation rotation = eRotateNone) = 0;
++#endif
++
+     /* Clears the frame statistics for animations.
+      *
+      * Requires the ACCESS_SURFACE_FLINGER permission.
+@@ -177,6 +189,9 @@ public:
+         GET_BUILT_IN_DISPLAY,
+         SET_TRANSACTION_STATE,
+         AUTHENTICATE_SURFACE,
++#ifdef USE_MHEAP_SCREENSHOT
++        CAPTURE_SCREEN_DEPRECATED,
++#endif
+         GET_DISPLAY_CONFIGS,
+         GET_ACTIVE_CONFIG,
+         SET_ACTIVE_CONFIG,
+diff --git a/include/gui/SurfaceComposerClient.h b/include/gui/SurfaceComposerClient.h
+index 4cbfc09..0d19f07 100644
+--- a/include/gui/SurfaceComposerClient.h
++++ b/include/gui/SurfaceComposerClient.h
+@@ -40,6 +40,9 @@ namespace android {
+ 
+ class DisplayInfo;
+ class Composer;
++#ifdef USE_MHEAP_SCREENSHOT
++class IMemoryHeap;
++#endif
+ class ISurfaceComposerClient;
+ class IGraphicBufferProducer;
+ class Region;
+@@ -188,6 +191,9 @@ public:
+             bool useIdentityTransform);
+ 
+ private:
++#ifdef USE_MHEAP_SCREENSHOT
++    sp<IMemoryHeap> mHeap;
++#endif
+     mutable sp<CpuConsumer> mCpuConsumer;
+     mutable sp<IGraphicBufferProducer> mProducer;
+     CpuConsumer::LockedBuffer mBuffer;
+diff --git a/libs/gui/Android.mk b/libs/gui/Android.mk
+index ca94aa3..a42f08b 100644
+--- a/libs/gui/Android.mk
++++ b/libs/gui/Android.mk
+@@ -47,6 +47,10 @@ LOCAL_SHARED_LIBRARIES := \
+ 	liblog
+ 
+ 
++ifeq ($(BOARD_USE_MHEAP_SCREENSHOT),true)
++    LOCAL_CFLAGS += -DUSE_MHEAP_SCREENSHOT
++endif
++
+ LOCAL_MODULE:= libgui
+ 
+ ifeq ($(TARGET_BOARD_PLATFORM), tegra)
+diff --git a/libs/gui/ISurfaceComposer.cpp b/libs/gui/ISurfaceComposer.cpp
+index 0bb6ff2..b5a4428 100644
+--- a/libs/gui/ISurfaceComposer.cpp
++++ b/libs/gui/ISurfaceComposer.cpp
+@@ -103,6 +103,33 @@ public:
+         remote()->transact(BnSurfaceComposer::BOOT_FINISHED, data, &reply);
+     }
+ 
++#ifdef USE_MHEAP_SCREENSHOT
++    virtual status_t captureScreen(
++            const sp<IBinder>& display, sp<IMemoryHeap>* heap,
++            uint32_t* width, uint32_t* height,
++            Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
++            uint32_t minLayerZ, uint32_t maxLayerZ,
++            bool useIdentityTransform,
++            ISurfaceComposer::Rotation rotation)
++    {
++        Parcel data, reply;
++        data.writeInterfaceToken(ISurfaceComposer::getInterfaceDescriptor());
++        data.writeStrongBinder(display);
++        data.write(sourceCrop);
++        data.writeInt32(reqWidth);
++        data.writeInt32(reqHeight);
++        data.writeInt32(minLayerZ);
++        data.writeInt32(maxLayerZ);
++        data.writeInt32(static_cast<int32_t>(useIdentityTransform));
++        data.writeInt32(static_cast<int32_t>(rotation));
++        remote()->transact(BnSurfaceComposer::CAPTURE_SCREEN_DEPRECATED, data, &reply);
++        *heap = interface_cast<IMemoryHeap>(reply.readStrongBinder());
++        *width = reply.readInt32();
++        *height = reply.readInt32();
++        return reply.readInt32();
++    }
++#endif
++
+     virtual status_t captureScreen(const sp<IBinder>& display,
+             const sp<IGraphicBufferProducer>& producer,
+             Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
+@@ -348,6 +375,31 @@ status_t BnSurfaceComposer::onTransact(
+             bootFinished();
+             return NO_ERROR;
+         }
++#ifdef USE_MHEAP_SCREENSHOT
++        case CAPTURE_SCREEN_DEPRECATED: {
++            CHECK_INTERFACE(ISurfaceComposer, data, reply);
++            sp<IBinder> display = data.readStrongBinder();
++            Rect sourceCrop;
++            data.read(sourceCrop);
++            uint32_t reqWidth = data.readInt32();
++            uint32_t reqHeight = data.readInt32();
++            uint32_t minLayerZ = data.readInt32();
++            uint32_t maxLayerZ = data.readInt32();
++            bool useIdentityTransform = static_cast<bool>(data.readInt32());
++            uint32_t rotation = data.readInt32();
++            sp<IMemoryHeap> heap;
++            uint32_t w, h;
++            status_t res = captureScreen(display, &heap, &w, &h,
++                    sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
++                    useIdentityTransform,
++                    static_cast<ISurfaceComposer::Rotation>(rotation));
++            reply->writeStrongBinder(heap->asBinder());
++            reply->writeInt32(w);
++            reply->writeInt32(h);
++            reply->writeInt32(res);
++            return NO_ERROR;
++        }
++#endif
+         case CAPTURE_SCREEN: {
+             CHECK_INTERFACE(ISurfaceComposer, data, reply);
+             sp<IBinder> display = data.readStrongBinder();
+diff --git a/libs/gui/SurfaceComposerClient.cpp b/libs/gui/SurfaceComposerClient.cpp
+index 22832ee..bfa5e1d 100644
+--- a/libs/gui/SurfaceComposerClient.cpp
++++ b/libs/gui/SurfaceComposerClient.cpp
+@@ -691,6 +691,14 @@ status_t ScreenshotClient::capture(
+         uint32_t minLayerZ, uint32_t maxLayerZ, bool useIdentityTransform) {
+     sp<ISurfaceComposer> s(ComposerService::getComposerService());
+     if (s == NULL) return NO_INIT;
++#ifdef USE_MHEAP_SCREENSHOT
++    int format = 0;
++    producer->query(NATIVE_WINDOW_FORMAT,&format);
++    if (format == PIXEL_FORMAT_RGBA_8888) {
++        /* For some reason, this format fails badly */
++        return BAD_VALUE;
++    }
++#endif
+     return s->captureScreen(display, producer, sourceCrop,
+             reqWidth, reqHeight, minLayerZ, maxLayerZ, useIdentityTransform,
+             ISurfaceComposer::eRotateNone, false);
+@@ -721,6 +729,19 @@ status_t ScreenshotClient::update(const sp<IBinder>& display,
+         bool useIdentityTransform, uint32_t rotation) {
+     sp<ISurfaceComposer> s(ComposerService::getComposerService());
+     if (s == NULL) return NO_INIT;
++#ifdef USE_MHEAP_SCREENSHOT
++    int ret = -1;
++    mHeap = 0;
++    ret = s->captureScreen(display, &mHeap, &mBuffer.width, &mBuffer.height, sourceCrop,
++            reqWidth, reqHeight, minLayerZ, maxLayerZ, useIdentityTransform,
++            static_cast<ISurfaceComposer::Rotation>(rotation));
++    if (ret == NO_ERROR) {
++        mBuffer.format = PIXEL_FORMAT_RGBA_8888;
++        mBuffer.stride = mBuffer.width;
++        mBuffer.data = (uint8_t *)mHeap->getBase();
++    }
++    return ret;
++#else
+     sp<CpuConsumer> cpuConsumer = getCpuConsumer();
+ 
+     if (mHaveBuffer) {
+@@ -740,6 +761,7 @@ status_t ScreenshotClient::update(const sp<IBinder>& display,
+         }
+     }
+     return err;
++#endif
+ }
+ 
+ status_t ScreenshotClient::update(const sp<IBinder>& display,
+@@ -764,12 +786,16 @@ status_t ScreenshotClient::update(const sp<IBinder>& display, Rect sourceCrop,
+ }
+ 
+ void ScreenshotClient::release() {
++#ifdef USE_MHEAP_SCREENSHOT
++    mHeap = 0;
++#else
+     if (mHaveBuffer) {
+         mCpuConsumer->unlockBuffer(mBuffer);
+         memset(&mBuffer, 0, sizeof(mBuffer));
+         mHaveBuffer = false;
+     }
+     mCpuConsumer.clear();
++#endif
+ }
+ 
+ void const* ScreenshotClient::getPixels() const {
+diff --git a/services/surfaceflinger/Android.mk b/services/surfaceflinger/Android.mk
+index eade2e2..7bba64a 100644
+--- a/services/surfaceflinger/Android.mk
++++ b/services/surfaceflinger/Android.mk
+@@ -63,6 +63,10 @@ ifeq ($(TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK),true)
+     LOCAL_CFLAGS += -DRUNNING_WITHOUT_SYNC_FRAMEWORK
+ endif
+ 
++ifeq ($(BOARD_USE_MHEAP_SCREENSHOT),true)
++    LOCAL_CFLAGS += -DUSE_MHEAP_SCREENSHOT
++endif
++
+ # See build/target/board/generic/BoardConfig.mk for a description of this setting.
+ ifneq ($(VSYNC_EVENT_PHASE_OFFSET_NS),)
+     LOCAL_CFLAGS += -DVSYNC_EVENT_PHASE_OFFSET_NS=$(VSYNC_EVENT_PHASE_OFFSET_NS)
+diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
+index 9e5c77a..91daec2 100644
+--- a/services/surfaceflinger/SurfaceFlinger.cpp
++++ b/services/surfaceflinger/SurfaceFlinger.cpp
+@@ -25,6 +25,9 @@
+ #include <stdatomic.h>
+ 
+ #include <EGL/egl.h>
++#ifdef USE_MHEAP_SCREENSHOT
++#include <GLES/gl.h>
++#endif
+ 
+ #include <cutils/log.h>
+ #include <cutils/properties.h>
+@@ -2752,12 +2755,18 @@ status_t SurfaceFlinger::onTransact(
+             break;
+         }
+         case CAPTURE_SCREEN:
++#ifdef USE_MHEAP_SCREENSHOT
++        case CAPTURE_SCREEN_DEPRECATED:
++#endif
+         {
+             // codes that require permission check
+             IPCThreadState* ipc = IPCThreadState::self();
+             const int pid = ipc->getCallingPid();
+             const int uid = ipc->getCallingUid();
+             if ((uid != AID_GRAPHICS) &&
++#ifdef USE_MHEAP_SCREENSHOT
++                 (uid != AID_SYSTEM) &&
++#endif
+                     !PermissionCache::checkPermission(sReadFramebuffer, pid, uid)) {
+                 ALOGE("Permission Denial: "
+                         "can't read framebuffer pid=%d, uid=%d", pid, uid);
+@@ -3078,9 +3087,18 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+             Mutex::Autolock _l(flinger->mStateLock);
+             sp<const DisplayDevice> hw(flinger->getDisplayDevice(display));
+             bool useReadPixels = this->useReadPixels && !flinger->mGpuToCpuSupported;
+-            result = flinger->captureScreenImplLocked(hw, producer,
+-                    sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
+-                    useIdentityTransform, rotation, useReadPixels);
++#ifdef USE_MHEAP_SCREENSHOT
++            if (!useReadPixels) {
++#endif
++                result = flinger->captureScreenImplLocked(hw, producer,
++                        sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
++                        useIdentityTransform, rotation, useReadPixels);
++#ifdef USE_MHEAP_SCREENSHOT
++            } else {
++                // Should never get here
++                return BAD_VALUE;
++            }
++#endif
+             static_cast<GraphicProducerWrapper*>(producer->asBinder().get())->exit(result);
+             return true;
+         }
+@@ -3347,6 +3365,139 @@ void SurfaceFlinger::checkScreenshot(size_t w, size_t s, size_t h, void const* v
+     }
+ }
+ 
++#ifdef USE_MHEAP_SCREENSHOT
++status_t SurfaceFlinger::captureScreenImplCpuConsumerLocked(
++        const sp<const DisplayDevice>& hw,
++        sp<IMemoryHeap>* heap, uint32_t* w, uint32_t* h,
++        Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
++        uint32_t minLayerZ, uint32_t maxLayerZ,
++        bool useIdentityTransform, Transform::orientation_flags rotation)
++{
++    ATRACE_CALL();
++
++    // get screen geometry
++    const uint32_t hw_w = hw->getWidth();
++    const uint32_t hw_h = hw->getHeight();
++
++    if ((reqWidth > hw_w) || (reqHeight > hw_h)) {
++        ALOGE("size mismatch (%d, %d) > (%d, %d)",
++                reqWidth, reqHeight, hw_w, hw_h);
++        return BAD_VALUE;
++    }
++
++    reqWidth  = (!reqWidth)  ? hw_w : reqWidth;
++    reqHeight = (!reqHeight) ? hw_h : reqHeight;
++
++    status_t result = NO_ERROR;
++
++    renderScreenImplLocked(
++        hw, sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ, true,
++        useIdentityTransform, rotation);
++
++    size_t size = reqWidth * reqHeight * 4;
++    // allocate shared memory large enough to hold the
++    // screen capture
++    sp<MemoryHeapBase> base(
++            new MemoryHeapBase(size, 0, "screen-capture") );
++    void *vaddr = base->getBase();
++    glReadPixels(0, 0, reqWidth, reqHeight,
++            GL_RGBA, GL_UNSIGNED_BYTE, vaddr);
++    if (glGetError() == GL_NO_ERROR) {
++        *heap = base;
++        *w = reqWidth;
++        *h = reqHeight;
++        result = NO_ERROR;
++    } else {
++        result = INVALID_OPERATION;
++    }
++
++    return result;
++}
++
++status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
++        sp<IMemoryHeap>* heap, uint32_t* outWidth, uint32_t* outHeight,
++        Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
++        uint32_t minLayerZ, uint32_t maxLayerZ,
++        bool useIdentityTransform, ISurfaceComposer::Rotation rotation)
++{
++    if (CC_UNLIKELY(display == 0))
++        return BAD_VALUE;
++
++    // Convert to surfaceflinger's internal rotation type.
++    Transform::orientation_flags rotationFlags;
++    switch (rotation) {
++        case ISurfaceComposer::eRotateNone:
++            rotationFlags = Transform::ROT_0;
++            break;
++        case ISurfaceComposer::eRotate90:
++            rotationFlags = Transform::ROT_90;
++            break;
++        case ISurfaceComposer::eRotate180:
++            rotationFlags = Transform::ROT_180;
++            break;
++        case ISurfaceComposer::eRotate270:
++            rotationFlags = Transform::ROT_270;
++            break;
++        default:
++            rotationFlags = Transform::ROT_0;
++            ALOGE("Invalid rotation passed to captureScreen(): %d\n", rotation);
++            break;
++    }
++
++    class MessageCaptureScreen : public MessageBase {
++        SurfaceFlinger* flinger;
++        sp<IBinder> display;
++        sp<IMemoryHeap>* heap;
++        uint32_t* outWidth;
++        uint32_t* outHeight;
++        Rect sourceCrop;
++        uint32_t reqWidth, reqHeight;
++        uint32_t minLayerZ,maxLayerZ;
++        bool useIdentityTransform;
++        Transform::orientation_flags rotation;
++        status_t result;
++    public:
++        MessageCaptureScreen(SurfaceFlinger* flinger,
++                const sp<IBinder>& display, sp<IMemoryHeap>* heap,
++                uint32_t* outWidth, uint32_t* outHeight,
++                Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
++                uint32_t minLayerZ, uint32_t maxLayerZ,
++                bool useIdentityTransform, Transform::orientation_flags rotation)
++            : flinger(flinger), display(display), heap(heap),
++              outWidth(outWidth), outHeight(outHeight),
++              sourceCrop(sourceCrop), reqWidth(reqWidth), reqHeight(reqHeight),
++              minLayerZ(minLayerZ), maxLayerZ(maxLayerZ),
++              useIdentityTransform(useIdentityTransform),
++              rotation(rotation),
++              result(PERMISSION_DENIED)
++        {
++        }
++        status_t getResult() const {
++            return result;
++        }
++        virtual bool handler() {
++            Mutex::Autolock _l(flinger->mStateLock);
++            sp<const DisplayDevice> hw(flinger->getDisplayDevice(display));
++            result = flinger->captureScreenImplCpuConsumerLocked(hw, heap,
++                    outWidth, outHeight,
++                    sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
++                    useIdentityTransform, rotation);
++            return true;
++        }
++    };
++
++    sp<MessageBase> msg = new MessageCaptureScreen(this, display, heap,
++            outWidth, outHeight,
++            sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
++            useIdentityTransform, rotationFlags);
++    status_t res = postMessageSync(msg);
++    if (res == NO_ERROR) {
++        res = static_cast<MessageCaptureScreen*>( msg.get() )->getResult();
++    }
++    return res;
++}
++#endif
++
+ // ---------------------------------------------------------------------------
+ 
+ SurfaceFlinger::LayerVector::LayerVector() {
+@@ -3393,6 +3544,7 @@ SurfaceFlinger::DisplayDeviceState::DisplayDeviceState(DisplayDevice::DisplayTyp
+ }; // namespace android
+ 
+ 
++#ifndef USE_MHEAP_SCREENSHOT
+ #if defined(__gl_h_)
+ #error "don't include gl/gl.h in this file"
+ #endif
+@@ -3400,3 +3552,4 @@ SurfaceFlinger::DisplayDeviceState::DisplayDeviceState(DisplayDevice::DisplayTyp
+ #if defined(__gl2_h_)
+ #error "don't include gl2/gl2.h in this file"
+ #endif
++#endif
+diff --git a/services/surfaceflinger/SurfaceFlinger.h b/services/surfaceflinger/SurfaceFlinger.h
+index d58627f..e54b4e9 100644
+--- a/services/surfaceflinger/SurfaceFlinger.h
++++ b/services/surfaceflinger/SurfaceFlinger.h
+@@ -207,6 +207,13 @@ private:
+             uint32_t minLayerZ, uint32_t maxLayerZ,
+             bool useIdentityTransform, ISurfaceComposer::Rotation rotation,
+             bool isCpuConsumer);
++#ifdef USE_MHEAP_SCREENSHOT
++    virtual status_t captureScreen(const sp<IBinder>& display, sp<IMemoryHeap>* heap,
++            uint32_t* width, uint32_t* height,
++            Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
++            uint32_t minLayerZ, uint32_t maxLayerZ,
++            bool useIdentityTransform, ISurfaceComposer::Rotation rotation);
++#endif
+     virtual status_t getDisplayStats(const sp<IBinder>& display,
+             DisplayStatInfo* stats);
+     virtual status_t getDisplayConfigs(const sp<IBinder>& display,
+@@ -331,6 +338,15 @@ private:
+             bool useIdentityTransform, Transform::orientation_flags rotation,
+             bool useReadPixels);
+ 
++#ifdef USE_MHEAP_SCREENSHOT
++    status_t captureScreenImplCpuConsumerLocked(
++            const sp<const DisplayDevice>& hw,
++            sp<IMemoryHeap>* heap, uint32_t* width, uint32_t* height,
++            Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
++            uint32_t minLayerZ, uint32_t maxLayerZ,
++            bool useIdentityTransform, Transform::orientation_flags rotation);
++#endif
++
+     /* ------------------------------------------------------------------------
+      * EGL
+      */
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 8aba1e4b51da23af578305087fce3a332203d8b3 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 2 Nov 2013 23:02:15 -0700
+Subject: [PATCH 3/8] libEGL: allow devices to workaround Google bug 10194508
+
+Most older blobs don't have the EGL_KHR_gl_colorspace
+extension and need this workaround.
+
+Change-Id: Ifc5d097c1a0b68275d23c2d191976ac96631b695
+---
+ opengl/libs/Android.mk | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/opengl/libs/Android.mk b/opengl/libs/Android.mk
+index cc5d544..4838d6c 100644
+--- a/opengl/libs/Android.mk
++++ b/opengl/libs/Android.mk
+@@ -50,6 +50,9 @@ endif
+ ifeq ($(TARGET_BOARD_PLATFORM), omap4)
+   LOCAL_CFLAGS += -DWORKAROUND_BUG_10194508=1
+ endif
++ifeq ($(BOARD_EGL_WORKAROUND_BUG_10194508),true)
++  LOCAL_CFLAGS += -DWORKAROUND_BUG_10194508=1
++endif
+ ifneq ($(MAX_EGL_CACHE_ENTRY_SIZE),)
+   LOCAL_CFLAGS += -DMAX_EGL_CACHE_ENTRY_SIZE=$(MAX_EGL_CACHE_ENTRY_SIZE)
+ endif
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 7f142463dc49872e8765ff37e8050274799c8c0b Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Thu, 14 Nov 2013 15:19:46 +0700
+Subject: [PATCH 4/8] binder: add compat symbol
+
+Required for older Samsung libtvout
+
+Change-Id: Ib18d2513570382432d49f302ab041230650372f2
+---
+ libs/binder/IPCThreadState.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libs/binder/IPCThreadState.cpp b/libs/binder/IPCThreadState.cpp
+index dd04dcf..9ec2380 100644
+--- a/libs/binder/IPCThreadState.cpp
++++ b/libs/binder/IPCThreadState.cpp
+@@ -361,6 +361,10 @@ status_t IPCThreadState::clearLastError()
+     return err;
+ }
+ 
++extern "C" int _ZN7android14IPCThreadState13getCallingPidEv(IPCThreadState *state) {
++    return state->getCallingPid();
++}
++
+ int IPCThreadState::getCallingPid() const
+ {
+     return mCallingPid;
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 9f92a78ea0eff4d15ea3206bcaddb2b39f7850d4 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Tue, 10 Dec 2013 19:38:17 +0700
+Subject: [PATCH 5/8] binder: add compat symbols
+
+Required for libtvservice_binder.so on I9082
+
+Change-Id: I059e92f19e4c5a911d38faa9c4df549c75c90761
+---
+ libs/binder/Parcel.cpp | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
+index e7589b1..b34ceb9 100644
+--- a/libs/binder/Parcel.cpp
++++ b/libs/binder/Parcel.cpp
+@@ -873,6 +873,12 @@ status_t Parcel::writeBlob(size_t len, WritableBlob* outBlob)
+     return status;
+ }
+ 
++extern "C" status_t _ZN7android6Parcel5writeERKNS0_26FlattenableHelperInterfaceE(void *parcel, void *val);
++
++extern "C" status_t _ZN7android6Parcel5writeERKNS_11FlattenableE(void *parcel, void *val) {
++    return _ZN7android6Parcel5writeERKNS0_26FlattenableHelperInterfaceE(parcel, val);
++}
++
+ status_t Parcel::write(const FlattenableHelperInterface& val)
+ {
+     status_t err;
+@@ -1285,6 +1291,12 @@ status_t Parcel::readBlob(size_t len, ReadableBlob* outBlob) const
+     return NO_ERROR;
+ }
+ 
++extern "C" status_t _ZNK7android6Parcel4readERNS0_26FlattenableHelperInterfaceE(void *parcel, void *val);
++
++extern "C" status_t _ZNK7android6Parcel4readERNS_11FlattenableE(void *parcel, void *val) {
++    return _ZNK7android6Parcel4readERNS0_26FlattenableHelperInterfaceE(parcel, val);
++}
++
+ status_t Parcel::read(FlattenableHelperInterface& val) const
+ {
+     // size
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 4fa3e5954337ff41867722fc4e24ffdab4ccaad5 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Mon, 16 Dec 2013 15:45:42 +0700
+Subject: [PATCH 6/8] sf: CAPRI_HWC: fix rotation artifact
+
+---
+ services/surfaceflinger/SurfaceFlinger.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
+index 91daec2..a6c096d 100644
+--- a/services/surfaceflinger/SurfaceFlinger.cpp
++++ b/services/surfaceflinger/SurfaceFlinger.cpp
+@@ -3209,6 +3209,11 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+ {
+     ATRACE_CALL();
+ 
++// Rotation artifact problems when useReadPixels is false
++#ifdef CAPRI_HWC
++    useReadPixels = true;
++#endif
++
+     // get screen geometry
+     const uint32_t hw_w = hw->getWidth();
+     const uint32_t hw_h = hw->getHeight();
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From e86987b6bf2eacdb905b1eba6b79078de26f6813 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Mon, 15 Dec 2014 23:12:44 +0700
+Subject: [PATCH 7/8] SurfaceComposerClient: don't block RGBA_8888 for
+ screenshot on CAPRI_HWC
+
+Works here and required for ColorFade animation
+
+Change-Id: Ie7d549bb63e11380d7efcab27b7e4d9f3eb2a1fe
+---
+ libs/gui/SurfaceComposerClient.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libs/gui/SurfaceComposerClient.cpp b/libs/gui/SurfaceComposerClient.cpp
+index bfa5e1d..f4007f4 100644
+--- a/libs/gui/SurfaceComposerClient.cpp
++++ b/libs/gui/SurfaceComposerClient.cpp
+@@ -691,7 +691,7 @@ status_t ScreenshotClient::capture(
+         uint32_t minLayerZ, uint32_t maxLayerZ, bool useIdentityTransform) {
+     sp<ISurfaceComposer> s(ComposerService::getComposerService());
+     if (s == NULL) return NO_INIT;
+-#ifdef USE_MHEAP_SCREENSHOT
++#if defined(SE_MHEAP_SCREENSHOT) && !defined(CAPRI_HWC)
+     int format = 0;
+     producer->query(NATIVE_WINDOW_FORMAT,&format);
+     if (format == PIXEL_FORMAT_RGBA_8888) {
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From 9dc4c7527dc9fb0a3a5eef6d7c3c30f917efa3d9 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 20 Dec 2014 19:09:27 +0700
+Subject: [PATCH 8/8] sf: CAPRI_HWC: fix for screen recording
+
+Change-Id: I6c7e59400eab86bc5ec0ffebbcc475fa0fa404d2
+---
+ libs/gui/BufferQueueProducer.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/libs/gui/BufferQueueProducer.cpp b/libs/gui/BufferQueueProducer.cpp
+index 16b9747..32be098 100644
+--- a/libs/gui/BufferQueueProducer.cpp
++++ b/libs/gui/BufferQueueProducer.cpp
+@@ -204,7 +204,12 @@ status_t BufferQueueProducer::waitForFreeSlotThenRelock(const char* caller,
+             const int newUndequeuedCount =
+                 maxBufferCount - (dequeuedCount + 1);
+             const int minUndequeuedCount =
++#ifdef CAPRI_HWC
++                // HACK: for some reason, we need to reduce min undequeue for screen recording
++                mCore->getMinUndequeuedBufferCountLocked(false);
++#else
+                 mCore->getMinUndequeuedBufferCountLocked(async);
++#endif
+             if (newUndequeuedCount < minUndequeuedCount) {
+                 BQ_LOGE("%s: min undequeued buffer count (%d) exceeded "
+                         "(dequeued=%d undequeued=%d)",
+-- 
+1.9.5 (Apple Git-50.3)
+
