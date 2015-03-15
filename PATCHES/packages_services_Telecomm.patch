@@ -1,0 +1,29 @@
+From 22f25ca4ab6c741fd42e14da53ed7668ffd5855e Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sun, 15 Mar 2015 08:33:32 +0700
+Subject: [PATCH] CallsManager: fix starting call from Contacts app with MSim
+
+The extras bundle may be Bundle.EMPTY, which immutable. Create our
+own copy to modify.
+
+Change-Id: If875eddc6afe9c5ca4b0d59a51902529cf115487
+---
+ src/com/android/server/telecom/CallsManager.java | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/com/android/server/telecom/CallsManager.java b/src/com/android/server/telecom/CallsManager.java
+index 3732a4f..b6cb4ac 100644
+--- a/src/com/android/server/telecom/CallsManager.java
++++ b/src/com/android/server/telecom/CallsManager.java
+@@ -545,6 +545,8 @@ public final class CallsManager extends Call.ListenerBase {
+         if (needsAccountSelection) {
+             // This is the state where the user is expected to select an account
+             call.setState(CallState.PRE_DIAL_WAIT);
++            // Create our own instance to modify (since extras may be Bundle.EMPTY)
++            extras = new Bundle(extras);
+             extras.putParcelableList(android.telecom.Call.AVAILABLE_PHONE_ACCOUNTS, accounts);
+         } else {
+             call.setState(CallState.CONNECTING);
+-- 
+1.9.5 (Apple Git-50.3)
+

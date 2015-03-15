@@ -1,7 +1,7 @@
 From 065b8d2571468fa4ba8af6e4bf88f35293e20c01 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 20:09:12 +0700
-Subject: [PATCH] libbt: switch to N_BRCM_HCI line disclipline for userial
+Subject: [PATCH 1/2] libbt: switch to N_BRCM_HCI line disclipline for userial
  ioctl
 
 Change-Id: I12c297c6b26fc0cb6f0a36ed8f5d04d4d36a4092
@@ -37,6 +37,41 @@ index 0f3f527..f4278ab 100644
 +
      userial_ioctl_init_bt_wake(vnd_userial.fd);
  #endif
+ 
+-- 
+1.9.5 (Apple Git-50.3)
+
+
+From f7098b108dea43a8379ce66140bd126be608e525 Mon Sep 17 00:00:00 2001
+From: Steve Kondik <shade@chemlab.org>
+Date: Mon, 3 Dec 2012 02:34:56 -0800
+Subject: [PATCH 2/2] libbt: Add support for board-specific configuration
+
+ * Set with BOARD_BLUEDROID_VENDOR_CONF
+
+Change-Id: Ia657da71d0e3dad670def517fe3246556f8f6d5a
+---
+ vnd_buildcfg.mk | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/vnd_buildcfg.mk b/vnd_buildcfg.mk
+index ad61a4c..e4f1840 100644
+--- a/vnd_buildcfg.mk
++++ b/vnd_buildcfg.mk
+@@ -1,10 +1,14 @@
+ generated_sources := $(local-generated-sources-dir)
+ 
++ifneq ($(BOARD_BLUEDROID_VENDOR_CONF),)
++SRC := $(BOARD_BLUEDROID_VENDOR_CONF)
++else
+ SRC := $(call my-dir)/include/$(addprefix vnd_, $(addsuffix .txt,$(basename $(TARGET_DEVICE))))
+ ifeq (,$(wildcard $(SRC)))
+ # configuration file does not exist. Use default one
+ SRC := $(call my-dir)/include/vnd_generic.txt
+ endif
++endif
+ GEN := $(generated_sources)/vnd_buildcfg.h
+ TOOL := $(TOP_DIR)external/bluetooth/bluedroid/tools/gen-buildcfg.sh
  
 -- 
 1.9.5 (Apple Git-50.3)
