@@ -93,7 +93,6 @@ lib/libvcos.so
 lib/libVCOS.so
 lib/libvcsm.so
 lib/libwvdrm_L3.so
-lib/libwvm.so
 lib/libWFC.so
 lib/libWVStreamControlAPI_L3.so
 lib/modules/VoiceSolution.ko
