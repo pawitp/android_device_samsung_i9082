@@ -331,23 +331,34 @@ index 9786b42..f1b00b0 100644
 1.9.5 (Apple Git-50.3)
 
 
-From e07f733026a6d58e64d3139fcca7aa0af89c4241 Mon Sep 17 00:00:00 2001
+From f454814cdeb3dc6460e9f403f02c975716f421f5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
 Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any
  button is pressed
 
+* Also reduce the timeout to 2 seconds
+
 This more closely emulates stock Samsung behavior
 
 Change-Id: I6b15c45b713bcbc290a1026805c46109060f9990
 ---
- .../core/java/com/android/server/power/PowerManagerService.java   | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ .../java/com/android/server/power/PowerManagerService.java     | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
-index f1b00b0..749f2a3 100644
+index f1b00b0..d7189f0 100644
 --- a/services/core/java/com/android/server/power/PowerManagerService.java
 +++ b/services/core/java/com/android/server/power/PowerManagerService.java
+@@ -148,7 +148,7 @@ public final class PowerManagerService extends SystemService
+     private static final int POWER_HINT_INTERACTION = 2;
+     private static final int POWER_HINT_LOW_POWER = 5;
+ 
+-    private static final int BUTTON_ON_DURATION = 5 * 1000;
++    private static final int BUTTON_ON_DURATION = 2 * 1000;
+ 
+     private final Context mContext;
+     private final ServiceThread mHandlerThread;
 @@ -206,6 +206,7 @@ public final class PowerManagerService extends SystemService
      // Timestamp of the last call to user activity.
      private long mLastUserActivityTime;
