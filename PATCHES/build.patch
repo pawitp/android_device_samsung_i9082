@@ -1,4 +1,4 @@
-From 547f36b382fb5fb63ce91c7ece668e1b81ba880c Mon Sep 17 00:00:00 2001
+From 14dd0300a8a6684f706bc542949bc40846638a11 Mon Sep 17 00:00:00 2001
 From: Koushik Dutta <koushd@gmail.com>
 Date: Sat, 26 Jun 2010 22:53:55 -0700
 Subject: [PATCH 01/15] add support for overriding build.prop settings.
@@ -52,7 +52,7 @@ index e7fa75e..f5c498c 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 89a197c2cebc55d1b24a1a4da64605b0fe84565d Mon Sep 17 00:00:00 2001
+From 6b43b31de6e1a1606d2bac996fa1cd11a309bbd3 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 11 Apr 2012 11:21:23 +0100
 Subject: [PATCH 02/15] build: Inline kernel building as a buildtime task
@@ -452,7 +452,7 @@ index 0000000..4d519a0
 1.9.5 (Apple Git-50.3)
 
 
-From 1a0c6fabb31d91976a6a557ae519a1d3ff5137d7 Mon Sep 17 00:00:00 2001
+From b94d402c856469ac69ff9ef87ad23de3db837448 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Sun, 9 Nov 2014 17:27:51 +0530
 Subject: [PATCH 03/15] Allow specifying kernel toolchain and prefix
@@ -500,7 +500,7 @@ index 4d519a0..b0ab1de 100644
 1.9.5 (Apple Git-50.3)
 
 
-From c3340f50b3ed84abdef256bc9a15e8150f6a1f8b Mon Sep 17 00:00:00 2001
+From c095c4b1b483ee5324c24679219146462e75f3ee Mon Sep 17 00:00:00 2001
 From: Alvin Francis <nivlafx@gmail.com>
 Date: Mon, 1 Dec 2014 13:13:40 -0400
 Subject: [PATCH 04/15] Fix libelf path
@@ -530,7 +530,7 @@ index b0ab1de..e6be63a 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 25890ded5f225cec813888c41f8efea415e16ba5 Mon Sep 17 00:00:00 2001
+From f61c11ddec4a0f1fc8a1daa060e44ed22a5f0659 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Wed, 24 Dec 2014 03:18:54 -0800
 Subject: [PATCH 05/15] core: More flexible kernel configuration
@@ -744,7 +744,7 @@ index e6be63a..9f40eec 100644
 1.9.5 (Apple Git-50.3)
 
 
-From ee01d071242e0380258b4c5716bab44fada51149 Mon Sep 17 00:00:00 2001
+From dc6260315ab4a1b172cc42a82c29ee62bcbb3454 Mon Sep 17 00:00:00 2001
 From: dhacker29 <dhackerdvm@gmail.com>
 Date: Sun, 18 Jan 2015 19:34:14 -0500
 Subject: [PATCH 06/15] Fix kernel.mk if SELINUX or VARIANT_DEFCONFIG is
@@ -781,7 +781,7 @@ index 9f40eec..a2eb21e 100644
 1.9.5 (Apple Git-50.3)
 
 
-From f4e4af167c4a5e8f32cd238098209f934467a2bd Mon Sep 17 00:00:00 2001
+From 6c63833d3e5988d735edfe292055d9090856bb00 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <ricardo@cyngn.com>
 Date: Tue, 20 Jan 2015 01:41:19 +0000
 Subject: [PATCH 07/15] build: kernel: Fix stray "@"
@@ -818,7 +818,7 @@ index a2eb21e..2c49271 100644
 1.9.5 (Apple Git-50.3)
 
 
-From e15a43305b09ba86aedc8645bd32d9502b108161 Mon Sep 17 00:00:00 2001
+From 3dd18d60b7c75856ba60e6b8da6377fdd7217b12 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Mon, 9 Mar 2015 15:07:08 +0000
 Subject: [PATCH 08/15] build: Add support for additional kernel config snippet
@@ -873,7 +873,7 @@ index 2c49271..764532c 100644
 1.9.5 (Apple Git-50.3)
 
 
-From c5157008a52b6714a51ee0fb357be81241b8ec46 Mon Sep 17 00:00:00 2001
+From 28d55be0c40b4ac7d6f2edd2a65bbf0c9d837ca2 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 16 Dec 2014 19:19:52 +0700
 Subject: [PATCH 09/15] minigzip dependency for kernel
@@ -902,7 +902,7 @@ index 764532c..510047d 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 7320f83cdb51ce5e6d3671c53c3f8c687a08ca83 Mon Sep 17 00:00:00 2001
+From a67ce21667dc0228b6b07e4d55d16abbef1a0431 Mon Sep 17 00:00:00 2001
 From: Cristoforo Cataldo <cristoforo.cataldo@gmail.com>
 Date: Sun, 30 Nov 2014 06:12:35 +0100
 Subject: [PATCH 10/15] core: Enable -mcpu=cortex-a9 flag for Cortex-A9 cpu
@@ -942,7 +942,7 @@ index c6603db..6554e91 100644
 1.9.5 (Apple Git-50.3)
 
 
-From a8d522bd6447beca4b88550793dd06ad0bb18931 Mon Sep 17 00:00:00 2001
+From a9cb00436be89dd41c1bdb3f7ed5fffa901d8ae5 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 16 Nov 2011 23:14:27 +0000
 Subject: [PATCH 11/15] ota: Remove cruft we don't care about
@@ -985,7 +985,7 @@ index 945f11a..e2e73df 100755
 1.9.5 (Apple Git-50.3)
 
 
-From c24fee034cbe32bd90135bfc1a10596c2dba5bfa Mon Sep 17 00:00:00 2001
+From cbe1f8783789d7648f7afb9c3a31436998a0ea09 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Thu, 27 Sep 2012 18:11:25 +0530
 Subject: [PATCH 12/15] envsetup: set OUT_DIR to an absolute path always
@@ -1027,7 +1027,7 @@ index 124a91b..62ce78d 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 023598bd2c829a46876a35ed8387779dfccfbec3 Mon Sep 17 00:00:00 2001
+From 85b540cff9edb3fa25bab99f3e42fe8edf9d3a94 Mon Sep 17 00:00:00 2001
 From: David Ferguson <ferguson.david@gmail.com>
 Date: Thu, 4 Oct 2012 10:15:58 -0400
 Subject: [PATCH 13/15] build: work around missing readlink -f on Mac
@@ -1054,7 +1054,7 @@ index 62ce78d..ebc748a 100644
 1.9.5 (Apple Git-50.3)
 
 
-From c232faea24375248c4b600db123ef1fe14806b7a Mon Sep 17 00:00:00 2001
+From 15ae1dd86f887a6c0e1223482d1698f3d919e92b Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <cdesai@cyanogenmod.org>
 Date: Wed, 1 May 2013 15:48:08 +0530
 Subject: [PATCH 14/15] envsetup: use $(CURDIR) for getting current directory
@@ -1081,7 +1081,7 @@ index ebc748a..468661f 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 4114a7c375e607dc5a5c83ebeae62b844af6b751 Mon Sep 17 00:00:00 2001
+From d416f5e425f3edd5b36262cb5a81300310d39bb0 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 12 Apr 2011 10:57:22 +0100
 Subject: [PATCH 15/15] Allow a device to generically define its own headers

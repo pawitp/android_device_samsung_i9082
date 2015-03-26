@@ -1,4 +1,4 @@
-From 4fac1fde3c5d847e339bf0737eeb1cc14af02f8c Mon Sep 17 00:00:00 2001
+From 67858a183ffe1bc696481fdc8dcc06d1869ef577 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Thu, 22 Nov 2012 06:02:18 +0000
 Subject: [PATCH 1/8] Allow a device to include its own RIL subclass
@@ -33,7 +33,7 @@ index 449faa0..d312fec 100644
 1.9.5 (Apple Git-50.3)
 
 
-From ea2bd50db4d1bdb8d3fb706e1e3e0e2f3f1cd654 Mon Sep 17 00:00:00 2001
+From 8183c60c343d1e7ffb28c31cfa4b863240166442 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Thu, 22 Nov 2012 17:47:31 +0100
 Subject: [PATCH 2/8] RIL: Make RIL subclassable
@@ -420,7 +420,7 @@ index 76dd32b..296b6ab 100644
 1.9.5 (Apple Git-50.3)
 
 
-From cbf0f0207caedcbc6779f957fc669df66dfe0b2d Mon Sep 17 00:00:00 2001
+From 703fa9a69cecd074a331c2f6c5a9a96bcc2d9099 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 8 Mar 2014 19:35:17 +0700
 Subject: [PATCH 3/8] RIL: mark mInstanceId as protected
@@ -449,7 +449,7 @@ index 296b6ab..beb4aee 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 394d9933f2cbf170e7b7334c3567be65515a4108 Mon Sep 17 00:00:00 2001
+From 74510018a9d26305e40ec3cf3d411d79a4516716 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 31 May 2014 12:34:56 +0700
 Subject: [PATCH 4/8] telephony: support for RIL that does not send
@@ -519,7 +519,7 @@ index ce69689..ec61632 100644
 1.9.5 (Apple Git-50.3)
 
 
-From f00b9f7782650d461189f6dd74095fd192c479ad Mon Sep 17 00:00:00 2001
+From 6659d098808bcfe9cba099611c785629ca5e6033 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 17:39:50 +0700
 Subject: [PATCH 5/8] telephony: RIL: i9082: set correct rild names
@@ -546,7 +546,7 @@ index beb4aee..6593cb4 100644
 1.9.5 (Apple Git-50.3)
 
 
-From f361b4e4872846eca8d408137857d7197bd76263 Mon Sep 17 00:00:00 2001
+From 0ec445133340a32b9b89ef442925a1f7a6f973e5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 17 Dec 2014 21:19:34 +0700
 Subject: [PATCH 6/8] Forward port Samsung STK support
@@ -1150,7 +1150,7 @@ index 91a6fd6..bd39358 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 3e629617c879a839f8c1e3adfd815461af1bb25a Mon Sep 17 00:00:00 2001
+From 3acf72b3aff35e50b2297af2d7f5c3f63c150b66 Mon Sep 17 00:00:00 2001
 From: Mike Kasick <mike@kasick.org>
 Date: Sat, 14 Mar 2015 20:20:39 +0700
 Subject: [PATCH 7/8] RILs: Eliminate repeated overrides of
@@ -1211,7 +1211,7 @@ index d1048df..d7c0b7d 100644
 1.9.5 (Apple Git-50.3)
 
 
-From 1d760862ac507a23db5135aeea1300adfed48d86 Mon Sep 17 00:00:00 2001
+From 71ec597ea6e97201dc0a1f8ae370c701c7d30550 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 22 Nov 2012 19:01:13 +0100
 Subject: [PATCH 8/8] telephony: Use reflection to create command interface
