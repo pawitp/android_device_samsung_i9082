@@ -1,4 +1,4 @@
-From 9ff79c741ae671c168e4b088964f4661d4968556 Mon Sep 17 00:00:00 2001
+From 6085c20e7928b87f545f751ce53580fe480fc9a7 Mon Sep 17 00:00:00 2001
 From: Dave Burke <daveburke@google.com>
 Date: Wed, 24 Oct 2012 17:30:31 -0700
 Subject: [PATCH 1/7] Revert "Revert "put back the unused virtuals in
@@ -105,10 +105,10 @@ index 30ca663..0bfc1f0 100644
  
  }; // namespace android
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From b06cb1443b897f6de763025a49aae2bb580dbe68 Mon Sep 17 00:00:00 2001
+From 782b6daa2e4ae535897be108c2e25219c124b133 Mon Sep 17 00:00:00 2001
 From: Arne Coucheron <arco68@gmail.com>
 Date: Wed, 3 Dec 2014 06:14:55 +0100
 Subject: [PATCH 2/7] libutils: Properly #ifdef NEEDS_VECTORIMPL_SYMBOLS
@@ -166,10 +166,10 @@ index 0bfc1f0..c4944cf 100644
  void SortedVectorImpl::reservedSortedVectorImpl2() { };
  void SortedVectorImpl::reservedSortedVectorImpl3() { };
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 1a16fd9340d8032e5944249ed3075718b21f8fc3 Mon Sep 17 00:00:00 2001
+From f99e0a38db2fb7063d6d0cbc8688d23400c0b0d3 Mon Sep 17 00:00:00 2001
 From: codeworkx <codeworkx@cyanogenmod.org>
 Date: Sat, 27 Jul 2013 08:18:42 +0200
 Subject: [PATCH 3/7] libutils: refbase: jellybean mr1 compat
@@ -222,10 +222,10 @@ index 02907ad..b0ca12e 100644
  void RefBase::renameRefs(size_t n, const ReferenceRenamer& renamer) {
      for (size_t i=0 ; i<n ; i++) {
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 18ff5b50fcfb1bfb2ee3207e5f85e0af264caa1c Mon Sep 17 00:00:00 2001
+From 73f74b7fa356c7a1cc2bde8ff969ac178edddc97 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 17 Dec 2011 17:26:54 -0500
 Subject: [PATCH 4/7] init: add detection of charging mode
@@ -312,10 +312,10 @@ index bd1db7a..80cb347 100644
      INFO("property init\n");
      property_load_boot_defaults();
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 1d6d0c7061dee6d93d48c297b464e42d4bcf99a9 Mon Sep 17 00:00:00 2001
+From f8370570e936dee4cb0b261b66156867d1bc7bc5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 10:48:07 +0700
 Subject: [PATCH 5/7] disable recovery flash
@@ -347,10 +347,10 @@ index cbcb842..a370bfd 100644
  service racoon /system/bin/racoon
      class main
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From afa634abbebb3004eedf1814002658da0f2a5e2b Mon Sep 17 00:00:00 2001
+From 8d1b49951b2deafae2e83ffd25d008b009c8f727 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Fri, 12 Apr 2013 11:40:15 +0700
 Subject: [PATCH 6/7] libnetutils: add ifc_set_mtu
@@ -385,10 +385,10 @@ index 913f51e..e726339 100644
 +    return ret;
 +}
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 583c56e50272a308ba3065431087d7ffd36d2ac8 Mon Sep 17 00:00:00 2001
+From cf5b0b99702d3b208207f9af6a2bd4814631f793 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 18 Nov 2014 22:36:32 +0700
 Subject: [PATCH 7/7] charger: allow home button to wake
@@ -447,5 +447,5 @@ index 5039649..108b4e9 100644
      if (charger->next_key_check != -1 && now > charger->next_key_check)
          charger->next_key_check = -1;
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 

@@ -1,4 +1,4 @@
-From 2c7ed5f2df63a8b03aa1eeca7a228aec7adab177 Mon Sep 17 00:00:00 2001
+From 5968ce3dfea5ace9179e383402e08fc31eb2bc33 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 1 Nov 2013 20:35:09 +0000
 Subject: [PATCH 1/2] wifi: Choose correct nvram file on samsung hardware
@@ -88,10 +88,10 @@ index 87be8d8..823cbaa 100644
      if (strcmp(FIRMWARE_LOADER,"") == 0) {
          /* usleep(WIFI_DRIVER_LOADER_DELAY); */
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From a7f6d70b9b89bc24950b4c1e2cdb6b995200deae Mon Sep 17 00:00:00 2001
+From ee205478926a0ea9bc776c3ca990a91bdd8f006c Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Thu, 20 Dec 2012 20:39:18 -0800
 Subject: [PATCH 2/2] wifi: Add support for AP module args
@@ -192,5 +192,5 @@ index 823cbaa..7c7db52 100644
 +    return 0;
 +}
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 

@@ -1,4 +1,4 @@
-From a11ec1710458875a645cdb1bad8a1942d3dac686 Mon Sep 17 00:00:00 2001
+From 6dad8d6fb70c74a1c0b64316c0ec3245ccbf55dc Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 24 Apr 2013 11:37:19 +0700
 Subject: [PATCH 1/9] OMXCodec: Re-implement requires-flush-before-shutdown
@@ -27,10 +27,10 @@ index 6da00e6..8a53bd3 100644
      return quirks;
  }
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From ca9222e58630233eb9187d1f3545515ff143b403 Mon Sep 17 00:00:00 2001
+From f6b6941188b745967014b2ec9cd4500a48af86ac Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 17 Dec 2013 13:15:52 +0700
 Subject: [PATCH 2/9] OMXCodec: set default input buffer size
@@ -93,10 +93,10 @@ index 8a53bd3..825930b 100644
      initOutputFormat(meta);
  
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 88bfff780fe0d036e80dafa07d8f07bf319324f5 Mon Sep 17 00:00:00 2001
+From 22cebfbe440c483bcdb18c4c2dc5bbcba0a38594 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 19 Nov 2014 20:33:58 +0700
 Subject: [PATCH 3/9] ACodec: skip port index checking on vc4 encoder
@@ -123,10 +123,10 @@ index 1bacd88..c9aeaec 100644
              (int)(portIndex == kPortIndexOutput ? OMX_DirOutput : OMX_DirInput));
  
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From be90fac1c4e032ca54e20b077a158e4c99e66ceb Mon Sep 17 00:00:00 2001
+From 3a2dbebbfc35f68924cd0634a82b2cee5ed8c330 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 23 Nov 2014 17:27:20 +0700
 Subject: [PATCH 4/9] ACodec: Don't trust provided width/height when setting
@@ -161,10 +161,10 @@ index c9aeaec..6ac26ee 100644
  #endif
  
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 365a110c892a3a6ab44d2d59d5896137273b785d Mon Sep 17 00:00:00 2001
+From 5c956a4ba84b4fb9172a8744297fdf498c8f1774 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Fri, 28 Nov 2014 21:07:59 +0700
 Subject: [PATCH 5/9] AudioFlinger: i9082: HACK: disable stereo record
@@ -196,10 +196,10 @@ index ccc05a1..4c1601c 100644
                                          &inStream, flags, address.string(), source);
      ALOGV("openInput_l() openInputStream returned input %p, SamplingRate %d"
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 4875f2dc2b059249ab5af1bae589d774017904ff Mon Sep 17 00:00:00 2001
+From efe8515702d699df3b33bdf16083ce033124d6b0 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 10 Dec 2014 17:38:10 +0700
 Subject: [PATCH 6/9] AudioFlinger: i9082: HACK: force audio to 48 KHz
@@ -229,10 +229,10 @@ index 4c1601c..004f7de 100644
  
      status_t status = inHwHal->open_input_stream(inHwHal, *input, device, &halconfig,
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 5544e06f88a0f207dab3cc6b2a249efb3d158151 Mon Sep 17 00:00:00 2001
+From bcb667925d79f5ff9e579b994456b9ebe4caed0c Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 16 Dec 2014 21:12:22 +0700
 Subject: [PATCH 7/9] stagefright: i9082: don't allocate too many extra buffers
@@ -279,10 +279,10 @@ index 825930b..15af159 100644
              def.nBufferCountMin + minUndequeuedBufs + extraBuffers;
          def.nBufferCountActual = newBufferCount;
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From b77c3437744f8cb3436317e5a08f17f8969ddfdf Mon Sep 17 00:00:00 2001
+From fa599e6cb3115b6d66a0136d649e0197460473a7 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 20 Dec 2014 19:09:59 +0700
 Subject: [PATCH 8/9] stagefright: CAPRI_HWC: fix for screen recording
@@ -335,10 +335,10 @@ index c04d95f..e8ff36e 100644
  
      GraphicBufferSource* bufferSource = new GraphicBufferSource(
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 77ea6640cf4485d7b1deef67dc62d0374c439517 Mon Sep 17 00:00:00 2001
+From 78604873355c50ec214f63a9d594e7798d959904 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 21 Dec 2014 15:25:33 +0700
 Subject: [PATCH 9/9] stagefright: CAPRI_HWC: fix for miracast
@@ -415,5 +415,5 @@ index 07e3f63..f6facae 100644
      float frameRate;
      if (!msg->findFloat("frame-rate", &frameRate)) {
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 

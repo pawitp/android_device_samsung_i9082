@@ -1,4 +1,4 @@
-From 22f25ca4ab6c741fd42e14da53ed7668ffd5855e Mon Sep 17 00:00:00 2001
+From b747b68eb980b8eefc0d762dec6b01e43709f859 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 15 Mar 2015 08:33:32 +0700
 Subject: [PATCH] CallsManager: fix starting call from Contacts app with MSim
@@ -25,5 +25,5 @@ index 3732a4f..b6cb4ac 100644
          } else {
              call.setState(CallState.CONNECTING);
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 

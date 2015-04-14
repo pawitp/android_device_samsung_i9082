@@ -1,4 +1,4 @@
-From 4efddc57527e6acbef8100f1c695d64c33b7e8aa Mon Sep 17 00:00:00 2001
+From 9f5fb75c1d9420743498dbda1c026eca164de712 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:50:29 +0700
 Subject: [PATCH 1/6] TelephonyManager: set properties in Broadcom-style as
@@ -103,10 +103,10 @@ index db0da61..f22e300 100644
  
      /** @hide */
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 8a27a436e21f69fb577e43c017d78b94e43b791c Mon Sep 17 00:00:00 2001
+From 5cc5d5c7b070dc25548796aa07f177ffb7cbbbd5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 22:33:16 +0700
 Subject: [PATCH 2/6] Camera: HACK: i9082: API hacks
@@ -124,7 +124,7 @@ Change-Id: I929feffa4f79c69e9d7be7d1acacb3c228280bfe
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
-index 347db05..5acf583 100644
+index 347db05..5acf583d 100644
 --- a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
 +++ b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
 @@ -1100,7 +1100,7 @@ public class LegacyMetadataMapper {
@@ -163,10 +163,10 @@ index d461bca..a34a758 100644
                  throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
              case INVALID_OPERATION:
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 37301105e38912ef3f62b853976c93b58f488761 Mon Sep 17 00:00:00 2001
+From 1b7df9d854ef3ac0990cb5e57c82f7c3bcdc3c9b Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:22:43 +0000
 Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
@@ -216,10 +216,10 @@ index 082e8bb..11f35cb 100644
 +    int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002; /* Samsung STK */
  }
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From b6bc9c18f7c526b26df50670a6f80ce275f927c4 Mon Sep 17 00:00:00 2001
+From 0d65f57648bfe7c85c086fe8cbffb6c07a5bf243 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:47:35 +0700
 Subject: [PATCH 4/6] frameworks: base: add KEYCODE_HOME to wake keys
@@ -242,10 +242,10 @@ index 243a0fc..691c342 100644
          }
          return false;
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 3ae6ca56afcbaf4ef1f34432749b0872b6ed0cd9 Mon Sep 17 00:00:00 2001
+From 37305492254decd9fcbde4ffb3da334a254018b4 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 23 Nov 2012 14:23:16 +0000
 Subject: [PATCH 5/6] Reintroduce button-backlight (and respective inactivity
@@ -328,10 +328,10 @@ index 9786b42..f1b00b0 100644
                      } else {
                          nextTimeout = mLastUserActivityTime + screenOffTimeout;
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 006ef35117a2252553e383f5d30340a47f8dac69 Mon Sep 17 00:00:00 2001
+From a599dcdb221e8ae2c3e7c6108baef9b314e1941e Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
 Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any
@@ -389,5 +389,5 @@ index f1b00b0..d7189f0 100644
                          } else {
                              mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 

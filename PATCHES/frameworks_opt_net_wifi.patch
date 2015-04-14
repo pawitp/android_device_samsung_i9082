@@ -1,4 +1,4 @@
-From edc81c3af8cdef3a7db2f440effc31b2dfc91c43 Mon Sep 17 00:00:00 2001
+From f6b3d1bbc4954d1f155ef65738227510b4803484 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:54:13 +0000
 Subject: [PATCH] wifi: Set the mode at native layer
@@ -71,5 +71,5 @@ index 2bd4229..d90981b 100644
      { "stopHalNative", "()V", (void*) android_net_wifi_stopHal },
      { "waitForHalEventNative", "()V", (void*) android_net_wifi_waitForHalEvents },
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 

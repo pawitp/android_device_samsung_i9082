@@ -1,4 +1,4 @@
-From 1c955fdc12c4a3d5d5092fe0bb020f738f074f7a Mon Sep 17 00:00:00 2001
+From 1989bc287c4521f05b6bfbf88b5f48a7395a72bc Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 18 Nov 2014 08:38:33 +0700
 Subject: [PATCH 1/8] Bring back support for glReadPixels screenshot path
@@ -451,10 +451,10 @@ index 4deb815..d58627f 100644
      /* ------------------------------------------------------------------------
       * EGL
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 92f14b0a81bee305ab2c4bd73ce45e481d92bb38 Mon Sep 17 00:00:00 2001
+From 7bf5fe0a3ae3bca8adc145e2df3ced59bc9af6b0 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 6 Aug 2013 16:11:06 +0100
 Subject: [PATCH 2/8] libgui: Bring back support for mHeap-based screenshots
@@ -945,10 +945,10 @@ index d58627f..e54b4e9 100644
       * EGL
       */
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 8aba1e4b51da23af578305087fce3a332203d8b3 Mon Sep 17 00:00:00 2001
+From dfb09a54093e2f7c460f22152d657d8a9db230b8 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 2 Nov 2013 23:02:15 -0700
 Subject: [PATCH 3/8] libEGL: allow devices to workaround Google bug 10194508
@@ -976,10 +976,10 @@ index cc5d544..4838d6c 100644
    LOCAL_CFLAGS += -DMAX_EGL_CACHE_ENTRY_SIZE=$(MAX_EGL_CACHE_ENTRY_SIZE)
  endif
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 7f142463dc49872e8765ff37e8050274799c8c0b Mon Sep 17 00:00:00 2001
+From fa61584676ea46e267673f722ea10392f4221e30 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 14 Nov 2013 15:19:46 +0700
 Subject: [PATCH 4/8] binder: add compat symbol
@@ -1007,10 +1007,10 @@ index dd04dcf..9ec2380 100644
  {
      return mCallingPid;
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 9f92a78ea0eff4d15ea3206bcaddb2b39f7850d4 Mon Sep 17 00:00:00 2001
+From 5b3422b0126a8d6d07850dffbf3ed074942dc0dd Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 19:38:17 +0700
 Subject: [PATCH 5/8] binder: add compat symbols
@@ -1053,10 +1053,10 @@ index e7589b1..b34ceb9 100644
  {
      // size
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 4fa3e5954337ff41867722fc4e24ffdab4ccaad5 Mon Sep 17 00:00:00 2001
+From 5d53593d271190ec81f39308f01d68b6110dd435 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 16 Dec 2013 15:45:42 +0700
 Subject: [PATCH 6/8] sf: CAPRI_HWC: fix rotation artifact
@@ -1082,10 +1082,10 @@ index 91daec2..a6c096d 100644
      const uint32_t hw_w = hw->getWidth();
      const uint32_t hw_h = hw->getHeight();
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From e86987b6bf2eacdb905b1eba6b79078de26f6813 Mon Sep 17 00:00:00 2001
+From 667ae3afaafc71cc2f02fdcdb29c3f01f403a309 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 15 Dec 2014 23:12:44 +0700
 Subject: [PATCH 7/8] SurfaceComposerClient: don't block RGBA_8888 for
@@ -1112,10 +1112,10 @@ index bfa5e1d..f4007f4 100644
      producer->query(NATIVE_WINDOW_FORMAT,&format);
      if (format == PIXEL_FORMAT_RGBA_8888) {
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
 
-From 9dc4c7527dc9fb0a3a5eef6d7c3c30f917efa3d9 Mon Sep 17 00:00:00 2001
+From ecc255dd5a54b562b7e59e2faf5dcfc76ffcb048 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 20 Dec 2014 19:09:27 +0700
 Subject: [PATCH 8/8] sf: CAPRI_HWC: fix for screen recording
@@ -1143,5 +1143,5 @@ index 16b9747..32be098 100644
                  BQ_LOGE("%s: min undequeued buffer count (%d) exceeded "
                          "(dequeued=%d undequeued=%d)",
 -- 
-1.9.5 (Apple Git-50.3)
+2.3.5
 
