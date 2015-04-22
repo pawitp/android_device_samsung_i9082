@@ -1,4 +1,4 @@
-From 00957afabddaa349540b072b27c49271d6796bc6 Mon Sep 17 00:00:00 2001
+From 0b2675d090e7bc47854e8ea64eb9ad1cdc752c89 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Thu, 22 Nov 2012 06:02:18 +0000
 Subject: [PATCH 1/8] Allow a device to include its own RIL subclass
@@ -33,7 +33,7 @@ index 449faa0..d312fec 100644
 2.3.5
 
 
-From 2285f27b2cd545360659ee9beabe0a545787e481 Mon Sep 17 00:00:00 2001
+From 3112050d004fbcd23c3c9981b22148c5f83b3632 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Thu, 22 Nov 2012 17:47:31 +0100
 Subject: [PATCH 2/8] RIL: Make RIL subclassable
@@ -420,7 +420,7 @@ index 76dd32b..296b6ab 100644
 2.3.5
 
 
-From f639d66265086e82f10665d0e2f86f3192b7bc7d Mon Sep 17 00:00:00 2001
+From 33d1cfb74b493046ac17f7a0164d7d28611fa8d5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 8 Mar 2014 19:35:17 +0700
 Subject: [PATCH 3/8] RIL: mark mInstanceId as protected
@@ -449,7 +449,7 @@ index 296b6ab..beb4aee 100644
 2.3.5
 
 
-From b5bcc93c3558328ab7e583055db3ffe3e63bcac7 Mon Sep 17 00:00:00 2001
+From f71bac0f9bba4cfdd781a2c1a068bf21ad87f5b1 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 31 May 2014 12:34:56 +0700
 Subject: [PATCH 4/8] telephony: support for RIL that does not send
@@ -465,7 +465,7 @@ Change-Id: Ib7373d32777f6c42ee488972a7aa63ae8e1cd09b
  1 file changed, 19 insertions(+)
 
 diff --git a/src/java/com/android/internal/telephony/PhoneBase.java b/src/java/com/android/internal/telephony/PhoneBase.java
-index ce69689..ec61632 100644
+index e1444ee..84fc93a 100644
 --- a/src/java/com/android/internal/telephony/PhoneBase.java
 +++ b/src/java/com/android/internal/telephony/PhoneBase.java
 @@ -200,6 +200,7 @@ public abstract class PhoneBase extends Handler implements Phone {
@@ -488,7 +488,7 @@ index ce69689..ec61632 100644
          mCallRingDelay = SystemProperties.getInt(
                  TelephonyProperties.PROPERTY_CALL_RING_DELAY, 3000);
          Rlog.d(LOG_TAG, "mCallRingDelay=" + mCallRingDelay);
-@@ -1749,6 +1755,18 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -1755,6 +1761,18 @@ public abstract class PhoneBase extends Handler implements Phone {
      public void notifyNewRingingConnectionP(Connection cn) {
          if (!mIsVoiceCapable)
              return;
@@ -507,7 +507,7 @@ index ce69689..ec61632 100644
          AsyncResult ar = new AsyncResult(null, cn, null);
          mNewRingingConnectionRegistrants.notifyRegistrants(ar);
      }
-@@ -2136,6 +2154,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -2142,6 +2160,7 @@ public abstract class PhoneBase extends Handler implements Phone {
          pw.println(" mDnsCheckDisabled=" + mDnsCheckDisabled);
          pw.println(" mDcTracker=" + mDcTracker);
          pw.println(" mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
@@ -519,7 +519,7 @@ index ce69689..ec61632 100644
 2.3.5
 
 
-From 72ac087d8ff7f78d0818d2eb9875640c3ab72525 Mon Sep 17 00:00:00 2001
+From 1c2a7da12c138467e2d82a80fc33d965be3e55c5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 17:39:50 +0700
 Subject: [PATCH 5/8] telephony: RIL: i9082: set correct rild names
@@ -546,7 +546,7 @@ index beb4aee..6593cb4 100644
 2.3.5
 
 
-From 313f6e0c79d8f3d377041b60ec82ab2d96fe582b Mon Sep 17 00:00:00 2001
+From a30f1eef49902561d77525a841f8d1449ba29203 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 17 Dec 2014 21:19:34 +0700
 Subject: [PATCH 6/8] Forward port Samsung STK support
@@ -1150,7 +1150,7 @@ index 91a6fd6..bd39358 100644
 2.3.5
 
 
-From d288f6216f8c7d679dcb8e2193450283240ccf8b Mon Sep 17 00:00:00 2001
+From 2ed41fef3e20845c1990ea575e7b1abe7a969a9d Mon Sep 17 00:00:00 2001
 From: Mike Kasick <mike@kasick.org>
 Date: Sat, 14 Mar 2015 20:20:39 +0700
 Subject: [PATCH 7/8] RILs: Eliminate repeated overrides of
@@ -1211,7 +1211,7 @@ index d1048df..d7c0b7d 100644
 2.3.5
 
 
-From 6672fe720499776f096b842e714a90e839d2b7fb Mon Sep 17 00:00:00 2001
+From e170aecc4b4e9e38e9ba0c2a2971d2762b8ac64b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 22 Nov 2012 19:01:13 +0100
 Subject: [PATCH 8/8] telephony: Use reflection to create command interface

@@ -1,4 +1,4 @@
-From 68cf0572bfd6b688179b5f0ee71ecd1dc3defa68 Mon Sep 17 00:00:00 2001
+From faff493981ae553628fb5ff63f6791454c35e773 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Fri, 6 Dec 2013 19:21:08 +0100
 Subject: [PATCH 1/2] LatinIME: Add fallback loader for JNI lib
@@ -48,7 +48,7 @@ index e7fdafa..0e4f582 100644
 2.3.5
 
 
-From 678b571e5ae64c1f42c43a94beec4f65c59b7b3a Mon Sep 17 00:00:00 2001
+From 1fd8cd3748290ad3ad7a39cbd9b41c21e1b6665b Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <ricardo@cyngn.com>
 Date: Tue, 25 Nov 2014 11:55:27 +0000
 Subject: [PATCH 2/2] Update JNI fallback lib name

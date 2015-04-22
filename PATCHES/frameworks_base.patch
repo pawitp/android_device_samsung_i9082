@@ -1,4 +1,4 @@
-From 9f5fb75c1d9420743498dbda1c026eca164de712 Mon Sep 17 00:00:00 2001
+From 72205898ecfb2d4498630e9ff2103bcca0eb791b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:50:29 +0700
 Subject: [PATCH 1/6] TelephonyManager: set properties in Broadcom-style as
@@ -106,7 +106,7 @@ index db0da61..f22e300 100644
 2.3.5
 
 
-From 5cc5d5c7b070dc25548796aa07f177ffb7cbbbd5 Mon Sep 17 00:00:00 2001
+From 9735bfec6f2c7338c2877c6de1cb39d3e6fba599 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 22:33:16 +0700
 Subject: [PATCH 2/6] Camera: HACK: i9082: API hacks
@@ -166,7 +166,7 @@ index d461bca..a34a758 100644
 2.3.5
 
 
-From 1b7df9d854ef3ac0990cb5e57c82f7c3bcdc3c9b Mon Sep 17 00:00:00 2001
+From ca862c1ab3930a64b0ab7726e13760d0356dd762 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:22:43 +0000
 Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
@@ -219,7 +219,7 @@ index 082e8bb..11f35cb 100644
 2.3.5
 
 
-From 0d65f57648bfe7c85c086fe8cbffb6c07a5bf243 Mon Sep 17 00:00:00 2001
+From 845038fe84e2a2f42ce5fa45111550716d64a8c4 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:47:35 +0700
 Subject: [PATCH 4/6] frameworks: base: add KEYCODE_HOME to wake keys
@@ -245,7 +245,7 @@ index 243a0fc..691c342 100644
 2.3.5
 
 
-From 37305492254decd9fcbde4ffb3da334a254018b4 Mon Sep 17 00:00:00 2001
+From b0fb3463f92814a495a1af0cdd09bbfa6b5b9d53 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 23 Nov 2012 14:23:16 +0000
 Subject: [PATCH 5/6] Reintroduce button-backlight (and respective inactivity
@@ -331,7 +331,7 @@ index 9786b42..f1b00b0 100644
 2.3.5
 
 
-From a599dcdb221e8ae2c3e7c6108baef9b314e1941e Mon Sep 17 00:00:00 2001
+From 5de64814d1b0d7332548506c754fcd3eebf29478 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
 Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any

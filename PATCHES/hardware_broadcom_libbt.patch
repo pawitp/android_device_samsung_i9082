@@ -1,4 +1,4 @@
-From 0771f15b669dd0086ef3768f22ca059d3e564262 Mon Sep 17 00:00:00 2001
+From 35aa5900d02c52931aaf4d926ce09ad57712d433 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 20:09:12 +0700
 Subject: [PATCH 1/2] libbt: switch to N_BRCM_HCI line disclipline for userial
@@ -42,7 +42,7 @@ index 0f3f527..f4278ab 100644
 2.3.5
 
 
-From 22cc8d4e206288ad42febbf880d15cab99054465 Mon Sep 17 00:00:00 2001
+From f386d7477d2512bcac81314a5bb41990b22f0e38 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Mon, 3 Dec 2012 02:34:56 -0800
 Subject: [PATCH 2/2] libbt: Add support for board-specific configuration

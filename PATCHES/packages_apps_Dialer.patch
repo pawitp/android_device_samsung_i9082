@@ -1,4 +1,4 @@
-From 6848b6b786748aee387f6dc8c5bcd3e5c3a55716 Mon Sep 17 00:00:00 2001
+From e9c00c712958768ac6f6358dd55becd9614e70d2 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:39:10 +0700
 Subject: [PATCH 1/2] Dialer: fix crash on *#06#
@@ -25,7 +25,7 @@ index f466c41..eadb6ed 100644
 2.3.5
 
 
-From 31f39453e5d0349bbb671656406d5d317b0c8454 Mon Sep 17 00:00:00 2001
+From 2b29d5f13b32fb1fa770df3990e4b5cd6f51c70f Mon Sep 17 00:00:00 2001
 From: Michael Bestas <mikeioannina@gmail.com>
 Date: Sun, 9 Nov 2014 15:49:35 +0200
 Subject: [PATCH 2/2] Dialer: Update icons to Material

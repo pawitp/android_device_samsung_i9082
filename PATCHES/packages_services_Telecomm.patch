@@ -1,4 +1,4 @@
-From b747b68eb980b8eefc0d762dec6b01e43709f859 Mon Sep 17 00:00:00 2001
+From e8cbf464550f5c071eacc03c0867fa81e9dc8fce Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 15 Mar 2015 08:33:32 +0700
 Subject: [PATCH] CallsManager: fix starting call from Contacts app with MSim

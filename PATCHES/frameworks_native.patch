@@ -1,4 +1,4 @@
-From 1989bc287c4521f05b6bfbf88b5f48a7395a72bc Mon Sep 17 00:00:00 2001
+From f8f2e0ff462f7a8a89f06f911ec464239b1b7385 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 18 Nov 2014 08:38:33 +0700
 Subject: [PATCH 1/8] Bring back support for glReadPixels screenshot path
@@ -454,7 +454,7 @@ index 4deb815..d58627f 100644
 2.3.5
 
 
-From 7bf5fe0a3ae3bca8adc145e2df3ced59bc9af6b0 Mon Sep 17 00:00:00 2001
+From 2342b784bdd28fa2b5cc6811ba93559db83401b7 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 6 Aug 2013 16:11:06 +0100
 Subject: [PATCH 2/8] libgui: Bring back support for mHeap-based screenshots
@@ -948,7 +948,7 @@ index d58627f..e54b4e9 100644
 2.3.5
 
 
-From dfb09a54093e2f7c460f22152d657d8a9db230b8 Mon Sep 17 00:00:00 2001
+From c2f7b5f98e4fe965250b52e3fd2d91d8b6647e88 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 2 Nov 2013 23:02:15 -0700
 Subject: [PATCH 3/8] libEGL: allow devices to workaround Google bug 10194508
@@ -979,7 +979,7 @@ index cc5d544..4838d6c 100644
 2.3.5
 
 
-From fa61584676ea46e267673f722ea10392f4221e30 Mon Sep 17 00:00:00 2001
+From b097b9d7f60aa984c26667ef079c15414d36a984 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 14 Nov 2013 15:19:46 +0700
 Subject: [PATCH 4/8] binder: add compat symbol
@@ -1010,7 +1010,7 @@ index dd04dcf..9ec2380 100644
 2.3.5
 
 
-From 5b3422b0126a8d6d07850dffbf3ed074942dc0dd Mon Sep 17 00:00:00 2001
+From b82978bdfecee99caa225dfc3389ce811f81a549 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 19:38:17 +0700
 Subject: [PATCH 5/8] binder: add compat symbols
@@ -1056,7 +1056,7 @@ index e7589b1..b34ceb9 100644
 2.3.5
 
 
-From 5d53593d271190ec81f39308f01d68b6110dd435 Mon Sep 17 00:00:00 2001
+From 36d5b0ccefdddd5530e4a790720c8a7ac9ca2e33 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 16 Dec 2013 15:45:42 +0700
 Subject: [PATCH 6/8] sf: CAPRI_HWC: fix rotation artifact
@@ -1085,7 +1085,7 @@ index 91daec2..a6c096d 100644
 2.3.5
 
 
-From 667ae3afaafc71cc2f02fdcdb29c3f01f403a309 Mon Sep 17 00:00:00 2001
+From 1cede1431088edc0971a7f07a39c2b1acd8bcffa Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 15 Dec 2014 23:12:44 +0700
 Subject: [PATCH 7/8] SurfaceComposerClient: don't block RGBA_8888 for
@@ -1115,7 +1115,7 @@ index bfa5e1d..f4007f4 100644
 2.3.5
 
 
-From ecc255dd5a54b562b7e59e2faf5dcfc76ffcb048 Mon Sep 17 00:00:00 2001
+From 8cc5e3a0e837f5820a1b420ad3a3a32fd3b319b0 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 20 Dec 2014 19:09:27 +0700
 Subject: [PATCH 8/8] sf: CAPRI_HWC: fix for screen recording

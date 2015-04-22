@@ -1,4 +1,4 @@
-From 8aa1d4f2c1f7de03d8bbeafc5c8ce00785fd14f7 Mon Sep 17 00:00:00 2001
+From 1c46c6b165d9a2245611c8cc84671586c85f15e5 Mon Sep 17 00:00:00 2001
 From: Koushik Dutta <koushd@gmail.com>
 Date: Sat, 26 Jun 2010 22:53:55 -0700
 Subject: [PATCH 01/15] add support for overriding build.prop settings.
@@ -52,7 +52,7 @@ index e7fa75e..f5c498c 100644
 2.3.5
 
 
-From 47eef58f7877db4d20c9c797b89e584fdb3c67d1 Mon Sep 17 00:00:00 2001
+From bd5f17eebae7801eea0ddf9219c17e566e3ef797 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 11 Apr 2012 11:21:23 +0100
 Subject: [PATCH 02/15] build: Inline kernel building as a buildtime task
@@ -452,7 +452,7 @@ index 0000000..4d519a0
 2.3.5
 
 
-From cc7ae45944f2e918324769b04051b586aac36f41 Mon Sep 17 00:00:00 2001
+From 426ab6319cdeeb21b6ff52b560682a87215f93ce Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Sun, 9 Nov 2014 17:27:51 +0530
 Subject: [PATCH 03/15] Allow specifying kernel toolchain and prefix
@@ -500,7 +500,7 @@ index 4d519a0..b0ab1de 100644
 2.3.5
 
 
-From a376ceb461c8178d8371ec08f42919d2657f512f Mon Sep 17 00:00:00 2001
+From 76c49e8ebffc3da0cd469f6c81fd3e3bd2e826de Mon Sep 17 00:00:00 2001
 From: Alvin Francis <nivlafx@gmail.com>
 Date: Mon, 1 Dec 2014 13:13:40 -0400
 Subject: [PATCH 04/15] Fix libelf path
@@ -530,7 +530,7 @@ index b0ab1de..e6be63a 100644
 2.3.5
 
 
-From 53b10c273a180a9a7c80a8c1607f1959f14c80a6 Mon Sep 17 00:00:00 2001
+From 33fa47230661ba32358156e6a8f248c87f0252c8 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Wed, 24 Dec 2014 03:18:54 -0800
 Subject: [PATCH 05/15] core: More flexible kernel configuration
@@ -744,7 +744,7 @@ index e6be63a..9f40eec 100644
 2.3.5
 
 
-From 5763235d63c3d98bde10250b2f1d423467bd1df1 Mon Sep 17 00:00:00 2001
+From a4b3af6774386a4e50f51331ae5460df28840de8 Mon Sep 17 00:00:00 2001
 From: dhacker29 <dhackerdvm@gmail.com>
 Date: Sun, 18 Jan 2015 19:34:14 -0500
 Subject: [PATCH 06/15] Fix kernel.mk if SELINUX or VARIANT_DEFCONFIG is
@@ -781,7 +781,7 @@ index 9f40eec..a2eb21e 100644
 2.3.5
 
 
-From 9d99bdbac168d85c164cc698be5cfc24532d70ca Mon Sep 17 00:00:00 2001
+From 38cd8c56afb362c47e82bde3553a00a46ec31302 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <ricardo@cyngn.com>
 Date: Tue, 20 Jan 2015 01:41:19 +0000
 Subject: [PATCH 07/15] build: kernel: Fix stray "@"
@@ -818,7 +818,7 @@ index a2eb21e..2c49271 100644
 2.3.5
 
 
-From ae6e2b71daa3c322d656df37425453f37aa9c014 Mon Sep 17 00:00:00 2001
+From 5e463b8135d38aa38d3b69a5b4a9b7be2479ec35 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Mon, 9 Mar 2015 15:07:08 +0000
 Subject: [PATCH 08/15] build: Add support for additional kernel config snippet
@@ -873,7 +873,7 @@ index 2c49271..764532c 100644
 2.3.5
 
 
-From d99f3a7506a867a63a5da0c9d32f915d7675a43a Mon Sep 17 00:00:00 2001
+From cfe67ccae5f910a9a307a19d383a50e1fbc8da7b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 16 Dec 2014 19:19:52 +0700
 Subject: [PATCH 09/15] minigzip dependency for kernel
@@ -902,7 +902,7 @@ index 764532c..510047d 100644
 2.3.5
 
 
-From 538b4a67da56fd6db9bf0e4df054a96bb2146868 Mon Sep 17 00:00:00 2001
+From 414df1fc42db35522e8ad6edf29ab8ca9ef1a32b Mon Sep 17 00:00:00 2001
 From: Cristoforo Cataldo <cristoforo.cataldo@gmail.com>
 Date: Sun, 30 Nov 2014 06:12:35 +0100
 Subject: [PATCH 10/15] core: Enable -mcpu=cortex-a9 flag for Cortex-A9 cpu
@@ -942,7 +942,7 @@ index c6603db..6554e91 100644
 2.3.5
 
 
-From 97823f44316ea0c6e3f66ae4475e38c77e0a182a Mon Sep 17 00:00:00 2001
+From 82f54ceaac413b1fb2eaa04f203a4461375aecff Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 16 Nov 2011 23:14:27 +0000
 Subject: [PATCH 11/15] ota: Remove cruft we don't care about
@@ -985,7 +985,7 @@ index 945f11a..e2e73df 100755
 2.3.5
 
 
-From 0ed15af37e866c6a8cfc8a64f1e54d5eb7d7bb8a Mon Sep 17 00:00:00 2001
+From 56388a9ff21886d40b056d4de070a78d120e3cde Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Thu, 27 Sep 2012 18:11:25 +0530
 Subject: [PATCH 12/15] envsetup: set OUT_DIR to an absolute path always
@@ -1027,7 +1027,7 @@ index 124a91b..62ce78d 100644
 2.3.5
 
 
-From db2df4099f0a546f94087baef5e3d872a7997b5d Mon Sep 17 00:00:00 2001
+From 1f71657272e1a62bfc5c104129f557419dd1bdb9 Mon Sep 17 00:00:00 2001
 From: David Ferguson <ferguson.david@gmail.com>
 Date: Thu, 4 Oct 2012 10:15:58 -0400
 Subject: [PATCH 13/15] build: work around missing readlink -f on Mac
@@ -1054,7 +1054,7 @@ index 62ce78d..ebc748a 100644
 2.3.5
 
 
-From fbe40db00195fed9c1bbdcbd259755561ab2b92f Mon Sep 17 00:00:00 2001
+From c2e1d83e68a30110ce85f0cbdfdbcec1d5681414 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <cdesai@cyanogenmod.org>
 Date: Wed, 1 May 2013 15:48:08 +0530
 Subject: [PATCH 14/15] envsetup: use $(CURDIR) for getting current directory
@@ -1081,7 +1081,7 @@ index ebc748a..468661f 100644
 2.3.5
 
 
-From 89ab1c7194361ec5fc915ec5c18799b0933d2247 Mon Sep 17 00:00:00 2001
+From c419d84a7b1c24a8878d2e4eb221e19568cc83af Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 12 Apr 2011 10:57:22 +0100
 Subject: [PATCH 15/15] Allow a device to generically define its own headers
