@@ -438,6 +438,7 @@ on fs
     chown system media_rw /sys/class/mdnie/mdnie/scenario
     chown system system /sys/class/mdnie/mdnie/negative
     chown system system /sys/class/mdnie/mdnie/cabc
+    chown system system /sys/class/mdnie/mdnie/rgb
 
     # Switch Device
     chown system radio /sys/class/sec/switch/adc
