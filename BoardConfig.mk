@@ -94,6 +94,7 @@ BOARD_RIL_CLASS := ../../../device/samsung/i9082/ril/
 TARGET_RECOVERY_FSTAB := device/samsung/i9082/fstab.capri_ss_baffin
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_storage/lun%d/file"
 TARGET_RECOVERY_PIXEL_FORMAT := ABGR_8888
+TARGET_RECOVERY_DENSITY := hdpi
 
 # healthd
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.capri
