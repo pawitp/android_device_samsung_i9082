@@ -443,6 +443,9 @@ on fs
     # Switch Device
     chown system radio /sys/class/sec/switch/adc
 
+    # Activate ZRAM
+    swapon_all fstab.capri_ss_baffin
+
 on post-fs
     restorecon_recursive /efs
     chown radio system /efs
