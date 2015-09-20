@@ -110,7 +110,7 @@ on post-fs-data
 
 on boot
     # SISO-ANDR_PERF :: START Changing scheduler to noop during boot
-    write /sys/block/mmcblk0/queue/scheduler noop
+    setprop sys.io.scheduler noop
     # SISO-ANDR_PERF :: END
 
     # Permissions for bluetooth
@@ -590,7 +590,7 @@ service vclmk /system/bin/vclmk -s
 # Indicate boot complete to PM to complete PM initialization
 on property:dev.bootcomplete=1
     write /sys/module/capri_pwr_mgr/parameters/pm_late_init 1
-    write /sys/block/mmcblk0/queue/scheduler cfq
+    setprop sys.io.scheduler bfq
 
 # Vibetonz
 service immvibed /system/bin/immvibed
