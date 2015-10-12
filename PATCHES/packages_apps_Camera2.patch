@@ -1,4 +1,4 @@
-From 604e0546d74476e3acd7958cee35a748103a36e8 Mon Sep 17 00:00:00 2001
+From fd2ee1b2e58653eed8a1b059d9a8a4071db761f4 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Fri, 23 Jan 2015 20:34:16 +0700
 Subject: [PATCH 1/2] Camera: i9082: disable preview after stopping camera
@@ -15,10 +15,10 @@ Change-Id: I231233d28a1f7ac914408a7d02100a9424c2bf1c
  3 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/src/com/android/camera/CameraActivity.java b/src/com/android/camera/CameraActivity.java
-index 314840f..cfb467c 100644
+index bf48898..85c5407 100644
 --- a/src/com/android/camera/CameraActivity.java
 +++ b/src/com/android/camera/CameraActivity.java
-@@ -1622,7 +1622,7 @@ public class CameraActivity extends QuickActivity
+@@ -1743,7 +1743,7 @@ public class CameraActivity extends QuickActivity
          mCurrentModule.onPreviewVisibilityChanged(visibility);
      }
  
@@ -28,10 +28,10 @@ index 314840f..cfb467c 100644
              mCameraAppUI.pausePreviewRendering();
          } else {
 diff --git a/src/com/android/camera/PhotoModule.java b/src/com/android/camera/PhotoModule.java
-index b4b5ee7..52b8858 100644
+index c08e900..e0af88a 100644
 --- a/src/com/android/camera/PhotoModule.java
 +++ b/src/com/android/camera/PhotoModule.java
-@@ -1874,6 +1874,7 @@ public class PhotoModule
+@@ -1714,6 +1714,7 @@ public class PhotoModule
              mActivity.getCameraProvider().releaseCamera(mCameraDevice.getCameraId());
              mCameraDevice = null;
              setCameraState(PREVIEW_STOPPED);
@@ -40,7 +40,7 @@ index b4b5ee7..52b8858 100644
          }
      }
 diff --git a/src/com/android/camera/VideoModule.java b/src/com/android/camera/VideoModule.java
-index a99fcb4..68b07db 100644
+index f16fc0a..e8e7014 100644
 --- a/src/com/android/camera/VideoModule.java
 +++ b/src/com/android/camera/VideoModule.java
 @@ -1007,6 +1007,7 @@ public class VideoModule extends CameraModule
@@ -52,10 +52,10 @@ index a99fcb4..68b07db 100644
          mPreviewing = false;
          mSnapshotInProgress = false;
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 51d5f1d25b443da62bfe32241fd0b5fb4bd6dd6a Mon Sep 17 00:00:00 2001
+From 8324cd24019d4416ce2119194012602e7f88984f Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 24 Jan 2015 21:59:20 +0700
 Subject: [PATCH 2/2] Camera: i9082: update preview state after starting
@@ -72,10 +72,10 @@ Change-Id: I036539aa602d738372f421499cf5ac8c646523ed
  3 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/src/com/android/camera/CameraActivity.java b/src/com/android/camera/CameraActivity.java
-index cfb467c..46bd7a7 100644
+index 85c5407..cef9435 100644
 --- a/src/com/android/camera/CameraActivity.java
 +++ b/src/com/android/camera/CameraActivity.java
-@@ -1611,7 +1611,7 @@ public class CameraActivity extends QuickActivity
+@@ -1732,7 +1732,7 @@ public class CameraActivity extends QuickActivity
       * Call this whenever the mode drawer or filmstrip change the visibility
       * state.
       */
@@ -85,10 +85,10 @@ index cfb467c..46bd7a7 100644
              return;
          }
 diff --git a/src/com/android/camera/PhotoModule.java b/src/com/android/camera/PhotoModule.java
-index 52b8858..8e3f2e6 100644
+index e0af88a..9041d18 100644
 --- a/src/com/android/camera/PhotoModule.java
 +++ b/src/com/android/camera/PhotoModule.java
-@@ -1987,6 +1987,7 @@ public class PhotoModule
+@@ -1827,6 +1827,7 @@ public class PhotoModule
              mCameraDevice.startPreviewWithCallback(new Handler(Looper.getMainLooper()),
                      startPreviewCallback);
          }
@@ -97,7 +97,7 @@ index 52b8858..8e3f2e6 100644
  
      @Override
 diff --git a/src/com/android/camera/VideoModule.java b/src/com/android/camera/VideoModule.java
-index 68b07db..021a978 100644
+index e8e7014..2ee79f3 100644
 --- a/src/com/android/camera/VideoModule.java
 +++ b/src/com/android/camera/VideoModule.java
 @@ -962,6 +962,7 @@ public class VideoModule extends CameraModule
@@ -109,5 +109,5 @@ index 68b07db..021a978 100644
              closeCamera();
              throw new RuntimeException("startPreview failed", ex);
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 

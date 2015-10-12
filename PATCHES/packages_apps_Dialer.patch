@@ -1,34 +1,7 @@
-From e9c00c712958768ac6f6358dd55becd9614e70d2 Mon Sep 17 00:00:00 2001
-From: Pawit Pornkitprasan <p.pawit@gmail.com>
-Date: Sat, 14 Mar 2015 22:39:10 +0700
-Subject: [PATCH 1/2] Dialer: fix crash on *#06#
-
-Change-Id: I501d8671d66541c3c50c98cb6cb072df12ad4304
----
- src/com/android/dialer/SpecialCharSequenceMgr.java | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/src/com/android/dialer/SpecialCharSequenceMgr.java b/src/com/android/dialer/SpecialCharSequenceMgr.java
-index f466c41..eadb6ed 100644
---- a/src/com/android/dialer/SpecialCharSequenceMgr.java
-+++ b/src/com/android/dialer/SpecialCharSequenceMgr.java
-@@ -316,7 +316,7 @@ public class SpecialCharSequenceMgr {
-             AlertDialog alert = new AlertDialog.Builder(context)
-                     .setTitle(labelResId)
-                     .setItems(deviceIds.toArray(new String[deviceIds.size()]), null)
--                    .setPositiveButton(R.string.ok, null)
-+                    .setPositiveButton(android.R.string.ok, null)
-                     .setCancelable(false)
-                     .show();
-             return true;
--- 
-2.3.5
-
-
-From 2b29d5f13b32fb1fa770df3990e4b5cd6f51c70f Mon Sep 17 00:00:00 2001
+From d60ee1f1069b7987b9039bc81ec0bf5c024aaec5 Mon Sep 17 00:00:00 2001
 From: Michael Bestas <mikeioannina@gmail.com>
 Date: Sun, 9 Nov 2014 15:49:35 +0200
-Subject: [PATCH 2/2] Dialer: Update icons to Material
+Subject: [PATCH] Dialer: Update icons to Material
 
 Change-Id: I141dbc7f617c858110ab91714e888f70109f42ca
 ---
@@ -1798,5 +1771,5 @@ zA-yqoq<_d5Gu{z4zJ7LlseP^w_$UryZsGps4(-*(nDJXXz7E-IERR0E#ttyP#@C^G
 b{r>>~vO=n<-^n2g00000NkvXXu0mjfXt^jn
 
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 

@@ -1,7 +1,7 @@
-From 72205898ecfb2d4498630e9ff2103bcca0eb791b Mon Sep 17 00:00:00 2001
+From b64a060f50a865185c87df3eee908e9fc017ac88 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:50:29 +0700
-Subject: [PATCH 1/6] TelephonyManager: set properties in Broadcom-style as
+Subject: [PATCH 1/7] TelephonyManager: set properties in Broadcom-style as
  expected by RIL
 
 For i9082
@@ -9,13 +9,13 @@ For i9082
 Change-Id: I475fdd164b3316720387fefb14a3e12fbc262b39
 ---
  .../java/android/telephony/TelephonyManager.java   | 63 +++++++---------------
- 1 file changed, 19 insertions(+), 44 deletions(-)
+ 1 file changed, 20 insertions(+), 43 deletions(-)
 
 diff --git a/telephony/java/android/telephony/TelephonyManager.java b/telephony/java/android/telephony/TelephonyManager.java
-index db0da61..f22e300 100644
+index 2415165..ee1500a 100644
 --- a/telephony/java/android/telephony/TelephonyManager.java
 +++ b/telephony/java/android/telephony/TelephonyManager.java
-@@ -2876,49 +2876,19 @@ public class TelephonyManager {
+@@ -3191,49 +3191,19 @@ public class TelephonyManager {
       * @hide
       */
      public static void setTelephonyProperty(int phoneId, String property, String value) {
@@ -70,7 +70,7 @@ index db0da61..f22e300 100644
      }
  
      /**
-@@ -3015,17 +2985,22 @@ public class TelephonyManager {
+@@ -3330,15 +3300,22 @@ public class TelephonyManager {
       * @hide
       */
      public static String getTelephonyProperty(int phoneId, String property, String defaultVal) {
@@ -86,6 +86,7 @@ index db0da61..f22e300 100644
 +                    " property=" + property);
 +            return defaultVal;
          }
+-        return propVal == null ? defaultVal : propVal;
 +
 +        if (phoneId > 0) {
 +            property += "_" + phoneId;
@@ -93,9 +94,7 @@ index db0da61..f22e300 100644
 +
 +        String propVal = SystemProperties.get(property);
 +
-         Rlog.d(TAG, "getTelephonyProperty: return propVal='" + propVal + "' phoneId=" + phoneId
--                + " property='" + property + "' defaultVal='" + defaultVal + "' prop=" + prop);
--        return propVal == null ? defaultVal : propVal;
++        Rlog.d(TAG, "getTelephonyProperty: return propVal='" + propVal + "' phoneId=" + phoneId
 +                + " property='" + property + "' defaultVal='" + defaultVal);
 +
 +        return propVal.isEmpty() ? defaultVal : propVal;
@@ -103,13 +102,13 @@ index db0da61..f22e300 100644
  
      /** @hide */
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 9735bfec6f2c7338c2877c6de1cb39d3e6fba599 Mon Sep 17 00:00:00 2001
+From 89c0a3ec3186ab5a4659711045b11e7517051e1b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 22:33:16 +0700
-Subject: [PATCH 2/6] Camera: HACK: i9082: API hacks
+Subject: [PATCH 2/7] Camera: HACK: i9082: API hacks
 
 CTS 5.0 requires the presence of an auto mode, so applications
 may try to use auto without checking.
@@ -124,10 +123,10 @@ Change-Id: I929feffa4f79c69e9d7be7d1acacb3c228280bfe
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
-index 347db05..5acf583d 100644
+index 8bdd42a..5898eac 100644
 --- a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
 +++ b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
-@@ -1100,7 +1100,7 @@ public class LegacyMetadataMapper {
+@@ -1149,7 +1149,7 @@ public class LegacyMetadataMapper {
                  return CONTROL_AE_ANTIBANDING_MODE_OFF;
              }
              case Camera.Parameters.ANTIBANDING_50HZ: {
@@ -137,10 +136,10 @@ index 347db05..5acf583d 100644
              case Camera.Parameters.ANTIBANDING_60HZ: {
                  return CONTROL_AE_ANTIBANDING_MODE_60HZ;
 diff --git a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
-index 61f7b8b..f370103 100644
+index 6a44ac5..a427b9d 100644
 --- a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
 +++ b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
-@@ -617,7 +617,7 @@ public class LegacyRequestMapper {
+@@ -618,7 +618,7 @@ public class LegacyRequestMapper {
                  return Parameters.ANTIBANDING_60HZ;
              }
              case CONTROL_AE_ANTIBANDING_MODE_AUTO: {
@@ -150,7 +149,7 @@ index 61f7b8b..f370103 100644
              default: {
                  return null;
 diff --git a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
-index d461bca..a34a758 100644
+index 1aee794..e7c5313 100644
 --- a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
 +++ b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
 @@ -124,7 +124,7 @@ public class CameraBinderDecorator {
@@ -163,66 +162,65 @@ index d461bca..a34a758 100644
                  throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
              case INVALID_OPERATION:
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From ca862c1ab3930a64b0ab7726e13760d0356dd762 Mon Sep 17 00:00:00 2001
+From 3c3de4d900a0a0e4e5d803c7a5df4a4ce4f38a47 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:22:43 +0000
-Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
+Subject: [PATCH 3/7] Forward port Samsung STK support (frameworks/base)
 
 [pawitp: port to Lollipop]
 
 Change-Id: I08d169bc466df290fca838b09f6b0fbea2ac82a8
 ---
- core/res/res/values/config.xml                                  | 3 +++
+ core/res/res/values/config.xml                                  | 2 ++
  core/res/res/values/symbols.xml                                 | 2 ++
  telephony/java/com/android/internal/telephony/RILConstants.java | 1 +
- 3 files changed, 6 insertions(+)
+ 3 files changed, 5 insertions(+)
 
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
-index 68df6f1..d9c94f6 100755
+index ae8cae8..64f77f2 100755
 --- a/core/res/res/values/config.xml
 +++ b/core/res/res/values/config.xml
-@@ -2028,4 +2028,7 @@
+@@ -2270,4 +2270,6 @@
+     <string-array name="config_cell_retries_per_error_code">
+     </string-array>
  
-     <!-- Whether to start in touch mode -->
-     <bool name="config_defaultInTouchMode">true</bool>
-+
 +    <!-- Boolean to enable stk functionality on Samsung phones -->
 +    <bool name="config_samsung_stk">false</bool>
  </resources>
 diff --git a/core/res/res/values/symbols.xml b/core/res/res/values/symbols.xml
-index 1055547..abe517f 100755
+index 262aa76..c9fbc98 100755
 --- a/core/res/res/values/symbols.xml
 +++ b/core/res/res/values/symbols.xml
-@@ -2137,6 +2137,8 @@
+@@ -2194,6 +2194,8 @@
    <java-symbol type="bool" name="config_defaultWindowFeatureOptionsPanel" />
    <java-symbol type="bool" name="config_defaultWindowFeatureContextMenu" />
  
 +  <java-symbol type="bool" name="config_samsung_stk" />
 +
    <java-symbol type="layout" name="simple_account_item" />
-   <java-symbol type="id" name="scrollIndicatorUp" />
-   <java-symbol type="id" name="scrollIndicatorDown" />
+   <java-symbol type="array" name="config_sms_convert_destination_number_support" />
+   <java-symbol type="string" name="prohibit_manual_network_selection_in_gobal_mode" />
 diff --git a/telephony/java/com/android/internal/telephony/RILConstants.java b/telephony/java/com/android/internal/telephony/RILConstants.java
-index 082e8bb..11f35cb 100644
+index 8d48c86..c1da224 100644
 --- a/telephony/java/com/android/internal/telephony/RILConstants.java
 +++ b/telephony/java/com/android/internal/telephony/RILConstants.java
-@@ -354,4 +354,5 @@ cat include/telephony/ril.h | \
-     int RIL_UNSOL_RADIO_CAPABILITY = 1042;
+@@ -372,4 +372,5 @@ cat include/telephony/ril.h | \
      int RIL_UNSOL_ON_SS = 1043;
      int RIL_UNSOL_STK_CC_ALPHA_NOTIFY = 1044;
+     int RIL_UNSOL_LCEDATA_RECV = 1045;
 +    int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002; /* Samsung STK */
  }
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 845038fe84e2a2f42ce5fa45111550716d64a8c4 Mon Sep 17 00:00:00 2001
+From 2cc043faa21042087332e7740ecc1e57ad3e9342 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:47:35 +0700
-Subject: [PATCH 4/6] frameworks: base: add KEYCODE_HOME to wake keys
+Subject: [PATCH 4/7] frameworks: base: add KEYCODE_HOME to wake keys
 
 Change-Id: I77d70df2263dd9c75b02efde18d91585b1ad29f9
 ---
@@ -230,11 +228,11 @@ Change-Id: I77d70df2263dd9c75b02efde18d91585b1ad29f9
  1 file changed, 1 insertion(+)
 
 diff --git a/core/java/android/view/KeyEvent.java b/core/java/android/view/KeyEvent.java
-index 243a0fc..691c342 100644
+index a9bf92b..b7a42f6 100644
 --- a/core/java/android/view/KeyEvent.java
 +++ b/core/java/android/view/KeyEvent.java
-@@ -1809,6 +1809,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
-             case KeyEvent.KEYCODE_SLEEP:
+@@ -1830,6 +1830,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
+             case KeyEvent.KEYCODE_MENU:
              case KeyEvent.KEYCODE_WAKEUP:
              case KeyEvent.KEYCODE_PAIRING:
 +            case KeyEvent.KEYCODE_HOME:
@@ -242,13 +240,13 @@ index 243a0fc..691c342 100644
          }
          return false;
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From b0fb3463f92814a495a1af0cdd09bbfa6b5b9d53 Mon Sep 17 00:00:00 2001
+From d29614fc29c9bb49653299e049082a144cf2f321 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 23 Nov 2012 14:23:16 +0000
-Subject: [PATCH 5/6] Reintroduce button-backlight (and respective inactivity
+Subject: [PATCH 5/7] Reintroduce button-backlight (and respective inactivity
  timeout)
 
 The power manager rewrite from Change I1d7a52e98f0449f76d70bf421f6a7f245957d1d7
@@ -266,10 +264,10 @@ Change-Id: I6094c446e0b8c23f57d30652a3cbd35dee5e821a
  2 files changed, 12 insertions(+)
 
 diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
-index 78610ff..49cc524 100644
+index 452378f..bd45c0a 100644
 --- a/services/core/java/com/android/server/display/DisplayPowerController.java
 +++ b/services/core/java/com/android/server/display/DisplayPowerController.java
-@@ -584,6 +584,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+@@ -595,6 +595,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
          // Use zero brightness when screen is off.
          if (state == Display.STATE_OFF) {
              brightness = PowerManager.BRIGHTNESS_OFF;
@@ -277,7 +275,7 @@ index 78610ff..49cc524 100644
          }
  
          // Configure auto-brightness.
-@@ -632,6 +633,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+@@ -646,6 +647,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
          if (brightness < 0 && (state == Display.STATE_DOZE
                  || state == Display.STATE_DOZE_SUSPEND)) {
              brightness = mScreenBrightnessDozeConfig;
@@ -286,19 +284,19 @@ index 78610ff..49cc524 100644
  
          // Apply manual brightness.
 diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
-index 9786b42..f1b00b0 100644
+index b920f97..94245c7 100644
 --- a/services/core/java/com/android/server/power/PowerManagerService.java
 +++ b/services/core/java/com/android/server/power/PowerManagerService.java
-@@ -148,6 +148,8 @@ public final class PowerManagerService extends SystemService
-     private static final int POWER_HINT_INTERACTION = 2;
-     private static final int POWER_HINT_LOW_POWER = 5;
+@@ -159,6 +159,8 @@ public final class PowerManagerService extends SystemService
+     // Default setting for double tap to wake.
+     private static final int DEFAULT_DOUBLE_TAP_TO_WAKE = 0;
  
 +    private static final int BUTTON_ON_DURATION = 5 * 1000;
 +
      private final Context mContext;
      private final ServiceThread mHandlerThread;
      private final PowerManagerHandler mHandler;
-@@ -163,6 +165,7 @@ public final class PowerManagerService extends SystemService
+@@ -174,6 +176,7 @@ public final class PowerManagerService extends SystemService
      private SettingsObserver mSettingsObserver;
      private DreamManagerInternal mDreamManager;
      private Light mAttentionLight;
@@ -306,7 +304,7 @@ index 9786b42..f1b00b0 100644
  
      private final Object mLock = new Object();
  
-@@ -510,6 +513,7 @@ public final class PowerManagerService extends SystemService
+@@ -540,6 +543,7 @@ public final class PowerManagerService extends SystemService
  
              mLightsManager = getLocalService(LightsManager.class);
              mAttentionLight = mLightsManager.getLight(LightsManager.LIGHT_ID_ATTENTION);
@@ -314,7 +312,7 @@ index 9786b42..f1b00b0 100644
  
              // Initialize display power management.
              mDisplayManagerInternal.initPowerManagement(
-@@ -1457,6 +1461,12 @@ public final class PowerManagerService extends SystemService
+@@ -1531,6 +1535,12 @@ public final class PowerManagerService extends SystemService
                      nextTimeout = mLastUserActivityTime
                              + screenOffTimeout - screenDimDuration;
                      if (now < nextTimeout) {
@@ -328,13 +326,13 @@ index 9786b42..f1b00b0 100644
                      } else {
                          nextTimeout = mLastUserActivityTime + screenOffTimeout;
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 5de64814d1b0d7332548506c754fcd3eebf29478 Mon Sep 17 00:00:00 2001
+From e4bbeb583f5a9e713827c4344a70ec9eeaacfdff Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
-Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any
+Subject: [PATCH 6/7] PowerManagerService: only turn on button light when any
  button is pressed
 
 * Also reduce the timeout to 2 seconds
@@ -347,19 +345,19 @@ Change-Id: I6b15c45b713bcbc290a1026805c46109060f9990
  1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
-index f1b00b0..d7189f0 100644
+index 94245c7..afc728d 100644
 --- a/services/core/java/com/android/server/power/PowerManagerService.java
 +++ b/services/core/java/com/android/server/power/PowerManagerService.java
-@@ -148,7 +148,7 @@ public final class PowerManagerService extends SystemService
-     private static final int POWER_HINT_INTERACTION = 2;
-     private static final int POWER_HINT_LOW_POWER = 5;
+@@ -159,7 +159,7 @@ public final class PowerManagerService extends SystemService
+     // Default setting for double tap to wake.
+     private static final int DEFAULT_DOUBLE_TAP_TO_WAKE = 0;
  
 -    private static final int BUTTON_ON_DURATION = 5 * 1000;
 +    private static final int BUTTON_ON_DURATION = 2 * 1000;
  
      private final Context mContext;
      private final ServiceThread mHandlerThread;
-@@ -206,6 +206,7 @@ public final class PowerManagerService extends SystemService
+@@ -217,6 +217,7 @@ public final class PowerManagerService extends SystemService
      // Timestamp of the last call to user activity.
      private long mLastUserActivityTime;
      private long mLastUserActivityTimeNoChangeLights;
@@ -367,7 +365,7 @@ index f1b00b0..d7189f0 100644
  
      // Timestamp of last interactive power hint.
      private long mLastInteractivePowerHintTime;
-@@ -988,6 +989,11 @@ public final class PowerManagerService extends SystemService
+@@ -1046,6 +1047,11 @@ public final class PowerManagerService extends SystemService
                      return true;
                  }
              } else {
@@ -379,7 +377,7 @@ index f1b00b0..d7189f0 100644
                  if (eventTime > mLastUserActivityTime) {
                      mLastUserActivityTime = eventTime;
                      mDirty |= DIRTY_USER_ACTIVITY;
-@@ -1461,7 +1467,7 @@ public final class PowerManagerService extends SystemService
+@@ -1535,7 +1541,7 @@ public final class PowerManagerService extends SystemService
                      nextTimeout = mLastUserActivityTime
                              + screenOffTimeout - screenDimDuration;
                      if (now < nextTimeout) {
@@ -389,5 +387,49 @@ index f1b00b0..d7189f0 100644
                          } else {
                              mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
+
+
+From 5b9fc16d13006c334347d7ace3da4f5457735794 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 10 Oct 2015 22:37:18 +0700
+Subject: [PATCH 7/7] TOMERGE: DisplayPowerController.java
+
+Change-Id: I14d446d5f369f6e47a24878b977946009b7cb0c9
+---
+ .../core/java/com/android/server/display/DisplayPowerController.java | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
+index bd45c0a..b1c3a77 100644
+--- a/services/core/java/com/android/server/display/DisplayPowerController.java
++++ b/services/core/java/com/android/server/display/DisplayPowerController.java
+@@ -19,6 +19,7 @@ package com.android.server.display;
+ import com.android.internal.app.IBatteryStats;
+ import com.android.server.LocalServices;
+ import com.android.server.am.BatteryStatsService;
++import com.android.server.lights.LightsManager;
+ 
+ import android.animation.Animator;
+ import android.animation.ObjectAnimator;
+@@ -124,6 +125,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+     // Battery stats.
+     private final IBatteryStats mBatteryStats;
+ 
++    // The lights service.
++    private final LightsManager mLights;
++
+     // The sensor manager.
+     private final SensorManager mSensorManager;
+ 
+@@ -262,6 +266,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+         mCallbacks = callbacks;
+ 
+         mBatteryStats = BatteryStatsService.getService();
++        mLights = LocalServices.getService(LightsManager.class);
+         mSensorManager = sensorManager;
+         mWindowManagerPolicy = LocalServices.getService(WindowManagerPolicy.class);
+         mBlanker = blanker;
+-- 
+2.3.8 (Apple Git-58)
 

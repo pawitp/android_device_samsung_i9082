@@ -1,4 +1,4 @@
-From 3ed08adcfd71a5e49a6cdc829a1dd56ebf4550f7 Mon Sep 17 00:00:00 2001
+From ccb994daf19f7a568136cb53b632bec1b3c6ae7d Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:54:13 +0000
 Subject: [PATCH] wifi: Set the mode at native layer
@@ -14,11 +14,11 @@ Change-Id: I6eee2cc53b5f1e70306e252e52c909833f220515
  3 files changed, 10 insertions(+)
 
 diff --git a/service/java/com/android/server/wifi/WifiNative.java b/service/java/com/android/server/wifi/WifiNative.java
-index 864976c..f67f0e3 100644
+index 899529d..923725e 100644
 --- a/service/java/com/android/server/wifi/WifiNative.java
 +++ b/service/java/com/android/server/wifi/WifiNative.java
-@@ -1129,6 +1129,8 @@ public class WifiNative {
-         return doBooleanCommand("ANQP_GET " + bssid + " " + subtypes);
+@@ -1229,6 +1229,8 @@ public class WifiNative {
+         return doBooleanCommand("NFC_REPORT_HANDOVER RESP P2P " + requestMessage + " 00");
      }
  
 +    public native static boolean setMode(int mode);
@@ -27,10 +27,10 @@ index 864976c..f67f0e3 100644
  
      private static final String TAG = "WifiNative-HAL";
 diff --git a/service/java/com/android/server/wifi/WifiStateMachine.java b/service/java/com/android/server/wifi/WifiStateMachine.java
-index fb9e9fd..a3e2574 100644
+index 4bc62b3..12b3e98 100644
 --- a/service/java/com/android/server/wifi/WifiStateMachine.java
 +++ b/service/java/com/android/server/wifi/WifiStateMachine.java
-@@ -1945,6 +1945,7 @@ public class WifiStateMachine extends StateMachine {
+@@ -1939,6 +1939,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiPno
       */
      public void setSupplicantRunning(boolean enable) {
          if (enable) {
@@ -38,7 +38,7 @@ index fb9e9fd..a3e2574 100644
              sendMessage(CMD_START_SUPPLICANT);
          } else {
              sendMessage(CMD_STOP_SUPPLICANT);
-@@ -1956,6 +1957,7 @@ public class WifiStateMachine extends StateMachine {
+@@ -1950,6 +1951,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiPno
       */
      public void setHostApRunning(WifiConfiguration wifiConfig, boolean enable) {
          if (enable) {
@@ -47,10 +47,10 @@ index fb9e9fd..a3e2574 100644
          } else {
              sendMessage(CMD_STOP_AP);
 diff --git a/service/jni/com_android_server_wifi_WifiNative.cpp b/service/jni/com_android_server_wifi_WifiNative.cpp
-index 2bd4229..d90981b 100644
+index 3c7270a..cff9bcf 100644
 --- a/service/jni/com_android_server_wifi_WifiNative.cpp
 +++ b/service/jni/com_android_server_wifi_WifiNative.cpp
-@@ -85,6 +85,11 @@ static jstring doStringCommand(JNIEnv* env, jstring javaCommand) {
+@@ -150,6 +150,11 @@ static jstring doStringCommand(JNIEnv* env, jstring javaCommand) {
      return env->NewStringUTF(reply);
  }
  
@@ -62,7 +62,7 @@ index 2bd4229..d90981b 100644
  static jboolean android_net_wifi_isDriverLoaded(JNIEnv* env, jobject)
  {
      return (::is_wifi_driver_loaded() == 1);
-@@ -1072,6 +1077,7 @@ static JNINativeMethod gWifiMethods[] = {
+@@ -2086,6 +2091,7 @@ static JNINativeMethod gWifiMethods[] = {
      { "doIntCommandNative", "(Ljava/lang/String;)I", (void*)android_net_wifi_doIntCommand },
      { "doStringCommandNative", "(Ljava/lang/String;)Ljava/lang/String;",
              (void*) android_net_wifi_doStringCommand },
@@ -71,5 +71,5 @@ index 2bd4229..d90981b 100644
      { "stopHalNative", "()V", (void*) android_net_wifi_stopHal },
      { "waitForHalEventNative", "()V", (void*) android_net_wifi_waitForHalEvents },
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 

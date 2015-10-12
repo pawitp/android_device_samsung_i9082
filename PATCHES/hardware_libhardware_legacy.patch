@@ -1,4 +1,4 @@
-From e241c4afde811857511b8ec76dc26718a85f9c98 Mon Sep 17 00:00:00 2001
+From baf997de52448a1d56827ddcb86373ecfa684d0a Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 1 Nov 2013 20:35:09 +0000
 Subject: [PATCH 1/2] wifi: Choose correct nvram file on samsung hardware
@@ -10,10 +10,10 @@ Change-Id: I9d428ae61c1ce80d97e6ea513839ed64e8f61440
  2 files changed, 44 insertions(+), 4 deletions(-)
 
 diff --git a/wifi/Android.mk b/wifi/Android.mk
-index 99a4b0e..815b494 100644
+index ed59b40..4962639 100644
 --- a/wifi/Android.mk
 +++ b/wifi/Android.mk
-@@ -31,4 +31,9 @@ ifdef WPA_SUPPLICANT_VERSION
+@@ -41,4 +41,9 @@ ifdef WPA_SUPPLICANT_VERSION
  LOCAL_CFLAGS += -DLIBWPA_CLIENT_EXISTS
  LOCAL_SHARED_LIBRARIES += libwpa_client
  endif
@@ -24,7 +24,7 @@ index 99a4b0e..815b494 100644
 +
  LOCAL_SHARED_LIBRARIES += libnetutils
 diff --git a/wifi/wifi.c b/wifi/wifi.c
-index 87be8d8..823cbaa 100644
+index 880f6fc..447033e 100644
 --- a/wifi/wifi.c
 +++ b/wifi/wifi.c
 @@ -132,6 +132,32 @@ static char supplicant_name[PROPERTY_VALUE_MAX];
@@ -60,7 +60,7 @@ index 87be8d8..823cbaa 100644
  static int insmod(const char *filename, const char *args)
  {
      void *module;
-@@ -232,13 +258,22 @@ int wifi_load_driver()
+@@ -256,13 +282,22 @@ int wifi_load_driver()
  #ifdef WIFI_DRIVER_MODULE_PATH
      char driver_status[PROPERTY_VALUE_MAX];
      int count = 100; /* wait at most 20 seconds for completion */
@@ -88,10 +88,10 @@ index 87be8d8..823cbaa 100644
      if (strcmp(FIRMWARE_LOADER,"") == 0) {
          /* usleep(WIFI_DRIVER_LOADER_DELAY); */
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From c2e0d87352daa69461ef2f0be54e9071b8578587 Mon Sep 17 00:00:00 2001
+From cfe724304140f6c9673cc51f620d76fd14e9e98e Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Thu, 20 Dec 2012 20:39:18 -0800
 Subject: [PATCH 2/2] wifi: Add support for AP module args
@@ -106,10 +106,10 @@ Change-Id: I5ec65460b7c9f8ef34170473cf1bdaa36587767b
  3 files changed, 26 insertions(+)
 
 diff --git a/include/hardware_legacy/wifi.h b/include/hardware_legacy/wifi.h
-index 7a64d52..d227922 100644
+index 93f0383..3d3f459 100644
 --- a/include/hardware_legacy/wifi.h
 +++ b/include/hardware_legacy/wifi.h
-@@ -144,6 +144,11 @@ const char *wifi_get_fw_path(int fw_type);
+@@ -145,6 +145,11 @@ const char *wifi_get_fw_path(int fw_type);
  int wifi_change_fw_path(const char *fwpath);
  
  /**
@@ -122,7 +122,7 @@ index 7a64d52..d227922 100644
   */
  #define WIFI_ENTROPY_FILE	"/data/misc/wifi/entropy.bin"
 diff --git a/wifi/Android.mk b/wifi/Android.mk
-index 815b494..8b86d4b 100644
+index 4962639..bf803a7 100644
 --- a/wifi/Android.mk
 +++ b/wifi/Android.mk
 @@ -6,6 +6,9 @@ endif
@@ -136,7 +136,7 @@ index 815b494..8b86d4b 100644
  LOCAL_CFLAGS += -DWIFI_DRIVER_MODULE_NAME=\"$(WIFI_DRIVER_MODULE_NAME)\"
  endif
 diff --git a/wifi/wifi.c b/wifi/wifi.c
-index 823cbaa..7c7db52 100644
+index 447033e..9be6110 100644
 --- a/wifi/wifi.c
 +++ b/wifi/wifi.c
 @@ -69,6 +69,7 @@ static struct wpa_ctrl *monitor_conn;
@@ -165,7 +165,7 @@ index 823cbaa..7c7db52 100644
  #endif
  static const char FIRMWARE_LOADER[]     = WIFI_FIRMWARE_LOADER;
  static const char DRIVER_PROP_NAME[]    = "wlan.driver.status";
-@@ -261,8 +266,16 @@ int wifi_load_driver()
+@@ -285,8 +290,16 @@ int wifi_load_driver()
      char module_arg2[256];
  
  #ifdef SAMSUNG_WIFI
@@ -182,7 +182,7 @@ index 823cbaa..7c7db52 100644
  
      if (insmod(DRIVER_MODULE_PATH, module_arg2) < 0) {
  #else
-@@ -840,3 +853,8 @@ int wifi_change_fw_path(const char *fwpath)
+@@ -867,3 +880,8 @@ int wifi_change_fw_path(const char *fwpath)
      close(fd);
      return ret;
  }
@@ -192,5 +192,5 @@ index 823cbaa..7c7db52 100644
 +    return 0;
 +}
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 

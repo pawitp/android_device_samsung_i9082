@@ -1,7 +1,7 @@
-From 1c46c6b165d9a2245611c8cc84671586c85f15e5 Mon Sep 17 00:00:00 2001
+From 2e1d60dda14144ecfa2b265a1a235927cb96d9d3 Mon Sep 17 00:00:00 2001
 From: Koushik Dutta <koushd@gmail.com>
 Date: Sat, 26 Jun 2010 22:53:55 -0700
-Subject: [PATCH 01/15] add support for overriding build.prop settings.
+Subject: [PATCH 01/16] add support for overriding build.prop settings.
 
 Change-Id: Ie4224d608b7bcb0c2087bd77bc954f8f5f9b6495
 ---
@@ -11,10 +11,10 @@ Change-Id: Ie4224d608b7bcb0c2087bd77bc954f8f5f9b6495
  3 files changed, 5 insertions(+)
 
 diff --git a/core/Makefile b/core/Makefile
-index 15c7f02..940972c 100644
+index 22dcee1..0b69c90 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -228,6 +228,7 @@ endif
+@@ -221,6 +221,7 @@ endif
  			TARGET_CPU_ABI="$(TARGET_CPU_ABI)" \
  			TARGET_CPU_ABI2="$(TARGET_CPU_ABI2)" \
  			TARGET_AAPT_CHARACTERISTICS="$(TARGET_AAPT_CHARACTERISTICS)" \
@@ -23,7 +23,7 @@ index 15c7f02..940972c 100644
  	$(hide) $(foreach file,$(system_prop_file), \
  		if [ -f "$(file)" ]; then \
 diff --git a/core/product.mk b/core/product.mk
-index f0fc921..0918357 100644
+index 4e8bff1..83e64be 100644
 --- a/core/product.mk
 +++ b/core/product.mk
 @@ -65,6 +65,7 @@ endef
@@ -35,10 +35,10 @@ index f0fc921..0918357 100644
      PRODUCT_MODEL \
      PRODUCT_LOCALES \
 diff --git a/core/product_config.mk b/core/product_config.mk
-index e7fa75e..f5c498c 100644
+index 5240ae7..a87d0c6 100644
 --- a/core/product_config.mk
 +++ b/core/product_config.mk
-@@ -373,6 +373,9 @@ PRODUCT_PROPERTY_OVERRIDES := \
+@@ -343,6 +343,9 @@ PRODUCT_PROPERTY_OVERRIDES := \
  PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
      $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_DEFAULT_PROPERTY_OVERRIDES))
  
@@ -49,13 +49,13 @@ index e7fa75e..f5c498c 100644
  PRODUCT_PACKAGE_OVERLAYS := \
      $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_PACKAGE_OVERLAYS))
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From bd5f17eebae7801eea0ddf9219c17e566e3ef797 Mon Sep 17 00:00:00 2001
+From c80c7c3841226050f3be0ab340eb467047484bcd Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 11 Apr 2012 11:21:23 +0100
-Subject: [PATCH 02/15] build: Inline kernel building as a buildtime task
+Subject: [PATCH 02/16] build: Inline kernel building as a buildtime task
 
 Kernel image integration is now done in the build system. The
 "one true way" of doing this is to download the kernel source
@@ -449,13 +449,13 @@ index 0000000..4d519a0
 +ALL_PREBUILT += $(INSTALLED_KERNEL_TARGET)
 +endif
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 426ab6319cdeeb21b6ff52b560682a87215f93ce Mon Sep 17 00:00:00 2001
+From c7833b2a6588e828a6287e99afb5933b654438ab Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Sun, 9 Nov 2014 17:27:51 +0530
-Subject: [PATCH 03/15] Allow specifying kernel toolchain and prefix
+Subject: [PATCH 03/16] Allow specifying kernel toolchain and prefix
 
 Change-Id: Ib75cfe772e073f2196455f3e3dfba247f6b3feff
 ---
@@ -497,13 +497,13 @@ index 4d519a0..b0ab1de 100644
  endif
  
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 76c49e8ebffc3da0cd469f6c81fd3e3bd2e826de Mon Sep 17 00:00:00 2001
+From fc24d384c919346ce9d5cea1ee91e2b44c9b5010 Mon Sep 17 00:00:00 2001
 From: Alvin Francis <nivlafx@gmail.com>
 Date: Mon, 1 Dec 2014 13:13:40 -0400
-Subject: [PATCH 04/15] Fix libelf path
+Subject: [PATCH 04/16] Fix libelf path
 
 Fixes kernel build
 
@@ -527,13 +527,13 @@ index b0ab1de..e6be63a 100644
  
  ifeq ($(TARGET_KERNEL_MODULES),)
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 33fa47230661ba32358156e6a8f248c87f0252c8 Mon Sep 17 00:00:00 2001
+From 1ec979e6477595f8d9517bb2429e674af71dda0a Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Wed, 24 Dec 2014 03:18:54 -0800
-Subject: [PATCH 05/15] core: More flexible kernel configuration
+Subject: [PATCH 05/16] core: More flexible kernel configuration
 
  * Allow various combinations of kernel vs. userspace architectures
  * Get rid of various assumptions about everything being ARM or 32-bit
@@ -741,13 +741,13 @@ index e6be63a..9f40eec 100644
  endif # FULL_KERNEL_BUILD
  
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From a4b3af6774386a4e50f51331ae5460df28840de8 Mon Sep 17 00:00:00 2001
+From 3acaa14dafb0ce2e4743d8c2370f67e5009bc5e3 Mon Sep 17 00:00:00 2001
 From: dhacker29 <dhackerdvm@gmail.com>
 Date: Sun, 18 Jan 2015 19:34:14 -0500
-Subject: [PATCH 06/15] Fix kernel.mk if SELINUX or VARIANT_DEFCONFIG is
+Subject: [PATCH 06/16] Fix kernel.mk if SELINUX or VARIANT_DEFCONFIG is
  defined
 
 KERNEL_HEADER_DEFCONFIG was ignoring SELINUX_DEFCONFIG thus breaking
@@ -778,13 +778,13 @@ index 9f40eec..a2eb21e 100644
  			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE)'"; \
  			echo $(KERNEL_CONFIG_OVERRIDE) >> $(KERNEL_OUT)/.config; \
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 38cd8c56afb362c47e82bde3553a00a46ec31302 Mon Sep 17 00:00:00 2001
+From 64b2bbc48971483a02ba106cb280e327205a88b2 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <ricardo@cyngn.com>
 Date: Tue, 20 Jan 2015 01:41:19 +0000
-Subject: [PATCH 07/15] build: kernel: Fix stray "@"
+Subject: [PATCH 07/16] build: kernel: Fix stray "@"
 
 Nested "$(hide)"s (makefile @) don't work. There was one at the
 beginning of the script, remove the inner one to prevent it from
@@ -815,13 +815,13 @@ index a2eb21e..2c49271 100644
  	$(hide) if [ ! -z "$(KERNEL_CONFIG_OVERRIDE)" ]; then \
  			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE)'"; \
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 5e463b8135d38aa38d3b69a5b4a9b7be2479ec35 Mon Sep 17 00:00:00 2001
+From 3a1aabef3e14125bf1f8acc9145e0d784becfffb Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Mon, 9 Mar 2015 15:07:08 +0000
-Subject: [PATCH 08/15] build: Add support for additional kernel config snippet
+Subject: [PATCH 08/16] build: Add support for additional kernel config snippet
 
  * Add support for TARGET_KERNEL_ADDITIONAL_CONFIG which will append a
    config snippet from arch/$ARCH/configs/ to the main defconfig.
@@ -870,13 +870,13 @@ index 2c49271..764532c 100644
  kerneltags: $(KERNEL_OUT) $(KERNEL_CONFIG)
  	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) tags
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From cfe67ccae5f910a9a307a19d383a50e1fbc8da7b Mon Sep 17 00:00:00 2001
+From 22ab9b2ad5203ce07259d99ca2e5cef0a3b69f26 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 16 Dec 2014 19:19:52 +0700
-Subject: [PATCH 09/15] minigzip dependency for kernel
+Subject: [PATCH 09/16] minigzip dependency for kernel
 
 i9082 kernel uses minigzip
 
@@ -899,13 +899,13 @@ index 764532c..510047d 100644
  	-$(MAKE) $(MAKE_FLAGS) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) dtbs
  	-$(MAKE) $(MAKE_FLAGS) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) modules
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 414df1fc42db35522e8ad6edf29ab8ca9ef1a32b Mon Sep 17 00:00:00 2001
+From 2b7772cb0e76e29bb3b4a040cc99d1c24bfcb0a5 Mon Sep 17 00:00:00 2001
 From: Cristoforo Cataldo <cristoforo.cataldo@gmail.com>
 Date: Sun, 30 Nov 2014 06:12:35 +0100
-Subject: [PATCH 10/15] core: Enable -mcpu=cortex-a9 flag for Cortex-A9 cpu
+Subject: [PATCH 10/16] core: Enable -mcpu=cortex-a9 flag for Cortex-A9 cpu
  variant
 
 Change-Id: I9294a518bcdc21ccbae72eadd9f3c1a12982d028
@@ -917,20 +917,20 @@ Conflicts:
  1 file changed, 4 insertions(+)
 
 diff --git a/core/combo/arch/arm/armv7-a-neon.mk b/core/combo/arch/arm/armv7-a-neon.mk
-index c6603db..6554e91 100644
+index 99f17aa..164dc2a 100644
 --- a/core/combo/arch/arm/armv7-a-neon.mk
 +++ b/core/combo/arch/arm/armv7-a-neon.mk
-@@ -9,6 +9,9 @@ ARCH_ARM_HAVE_NEON              := true
- ifneq (,$(filter cortex-a15 krait denver,$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)))
- 	arch_variant_cflags := -mcpu=cortex-a15
+@@ -19,6 +19,9 @@ ifneq (,$(filter cortex-a15 krait denver,$(TARGET_$(combo_2nd_arch_prefix)CPU_VA
+ 	arch_variant_ldflags := \
+ 		-Wl,--no-fix-cortex-a8
  else
 +ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),cortex-a9)
 +	arch_variant_cflags := -mcpu=cortex-a9
 +else
  ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),cortex-a8)
  	arch_variant_cflags := -mcpu=cortex-a8
- else
-@@ -19,6 +22,7 @@ else
+ 	arch_variant_ldflags := \
+@@ -36,6 +39,7 @@ else
  endif
  endif
  endif
@@ -939,26 +939,26 @@ index c6603db..6554e91 100644
  arch_variant_cflags += \
      -mfloat-abi=softfp \
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 82f54ceaac413b1fb2eaa04f203a4461375aecff Mon Sep 17 00:00:00 2001
+From caa2b003400306aeda2abb26433cf19145980203 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 16 Nov 2011 23:14:27 +0000
-Subject: [PATCH 11/15] ota: Remove cruft we don't care about
+Subject: [PATCH 11/16] ota: Remove cruft we don't care about
 
 Skip the date check (downgrade to your content), and don't include
 recovery in otapackages.
 5.0.0 update: We want the recovery patchstuff back
 ---
- tools/releasetools/ota_from_target_files | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ tools/releasetools/ota_from_target_files.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/releasetools/ota_from_target_files b/tools/releasetools/ota_from_target_files
-index 945f11a..e2e73df 100755
---- a/tools/releasetools/ota_from_target_files
-+++ b/tools/releasetools/ota_from_target_files
-@@ -495,10 +495,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
+diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
+index 9951b39..3587b35 100755
+--- a/tools/releasetools/ota_from_target_files.py
++++ b/tools/releasetools/ota_from_target_files.py
+@@ -521,10 +521,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
    has_recovery_patch = HasRecoveryPatch(input_zip)
    block_based = OPTIONS.block_based and has_recovery_patch
  
@@ -973,22 +973,14 @@ index 945f11a..e2e73df 100755
  
    AppendAssertions(script, OPTIONS.info_dict, oem_dict)
    device_specific.FullOTA_Assertions()
-@@ -574,7 +574,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
-     if not has_recovery_patch:
-       script.UnpackPackageDir("recovery", "/system")
-     script.UnpackPackageDir("system", "/system")
--
-     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
-     script.MakeSymlinks(symlinks)
- 
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 56388a9ff21886d40b056d4de070a78d120e3cde Mon Sep 17 00:00:00 2001
+From 8f626b77ec758fe04eafea23a8586e1628f149b4 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Thu, 27 Sep 2012 18:11:25 +0530
-Subject: [PATCH 12/15] envsetup: set OUT_DIR to an absolute path always
+Subject: [PATCH 12/16] envsetup: set OUT_DIR to an absolute path always
 
 OUT_DIR was set to $(TOPDIR)out previously,
 but $(TOPDIR) was null, so it was a relative path.
@@ -1007,10 +999,10 @@ Change-Id: I459a3b1325a1bbea0565cd73f6acf160d4ed9b39
  1 file changed, 4 insertions(+)
 
 diff --git a/core/envsetup.mk b/core/envsetup.mk
-index 124a91b..62ce78d 100644
+index bf04455..5f43cf9 100644
 --- a/core/envsetup.mk
 +++ b/core/envsetup.mk
-@@ -199,8 +199,12 @@ endif
+@@ -207,8 +207,12 @@ endif
  
  ifeq (,$(strip $(OUT_DIR)))
  ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
@@ -1024,13 +1016,13 @@ index 124a91b..62ce78d 100644
  endif
  endif
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From 1f71657272e1a62bfc5c104129f557419dd1bdb9 Mon Sep 17 00:00:00 2001
+From 743f70fabea6ad0468690f5d278ce5b47563057c Mon Sep 17 00:00:00 2001
 From: David Ferguson <ferguson.david@gmail.com>
 Date: Thu, 4 Oct 2012 10:15:58 -0400
-Subject: [PATCH 13/15] build: work around missing readlink -f on Mac
+Subject: [PATCH 13/16] build: work around missing readlink -f on Mac
 
 Change-Id: I5d56366cf33a2b02f1886c87815d00cff279779d
 ---
@@ -1038,10 +1030,10 @@ Change-Id: I5d56366cf33a2b02f1886c87815d00cff279779d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/envsetup.mk b/core/envsetup.mk
-index 62ce78d..ebc748a 100644
+index 5f43cf9..eb19f4f 100644
 --- a/core/envsetup.mk
 +++ b/core/envsetup.mk
-@@ -202,7 +202,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
+@@ -210,7 +210,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
  ifneq ($(TOPDIR),)
  OUT_DIR := $(TOPDIR)out
  else
@@ -1051,13 +1043,13 @@ index 62ce78d..ebc748a 100644
  else
  OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From c2e1d83e68a30110ce85f0cbdfdbcec1d5681414 Mon Sep 17 00:00:00 2001
+From 103cd37440f5b2397a9936d89cda932de24485c7 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <cdesai@cyanogenmod.org>
 Date: Wed, 1 May 2013 15:48:08 +0530
-Subject: [PATCH 14/15] envsetup: use $(CURDIR) for getting current directory
+Subject: [PATCH 14/16] envsetup: use $(CURDIR) for getting current directory
 
 Change-Id: I5f00faf64ec31d86dd2e48ec038748ce8499380b
 ---
@@ -1065,10 +1057,10 @@ Change-Id: I5f00faf64ec31d86dd2e48ec038748ce8499380b
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/envsetup.mk b/core/envsetup.mk
-index ebc748a..468661f 100644
+index eb19f4f..08524b3 100644
 --- a/core/envsetup.mk
 +++ b/core/envsetup.mk
-@@ -202,7 +202,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
+@@ -210,7 +210,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
  ifneq ($(TOPDIR),)
  OUT_DIR := $(TOPDIR)out
  else
@@ -1078,13 +1070,13 @@ index ebc748a..468661f 100644
  else
  OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From c419d84a7b1c24a8878d2e4eb221e19568cc83af Mon Sep 17 00:00:00 2001
+From 5ac43bf0e26525a014fc73d4d794d9fb4be08c4c Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 12 Apr 2011 10:57:22 +0100
-Subject: [PATCH 15/15] Allow a device to generically define its own headers
+Subject: [PATCH 15/16] Allow a device to generically define its own headers
 
 We have a few cases of devices including specific versions of projects
 just because of modified headers (msm_mdp.h comes to mind), and I just
@@ -1115,10 +1107,10 @@ Change-Id: I489b2aab6dbacd9122d834f85e07b63ed1271f07
  1 file changed, 5 insertions(+)
 
 diff --git a/core/binary.mk b/core/binary.mk
-index 1e313ff..e8b3572 100644
+index b8003d7..dfc53c7 100644
 --- a/core/binary.mk
 +++ b/core/binary.mk
-@@ -818,6 +818,11 @@ normal_objects := \
+@@ -956,6 +956,11 @@ normal_objects := \
  
  all_objects := $(normal_objects) $(gen_o_objects)
  
@@ -1131,5 +1123,62 @@ index 1e313ff..e8b3572 100644
  
  ifndef LOCAL_SDK_VERSION
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
+
+
+From bb3841f0f4f0274da731a1543f7debbe69d636a8 Mon Sep 17 00:00:00 2001
+From: Brandon McAnsh <brandon.mcansh@gmail.com>
+Date: Sat, 10 Oct 2015 10:20:38 -0400
+Subject: [PATCH 16/16] Set kernel gcc version to 4.8 for ARM targets
+
+* This causes the check during path setup for an arm-eabi-4.9 toolchain to fail,
+      thus only leaving the arm-linux-androideabi- to exist.
+* This is only temporary as Google is building with 4.9 and 4.8 gcc's
+       have been removed in their next release
+
+Was updated to 4.9 here: https://github.com/CyanogenMod/android_build/commit/bf8346e90c5a6d5d809fa7166d50714b2b6bc30d
+Toolchain check here: https://github.com/CyanogenMod/android_build/blob/cm-13.0/envsetup.sh#L189
+
+Change-Id: I24bff10e392a6cdced1797870e523144e83d611d
+Signed-off-by: Brandon McAnsh <brandon.mcansh@gmail.com>
+---
+ core/combo/TARGET_linux-arm.mk | 1 +
+ envsetup.sh                    | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/core/combo/TARGET_linux-arm.mk b/core/combo/TARGET_linux-arm.mk
+index 3651c39..5020865 100644
+--- a/core/combo/TARGET_linux-arm.mk
++++ b/core/combo/TARGET_linux-arm.mk
+@@ -39,6 +39,7 @@ $(combo_2nd_arch_prefix)TARGET_NDK_GCC_VERSION := 4.9
+ 
+ ifeq ($(strip $(TARGET_GCC_VERSION_EXP)),)
+ $(combo_2nd_arch_prefix)TARGET_GCC_VERSION := 4.9
++$(combo_2nd_arch_prefix)TARGET_LEGACY_GCC_VERSION := 4.8
+ else
+ $(combo_2nd_arch_prefix)TARGET_GCC_VERSION := $(TARGET_GCC_VERSION_EXP)
+ endif
+diff --git a/envsetup.sh b/envsetup.sh
+index dba64ee..5d0696d 100644
+--- a/envsetup.sh
++++ b/envsetup.sh
+@@ -129,6 +129,7 @@ function setpaths()
+     # defined in core/config.mk
+     targetgccversion=$(get_build_var TARGET_GCC_VERSION)
+     targetgccversion2=$(get_build_var 2ND_TARGET_GCC_VERSION)
++    targetlegacygccversion=$(get_build_var TARGET_LEGACY_GCC_VERSION)
+     export TARGET_GCC_VERSION=$targetgccversion
+ 
+     # The gcc toolchain does not exists for windows/cygwin. In this case, do not reference it.
+@@ -164,7 +165,7 @@ function setpaths()
+     case $ARCH in
+         arm)
+             # Legacy toolchain configuration used for ARM kernel compilation
+-            toolchaindir=arm/arm-eabi-$targetgccversion/bin
++            toolchaindir=arm/arm-eabi-$targetlegacygccversion/bin
+             if [ -d "$gccprebuiltdir/$toolchaindir" ]; then
+                  export ARM_EABI_TOOLCHAIN="$gccprebuiltdir/$toolchaindir"
+                  ANDROID_KERNEL_TOOLCHAIN_PATH="$ARM_EABI_TOOLCHAIN":
+-- 
+2.3.8 (Apple Git-58)
 

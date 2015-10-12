@@ -7,7 +7,7 @@ do
 	echo $folder
 	pushd ../../../../$folder
 
-	git reset --hard refs/tags/android-5.1.1_r1
+	git reset --hard refs/tags/android-6.0.0_r1
 	git am < $current/$i
 
 	popd

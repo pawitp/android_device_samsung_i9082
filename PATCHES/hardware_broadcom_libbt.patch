@@ -1,4 +1,4 @@
-From 35aa5900d02c52931aaf4d926ce09ad57712d433 Mon Sep 17 00:00:00 2001
+From 5b8262c61c11c9d38a57feaa57ea72fa248ea137 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 20:09:12 +0700
 Subject: [PATCH 1/2] libbt: switch to N_BRCM_HCI line disclipline for userial
@@ -10,10 +10,10 @@ Change-Id: I12c297c6b26fc0cb6f0a36ed8f5d04d4d36a4092
  1 file changed, 11 insertions(+)
 
 diff --git a/src/userial_vendor.c b/src/userial_vendor.c
-index 0f3f527..f4278ab 100644
+index 3ff518b..a038445 100644
 --- a/src/userial_vendor.c
 +++ b/src/userial_vendor.c
-@@ -195,6 +195,10 @@ int userial_vendor_open(tUSERIAL_CFG *p_cfg)
+@@ -196,6 +196,10 @@ int userial_vendor_open(tUSERIAL_CFG *p_cfg)
      uint16_t parity;
      uint8_t stop_bits;
  
@@ -24,7 +24,7 @@ index 0f3f527..f4278ab 100644
      vnd_userial.fd = -1;
  
      if (!userial_to_tcio_baud(p_cfg->baud, &baud))
-@@ -264,6 +268,13 @@ int userial_vendor_open(tUSERIAL_CFG *p_cfg)
+@@ -265,6 +269,13 @@ int userial_vendor_open(tUSERIAL_CFG *p_cfg)
      tcsetattr(vnd_userial.fd, TCSANOW, &vnd_userial.termios);
  
  #if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
@@ -39,10 +39,10 @@ index 0f3f527..f4278ab 100644
  #endif
  
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
 
-From f386d7477d2512bcac81314a5bb41990b22f0e38 Mon Sep 17 00:00:00 2001
+From 7460159c085b11ef40b8d3bded69781f3b0d5018 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Mon, 3 Dec 2012 02:34:56 -0800
 Subject: [PATCH 2/2] libbt: Add support for board-specific configuration
@@ -55,7 +55,7 @@ Change-Id: Ia657da71d0e3dad670def517fe3246556f8f6d5a
  1 file changed, 4 insertions(+)
 
 diff --git a/vnd_buildcfg.mk b/vnd_buildcfg.mk
-index ad61a4c..e4f1840 100644
+index 42349ba..a46a11f 100644
 --- a/vnd_buildcfg.mk
 +++ b/vnd_buildcfg.mk
 @@ -1,10 +1,14 @@
@@ -71,8 +71,8 @@ index ad61a4c..e4f1840 100644
  endif
 +endif
  GEN := $(generated_sources)/vnd_buildcfg.h
- TOOL := $(TOP_DIR)external/bluetooth/bluedroid/tools/gen-buildcfg.sh
+ TOOL := $(LOCAL_PATH)/gen-buildcfg.sh
  
 -- 
-2.3.5
+2.3.8 (Apple Git-58)
 
