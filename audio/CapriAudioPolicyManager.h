@@ -18,7 +18,7 @@
 
 #include <stdint.h>
 #include <sys/types.h>
-#include <AudioPolicyManager.h>
+#include <managerdefault/AudioPolicyManager.h>
 
 #ifndef ANDROID_CAPRI_AUDIO_POLICY_MANAGER_H
 #define ANDROID_CAPRI_AUDIO_POLICY_MANAGER_H
