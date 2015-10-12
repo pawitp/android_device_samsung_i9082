@@ -51,7 +51,10 @@ typedef uint32_t GpsPositionMode;
 #define GPS_POSITION_MODE_STANDALONE    0
 /** AGPS MS-Based mode. */
 #define GPS_POSITION_MODE_MS_BASED      1
-/** AGPS MS-Assisted mode. */
+/**
+ * AGPS MS-Assisted mode. This mode is not maintained by the platform anymore.
+ * It is strongly recommended to use GPS_POSITION_MODE_MS_BASE instead.
+ */
 #define GPS_POSITION_MODE_MS_ASSISTED   2
 
 /** Requested recurrence mode for GPS operation. */
@@ -293,6 +296,8 @@ typedef uint32_t GpsMeasurementFlags;
 #define GPS_MEASUREMENT_HAS_DOPPLER_SHIFT_UNCERTAINTY         (1<<16)
 /** A valid 'used in fix' flag is stored in the data structure. */
 #define GPS_MEASUREMENT_HAS_USED_IN_FIX                       (1<<17)
+/** The value of 'pseudorange rate' is uncorrected. */
+#define GPS_MEASUREMENT_HAS_UNCORRECTED_PSEUDORANGE_RATE      (1<<18)
 
 /**
  * Enumeration of the available values for the GPS Measurement's loss of lock.
@@ -619,6 +624,12 @@ typedef struct {
      * min_interval represents the time between fixes in milliseconds.
      * preferred_accuracy represents the requested fix accuracy in meters.
      * preferred_time represents the requested time to first fix in milliseconds.
+     *
+     * 'mode' parameter should be one of GPS_POSITION_MODE_MS_BASE
+     * or GPS_POSITION_MODE_STANDALONE.
+     * It is allowed by the platform (and it is recommended) to fallback to
+     * GPS_POSITION_MODE_MS_BASE if GPS_POSITION_MODE_MS_ASSISTED is passed in, and
+     * GPS_POSITION_MODE_MS_BASED is supported.
      */
     int   (*set_position_mode)(GpsPositionMode mode, GpsPositionRecurrence recurrence,
             uint32_t min_interval, uint32_t preferred_accuracy, uint32_t preferred_time);
@@ -664,6 +675,12 @@ typedef struct {
     size_t (*get_internal_state)(char* buffer, size_t bufferSize);
 } GpsDebugInterface;
 
+#pragma pack(push,4)
+// We need to keep the alignment of this data structure to 4-bytes, to ensure that in 64-bit
+// environments the size of this legacy definition does not collide with _v2. Implementations should
+// be using _v2 and _v3, so it's OK to pay the 'unaligned' penalty in 64-bit if an old
+// implementation is still in use.
+
 /** Represents the status of AGPS. */
 typedef struct {
     /** set to sizeof(AGpsStatus_v1) */
@@ -672,6 +689,8 @@ typedef struct {
     AGpsType        type;
     AGpsStatusValue status;
 } AGpsStatus_v1;
+
+#pragma pack(pop)
 
 /** Represents the status of AGPS augmented with a IPv4 address field. */
 typedef struct {
@@ -1355,6 +1374,9 @@ typedef struct {
      *
      * The value contains the 'drift uncertainty' in it.
      * If the data is available 'flags' must contain GPS_CLOCK_HAS_DRIFT.
+     *
+     * If GpsMeasurement's 'flags' field contains GPS_MEASUREMENT_HAS_UNCORRECTED_PSEUDORANGE_RATE,
+     * it is encouraged that this field is also provided.
      */
     double drift_nsps;
 
@@ -1418,11 +1440,15 @@ typedef struct {
      *
      * However, if there is any ambiguity in integer millisecond,
      * GPS_MEASUREMENT_STATE_MSEC_AMBIGUOUS should be set accordingly, in the 'state' field.
+     *
+     * This value must be populated if 'state' != GPS_MEASUREMENT_STATE_UNKNOWN.
      */
     int64_t received_gps_tow_ns;
 
     /**
      * 1-Sigma uncertainty of the Received GPS Time-of-Week in nanoseconds.
+     *
+     * This value must be populated if 'state' != GPS_MEASUREMENT_STATE_UNKNOWN.
      */
     int64_t received_gps_tow_uncertainty_ns;
 
@@ -1436,11 +1462,23 @@ typedef struct {
 
     /**
      * Pseudorange rate at the timestamp in m/s.
-     * The value also includes the effects of the receiver clock frequency and satellite clock
-     * frequency errors.
+     * The correction of a given Pseudorange Rate value includes corrections for receiver and
+     * satellite clock frequency errors.
+     *
+     * If GPS_MEASUREMENT_HAS_UNCORRECTED_PSEUDORANGE_RATE is set in 'flags' field, this field must
+     * be populated with the 'uncorrected' reading.
+     * If GPS_MEASUREMENT_HAS_UNCORRECTED_PSEUDORANGE_RATE is not set in 'flags' field, this field
+     * must be populated with the 'corrected' reading. This is the default behavior.
+     *
+     * It is encouraged to provide the 'uncorrected' 'pseudorange rate', and provide GpsClock's
+     * 'drift' field as well.
      *
      * The value includes the 'pseudorange rate uncertainty' in it.
-     * A positive value indicates that the pseudorange is getting larger.
+     * A positive 'uncorrected' value indicates that the SV is moving away from the receiver.
+     *
+     * The sign of the 'uncorrected' 'pseudorange rate' and its relation to the sign of 'doppler
+     * shift' is given by the equation:
+     *      pseudorange rate = -k * doppler shift   (where k is a constant)
      *
      * This is a Mandatory value.
      */
@@ -1464,13 +1502,21 @@ typedef struct {
 
     /**
      * Accumulated delta range since the last channel reset in meters.
-     * The data is available if 'accumulated delta range state' != GPS_ADR_STATE_UNKNOWN.
+     * A positive value indicates that the SV is moving away from the receiver.
+     *
+     * The sign of the 'accumulated delta range' and its relation to the sign of 'carrier phase'
+     * is given by the equation:
+     *          accumulated delta range = -k * carrier phase    (where k is a constant)
+     *
+     * This value must be populated if 'accumulated delta range state' != GPS_ADR_STATE_UNKNOWN.
+     * However, it is expected that the data is only accurate when:
+     *      'accumulated delta range state' == GPS_ADR_STATE_VALID.
      */
     double accumulated_delta_range_m;
 
     /**
      * 1-Sigma uncertainty of the accumulated delta range in meters.
-     * The data is available if 'accumulated delta range state' != GPS_ADR_STATE_UNKNOWN.
+     * This value must be populated if 'accumulated delta range state' != GPS_ADR_STATE_UNKNOWN.
      */
     double accumulated_delta_range_uncertainty_m;
 
