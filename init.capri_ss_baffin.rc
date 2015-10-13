@@ -455,6 +455,8 @@ service capri-ril-daemon /system/bin/rild
     socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio system sdcard_rw log sdcard_r
+    # Temporary disabled until crash can be figured out
+    disabled
 
 service charger /sbin/healthd -c
     class charger
