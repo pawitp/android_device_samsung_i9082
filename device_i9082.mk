@@ -69,7 +69,8 @@ PRODUCT_PACKAGES += \
 
 # GPS/RIL
 PRODUCT_PACKAGES += \
-	libstlport
+	libstlport \
+	libglgps-compat
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \

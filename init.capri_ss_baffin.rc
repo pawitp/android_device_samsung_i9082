@@ -536,6 +536,7 @@ on property:init.svc.macloader=stopped
 # end of wifi
 
 service gpsd /system/bin/glgps -c /system/etc/gps/glconfig.xml
+    setenv LD_PRELOAD /system/lib/libglgps-compat.so
     class late_start
     user gps
     group system sdcard_rw inet root radio wifi
