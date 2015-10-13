@@ -581,8 +581,3 @@ service immvibed /system/bin/immvibed
     user shell
     group shell
     oneshot
-
-# fusewrapped external sdcard daemon running as media_rw (1023)
-service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
-    class late_start
-    disabled
