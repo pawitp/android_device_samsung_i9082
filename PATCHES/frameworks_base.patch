@@ -1,7 +1,7 @@
 From b64a060f50a865185c87df3eee908e9fc017ac88 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:50:29 +0700
-Subject: [PATCH 1/7] TelephonyManager: set properties in Broadcom-style as
+Subject: [PATCH 1/6] TelephonyManager: set properties in Broadcom-style as
  expected by RIL
 
 For i9082
@@ -108,7 +108,7 @@ index 2415165..ee1500a 100644
 From 89c0a3ec3186ab5a4659711045b11e7517051e1b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 22:33:16 +0700
-Subject: [PATCH 2/7] Camera: HACK: i9082: API hacks
+Subject: [PATCH 2/6] Camera: HACK: i9082: API hacks
 
 CTS 5.0 requires the presence of an auto mode, so applications
 may try to use auto without checking.
@@ -168,7 +168,7 @@ index 1aee794..e7c5313 100644
 From 3c3de4d900a0a0e4e5d803c7a5df4a4ce4f38a47 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:22:43 +0000
-Subject: [PATCH 3/7] Forward port Samsung STK support (frameworks/base)
+Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
 
 [pawitp: port to Lollipop]
 
@@ -220,7 +220,7 @@ index 8d48c86..c1da224 100644
 From 2cc043faa21042087332e7740ecc1e57ad3e9342 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:47:35 +0700
-Subject: [PATCH 4/7] frameworks: base: add KEYCODE_HOME to wake keys
+Subject: [PATCH 4/6] frameworks: base: add KEYCODE_HOME to wake keys
 
 Change-Id: I77d70df2263dd9c75b02efde18d91585b1ad29f9
 ---
@@ -243,10 +243,10 @@ index a9bf92b..b7a42f6 100644
 2.3.8 (Apple Git-58)
 
 
-From d29614fc29c9bb49653299e049082a144cf2f321 Mon Sep 17 00:00:00 2001
+From 128a0f1d9bb10078304fece596d9822e6249424c Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 23 Nov 2012 14:23:16 +0000
-Subject: [PATCH 5/7] Reintroduce button-backlight (and respective inactivity
+Subject: [PATCH 5/6] Reintroduce button-backlight (and respective inactivity
  timeout)
 
 The power manager rewrite from Change I1d7a52e98f0449f76d70bf421f6a7f245957d1d7
@@ -259,15 +259,41 @@ until upstream does their own implementation
 
 Change-Id: I6094c446e0b8c23f57d30652a3cbd35dee5e821a
 ---
- .../com/android/server/display/DisplayPowerController.java     |  2 ++
+ .../com/android/server/display/DisplayPowerController.java     |  7 +++++++
  .../java/com/android/server/power/PowerManagerService.java     | 10 ++++++++++
- 2 files changed, 12 insertions(+)
+ 2 files changed, 17 insertions(+)
 
 diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
-index 452378f..bd45c0a 100644
+index 452378f..b1c3a77 100644
 --- a/services/core/java/com/android/server/display/DisplayPowerController.java
 +++ b/services/core/java/com/android/server/display/DisplayPowerController.java
-@@ -595,6 +595,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+@@ -19,6 +19,7 @@ package com.android.server.display;
+ import com.android.internal.app.IBatteryStats;
+ import com.android.server.LocalServices;
+ import com.android.server.am.BatteryStatsService;
++import com.android.server.lights.LightsManager;
+ 
+ import android.animation.Animator;
+ import android.animation.ObjectAnimator;
+@@ -124,6 +125,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+     // Battery stats.
+     private final IBatteryStats mBatteryStats;
+ 
++    // The lights service.
++    private final LightsManager mLights;
++
+     // The sensor manager.
+     private final SensorManager mSensorManager;
+ 
+@@ -262,6 +266,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+         mCallbacks = callbacks;
+ 
+         mBatteryStats = BatteryStatsService.getService();
++        mLights = LocalServices.getService(LightsManager.class);
+         mSensorManager = sensorManager;
+         mWindowManagerPolicy = LocalServices.getService(WindowManagerPolicy.class);
+         mBlanker = blanker;
+@@ -595,6 +600,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
          // Use zero brightness when screen is off.
          if (state == Display.STATE_OFF) {
              brightness = PowerManager.BRIGHTNESS_OFF;
@@ -275,7 +301,7 @@ index 452378f..bd45c0a 100644
          }
  
          // Configure auto-brightness.
-@@ -646,6 +647,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+@@ -646,6 +652,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
          if (brightness < 0 && (state == Display.STATE_DOZE
                  || state == Display.STATE_DOZE_SUSPEND)) {
              brightness = mScreenBrightnessDozeConfig;
@@ -329,10 +355,10 @@ index b920f97..94245c7 100644
 2.3.8 (Apple Git-58)
 
 
-From e4bbeb583f5a9e713827c4344a70ec9eeaacfdff Mon Sep 17 00:00:00 2001
+From fc171b45e58b0feebf1964a6500495fc201b88ab Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
-Subject: [PATCH 6/7] PowerManagerService: only turn on button light when any
+Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any
  button is pressed
 
 * Also reduce the timeout to 2 seconds
@@ -386,50 +412,6 @@ index 94245c7..afc728d 100644
                              mButtonsLight.setBrightness(0);
                          } else {
                              mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
--- 
-2.3.8 (Apple Git-58)
-
-
-From 5b9fc16d13006c334347d7ace3da4f5457735794 Mon Sep 17 00:00:00 2001
-From: Pawit Pornkitprasan <p.pawit@gmail.com>
-Date: Sat, 10 Oct 2015 22:37:18 +0700
-Subject: [PATCH 7/7] TOMERGE: DisplayPowerController.java
-
-Change-Id: I14d446d5f369f6e47a24878b977946009b7cb0c9
----
- .../core/java/com/android/server/display/DisplayPowerController.java | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
-index bd45c0a..b1c3a77 100644
---- a/services/core/java/com/android/server/display/DisplayPowerController.java
-+++ b/services/core/java/com/android/server/display/DisplayPowerController.java
-@@ -19,6 +19,7 @@ package com.android.server.display;
- import com.android.internal.app.IBatteryStats;
- import com.android.server.LocalServices;
- import com.android.server.am.BatteryStatsService;
-+import com.android.server.lights.LightsManager;
- 
- import android.animation.Animator;
- import android.animation.ObjectAnimator;
-@@ -124,6 +125,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
-     // Battery stats.
-     private final IBatteryStats mBatteryStats;
- 
-+    // The lights service.
-+    private final LightsManager mLights;
-+
-     // The sensor manager.
-     private final SensorManager mSensorManager;
- 
-@@ -262,6 +266,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
-         mCallbacks = callbacks;
- 
-         mBatteryStats = BatteryStatsService.getService();
-+        mLights = LocalServices.getService(LightsManager.class);
-         mSensorManager = sensorManager;
-         mWindowManagerPolicy = LocalServices.getService(WindowManagerPolicy.class);
-         mBlanker = blanker;
 -- 
 2.3.8 (Apple Git-58)
 
