@@ -28,14 +28,14 @@ extern "C" {
 
 	Mutex _ZN7android9SingletonINS_13SensorManagerEE5sLockE(Mutex::PRIVATE);
 
-	void* _ZN7android13SensorManagerC1ERKNS_8String16E(const String16& opPackageName);
-	void* _ZN7android13SensorManagerC1Ev() {
-	    return _ZN7android13SensorManagerC1ERKNS_8String16E(String16());
+	void* _ZN7android13SensorManagerC1ERKNS_8String16E(void* obj, const String16& opPackageName);
+	void* _ZN7android13SensorManagerC1Ev(void* obj) {
+	    return _ZN7android13SensorManagerC1ERKNS_8String16E(obj, String16());
 	}
 
-	void* _ZN7android13SensorManager16createEventQueueENS_7String8Ei(String8 packageName, int mode);
-	void* _ZN7android13SensorManager16createEventQueueEv() {
-	    return _ZN7android13SensorManager16createEventQueueENS_7String8Ei(String8(""), 0);
+	void* _ZN7android13SensorManager16createEventQueueENS_7String8Ei(void* obj, String8 packageName, int mode);
+	void* _ZN7android13SensorManager16createEventQueueEv(void* obj) {
+	    return _ZN7android13SensorManager16createEventQueueENS_7String8Ei(obj, String8(""), 0);
 	}
 
 }
