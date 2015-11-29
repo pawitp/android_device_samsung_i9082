@@ -1,4 +1,4 @@
-From b64a060f50a865185c87df3eee908e9fc017ac88 Mon Sep 17 00:00:00 2001
+From 8612b263c7bd7cbf41a553d86931cd3f35d2ce87 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:50:29 +0700
 Subject: [PATCH 1/6] TelephonyManager: set properties in Broadcom-style as
@@ -12,10 +12,10 @@ Change-Id: I475fdd164b3316720387fefb14a3e12fbc262b39
  1 file changed, 20 insertions(+), 43 deletions(-)
 
 diff --git a/telephony/java/android/telephony/TelephonyManager.java b/telephony/java/android/telephony/TelephonyManager.java
-index 2415165..ee1500a 100644
+index 47f13c9..9c04ec7 100644
 --- a/telephony/java/android/telephony/TelephonyManager.java
 +++ b/telephony/java/android/telephony/TelephonyManager.java
-@@ -3191,49 +3191,19 @@ public class TelephonyManager {
+@@ -3201,49 +3201,19 @@ public class TelephonyManager {
       * @hide
       */
      public static void setTelephonyProperty(int phoneId, String property, String value) {
@@ -70,7 +70,7 @@ index 2415165..ee1500a 100644
      }
  
      /**
-@@ -3330,15 +3300,22 @@ public class TelephonyManager {
+@@ -3340,15 +3310,22 @@ public class TelephonyManager {
       * @hide
       */
      public static String getTelephonyProperty(int phoneId, String property, String defaultVal) {
@@ -102,10 +102,10 @@ index 2415165..ee1500a 100644
  
      /** @hide */
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 89c0a3ec3186ab5a4659711045b11e7517051e1b Mon Sep 17 00:00:00 2001
+From 90398a2da96018db168cd93607532d0cde5d1969 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 22:33:16 +0700
 Subject: [PATCH 2/6] Camera: HACK: i9082: API hacks
@@ -162,10 +162,10 @@ index 1aee794..e7c5313 100644
                  throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
              case INVALID_OPERATION:
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 3c3de4d900a0a0e4e5d803c7a5df4a4ce4f38a47 Mon Sep 17 00:00:00 2001
+From 6bf8a8de0c399f49e4ee1b42bb02d9fa13b90015 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:22:43 +0000
 Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
@@ -174,27 +174,33 @@ Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
 
 Change-Id: I08d169bc466df290fca838b09f6b0fbea2ac82a8
 ---
- core/res/res/values/config.xml                                  | 2 ++
+ core/res/res/values/config.xml                                  | 3 +++
  core/res/res/values/symbols.xml                                 | 2 ++
  telephony/java/com/android/internal/telephony/RILConstants.java | 1 +
- 3 files changed, 5 insertions(+)
+ 3 files changed, 6 insertions(+)
+ mode change 100644 => 100755 core/res/res/values/symbols.xml
 
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
-index ae8cae8..64f77f2 100755
+index 6e8f81e..6195e64 100644
 --- a/core/res/res/values/config.xml
 +++ b/core/res/res/values/config.xml
-@@ -2270,4 +2270,6 @@
+@@ -2310,6 +2310,9 @@
      <string-array name="config_cell_retries_per_error_code">
      </string-array>
  
 +    <!-- Boolean to enable stk functionality on Samsung phones -->
 +    <bool name="config_samsung_stk">false</bool>
- </resources>
++
+     <!-- Set initial MaxRetry value for operators -->
+     <integer name="config_mdc_initial_max_retry">1</integer>
+ 
 diff --git a/core/res/res/values/symbols.xml b/core/res/res/values/symbols.xml
-index 262aa76..c9fbc98 100755
+old mode 100644
+new mode 100755
+index 95cd143..a393baf
 --- a/core/res/res/values/symbols.xml
 +++ b/core/res/res/values/symbols.xml
-@@ -2194,6 +2194,8 @@
+@@ -2199,6 +2199,8 @@
    <java-symbol type="bool" name="config_defaultWindowFeatureOptionsPanel" />
    <java-symbol type="bool" name="config_defaultWindowFeatureContextMenu" />
  
@@ -204,20 +210,20 @@ index 262aa76..c9fbc98 100755
    <java-symbol type="array" name="config_sms_convert_destination_number_support" />
    <java-symbol type="string" name="prohibit_manual_network_selection_in_gobal_mode" />
 diff --git a/telephony/java/com/android/internal/telephony/RILConstants.java b/telephony/java/com/android/internal/telephony/RILConstants.java
-index 8d48c86..c1da224 100644
+index 7088be8..0b99052 100644
 --- a/telephony/java/com/android/internal/telephony/RILConstants.java
 +++ b/telephony/java/com/android/internal/telephony/RILConstants.java
-@@ -372,4 +372,5 @@ cat include/telephony/ril.h | \
+@@ -382,4 +382,5 @@ cat include/telephony/ril.h | \
      int RIL_UNSOL_ON_SS = 1043;
      int RIL_UNSOL_STK_CC_ALPHA_NOTIFY = 1044;
      int RIL_UNSOL_LCEDATA_RECV = 1045;
 +    int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002; /* Samsung STK */
  }
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 2cc043faa21042087332e7740ecc1e57ad3e9342 Mon Sep 17 00:00:00 2001
+From 3cf22478c3124626350fcca4fe2033544d8157a3 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:47:35 +0700
 Subject: [PATCH 4/6] frameworks: base: add KEYCODE_HOME to wake keys
@@ -240,10 +246,10 @@ index a9bf92b..b7a42f6 100644
          }
          return false;
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 128a0f1d9bb10078304fece596d9822e6249424c Mon Sep 17 00:00:00 2001
+From f45fab008b789858ca4d4b3030ca2a2305946f20 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 23 Nov 2012 14:23:16 +0000
 Subject: [PATCH 5/6] Reintroduce button-backlight (and respective inactivity
@@ -310,7 +316,7 @@ index 452378f..b1c3a77 100644
  
          // Apply manual brightness.
 diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
-index b920f97..94245c7 100644
+index f7a8970..95a7243 100644
 --- a/services/core/java/com/android/server/power/PowerManagerService.java
 +++ b/services/core/java/com/android/server/power/PowerManagerService.java
 @@ -159,6 +159,8 @@ public final class PowerManagerService extends SystemService
@@ -352,10 +358,10 @@ index b920f97..94245c7 100644
                      } else {
                          nextTimeout = mLastUserActivityTime + screenOffTimeout;
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From fc171b45e58b0feebf1964a6500495fc201b88ab Mon Sep 17 00:00:00 2001
+From 07ba664fa086039b417e4530f889a2fbbfa98e5a Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
 Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any
@@ -371,7 +377,7 @@ Change-Id: I6b15c45b713bcbc290a1026805c46109060f9990
  1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
-index 94245c7..afc728d 100644
+index 95a7243..54a4325 100644
 --- a/services/core/java/com/android/server/power/PowerManagerService.java
 +++ b/services/core/java/com/android/server/power/PowerManagerService.java
 @@ -159,7 +159,7 @@ public final class PowerManagerService extends SystemService
@@ -413,5 +419,5 @@ index 94245c7..afc728d 100644
                          } else {
                              mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
