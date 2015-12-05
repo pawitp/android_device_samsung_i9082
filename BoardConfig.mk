@@ -88,6 +88,7 @@ BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charg
 
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/i9082/ril/
+COMMON_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
 
 # Recovery
 TARGET_RECOVERY_FSTAB := device/samsung/i9082/fstab.capri_ss_baffin

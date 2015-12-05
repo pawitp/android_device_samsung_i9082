@@ -1,7 +1,7 @@
-From eba410ed7b88fc0b25346630f3ec283823a9a737 Mon Sep 17 00:00:00 2001
+From 3553f6205eae3aa79ea33156615347f1e5e14fb7 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 18 Nov 2014 08:38:33 +0700
-Subject: [PATCH 1/9] Bring back support for glReadPixels screenshot path
+Subject: [PATCH 01/10] Bring back support for glReadPixels screenshot path
 
 Squashed commit of the following:
 
@@ -334,10 +334,10 @@ index 31a961e..3db55e7 100644
          int getStatus() const;
      };
 diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
-index de0f921..5b2e3ec 100644
+index fdc3650..027520a 100644
 --- a/services/surfaceflinger/SurfaceFlinger.cpp
 +++ b/services/surfaceflinger/SurfaceFlinger.cpp
-@@ -3132,7 +3132,8 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+@@ -3155,7 +3155,8 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
          const sp<IGraphicBufferProducer>& producer,
          Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
          uint32_t minLayerZ, uint32_t maxLayerZ,
@@ -347,7 +347,7 @@ index de0f921..5b2e3ec 100644
  
      if (CC_UNLIKELY(display == 0))
          return BAD_VALUE;
-@@ -3182,6 +3183,7 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+@@ -3205,6 +3206,7 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
          uint32_t minLayerZ,maxLayerZ;
          bool useIdentityTransform;
          Transform::orientation_flags rotation;
@@ -355,7 +355,7 @@ index de0f921..5b2e3ec 100644
          status_t result;
      public:
          MessageCaptureScreen(SurfaceFlinger* flinger,
-@@ -3189,12 +3191,14 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+@@ -3212,12 +3214,14 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
                  const sp<IGraphicBufferProducer>& producer,
                  Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
                  uint32_t minLayerZ, uint32_t maxLayerZ,
@@ -371,7 +371,7 @@ index de0f921..5b2e3ec 100644
                result(PERMISSION_DENIED)
          {
          }
-@@ -3204,9 +3208,10 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+@@ -3227,9 +3231,10 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
          virtual bool handler() {
              Mutex::Autolock _l(flinger->mStateLock);
              sp<const DisplayDevice> hw(flinger->getDisplayDevice(display));
@@ -383,7 +383,7 @@ index de0f921..5b2e3ec 100644
              static_cast<GraphicProducerWrapper*>(IInterface::asBinder(producer).get())->exit(result);
              return true;
          }
-@@ -3229,7 +3234,7 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+@@ -3252,7 +3257,7 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
      sp<MessageBase> msg = new MessageCaptureScreen(this,
              display, IGraphicBufferProducer::asInterface( wrapper ),
              sourceCrop, reqWidth, reqHeight, minLayerZ, maxLayerZ,
@@ -392,7 +392,7 @@ index de0f921..5b2e3ec 100644
  
      status_t res = postMessageAsync(msg);
      if (res == NO_ERROR) {
-@@ -3313,7 +3318,8 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+@@ -3336,7 +3341,8 @@ status_t SurfaceFlinger::captureScreenImplLocked(
          const sp<IGraphicBufferProducer>& producer,
          Rect sourceCrop, uint32_t reqWidth, uint32_t reqHeight,
          uint32_t minLayerZ, uint32_t maxLayerZ,
@@ -402,7 +402,7 @@ index de0f921..5b2e3ec 100644
  {
      ATRACE_CALL();
  
-@@ -3365,7 +3371,7 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+@@ -3388,7 +3394,7 @@ status_t SurfaceFlinger::captureScreenImplLocked(
                  if (image != EGL_NO_IMAGE_KHR) {
                      // this binds the given EGLImage as a framebuffer for the
                      // duration of this scope.
@@ -411,7 +411,7 @@ index de0f921..5b2e3ec 100644
                      if (imageBond.getStatus() == NO_ERROR) {
                          // this will in fact render into our dequeued buffer
                          // via an FBO, which means we didn't have to create
-@@ -3412,6 +3418,14 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+@@ -3435,6 +3441,14 @@ status_t SurfaceFlinger::captureScreenImplLocked(
                                  ALOGW("captureScreen: error creating EGL fence: %#x", eglGetError());
                              }
                          }
@@ -427,7 +427,7 @@ index de0f921..5b2e3ec 100644
                              uint32_t* pixels = new uint32_t[reqWidth*reqHeight];
                              getRenderEngine().readPixels(0, 0, reqWidth, reqHeight, pixels);
 diff --git a/services/surfaceflinger/SurfaceFlinger.h b/services/surfaceflinger/SurfaceFlinger.h
-index 3759a92..406925c 100644
+index b3baadd..5d77208 100644
 --- a/services/surfaceflinger/SurfaceFlinger.h
 +++ b/services/surfaceflinger/SurfaceFlinger.h
 @@ -207,7 +207,8 @@ private:
@@ -451,13 +451,13 @@ index 3759a92..406925c 100644
      /* ------------------------------------------------------------------------
       * EGL
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 0e9c10fc093200ff1337272db44c46e235dd59b8 Mon Sep 17 00:00:00 2001
+From 1ef23e38d8f667b12f84faa150a6b60c51e2ea46 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 6 Aug 2013 16:11:06 +0100
-Subject: [PATCH 2/9] libgui: Bring back support for mHeap-based screenshots
+Subject: [PATCH 02/10] libgui: Bring back support for mHeap-based screenshots
 
 Older graphics libraries throw a hissy fit when trying to lock
 buffers for Surface-based screenshots, on at least Tegra2/3 and
@@ -703,7 +703,7 @@ index 1eb2361..446fd38 100644
  ifneq ($(VSYNC_EVENT_PHASE_OFFSET_NS),)
      LOCAL_CFLAGS += -DVSYNC_EVENT_PHASE_OFFSET_NS=$(VSYNC_EVENT_PHASE_OFFSET_NS)
 diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
-index 5b2e3ec..f5012bd 100644
+index 027520a..ad96716 100644
 --- a/services/surfaceflinger/SurfaceFlinger.cpp
 +++ b/services/surfaceflinger/SurfaceFlinger.cpp
 @@ -25,6 +25,9 @@
@@ -716,7 +716,7 @@ index 5b2e3ec..f5012bd 100644
  
  #include <cutils/log.h>
  #include <cutils/properties.h>
-@@ -2868,12 +2871,18 @@ status_t SurfaceFlinger::onTransact(
+@@ -2891,12 +2894,18 @@ status_t SurfaceFlinger::onTransact(
              break;
          }
          case CAPTURE_SCREEN:
@@ -735,7 +735,7 @@ index 5b2e3ec..f5012bd 100644
                      !PermissionCache::checkPermission(sReadFramebuffer, pid, uid)) {
                  ALOGE("Permission Denial: "
                          "can't read framebuffer pid=%d, uid=%d", pid, uid);
-@@ -3209,9 +3218,18 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
+@@ -3232,9 +3241,18 @@ status_t SurfaceFlinger::captureScreen(const sp<IBinder>& display,
              Mutex::Autolock _l(flinger->mStateLock);
              sp<const DisplayDevice> hw(flinger->getDisplayDevice(display));
              bool useReadPixels = this->useReadPixels && !flinger->mGpuToCpuSupported;
@@ -757,7 +757,7 @@ index 5b2e3ec..f5012bd 100644
              static_cast<GraphicProducerWrapper*>(IInterface::asBinder(producer).get())->exit(result);
              return true;
          }
-@@ -3483,6 +3501,139 @@ void SurfaceFlinger::checkScreenshot(size_t w, size_t s, size_t h, void const* v
+@@ -3506,6 +3524,139 @@ void SurfaceFlinger::checkScreenshot(size_t w, size_t s, size_t h, void const* v
      }
  }
  
@@ -897,7 +897,7 @@ index 5b2e3ec..f5012bd 100644
  // ---------------------------------------------------------------------------
  
  SurfaceFlinger::LayerVector::LayerVector() {
-@@ -3529,6 +3680,7 @@ SurfaceFlinger::DisplayDeviceState::DisplayDeviceState(DisplayDevice::DisplayTyp
+@@ -3552,6 +3703,7 @@ SurfaceFlinger::DisplayDeviceState::DisplayDeviceState(DisplayDevice::DisplayTyp
  }; // namespace android
  
  
@@ -905,13 +905,13 @@ index 5b2e3ec..f5012bd 100644
  #if defined(__gl_h_)
  #error "don't include gl/gl.h in this file"
  #endif
-@@ -3536,3 +3688,4 @@ SurfaceFlinger::DisplayDeviceState::DisplayDeviceState(DisplayDevice::DisplayTyp
+@@ -3559,3 +3711,4 @@ SurfaceFlinger::DisplayDeviceState::DisplayDeviceState(DisplayDevice::DisplayTyp
  #if defined(__gl2_h_)
  #error "don't include gl2/gl2.h in this file"
  #endif
 +#endif
 diff --git a/services/surfaceflinger/SurfaceFlinger.h b/services/surfaceflinger/SurfaceFlinger.h
-index 406925c..96456dd 100644
+index 5d77208..f32bf7d 100644
 --- a/services/surfaceflinger/SurfaceFlinger.h
 +++ b/services/surfaceflinger/SurfaceFlinger.h
 @@ -209,6 +209,13 @@ private:
@@ -945,13 +945,13 @@ index 406925c..96456dd 100644
       * EGL
       */
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From a6af4144d361459c246d91a295d1fbfdafc96fe6 Mon Sep 17 00:00:00 2001
+From 9a292ce7de36d1a713eb1e195fe832f5221d307d Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 2 Nov 2013 23:02:15 -0700
-Subject: [PATCH 3/9] libEGL: allow devices to workaround Google bug 10194508
+Subject: [PATCH 03/10] libEGL: allow devices to workaround Google bug 10194508
 
 Most older blobs don't have the EGL_KHR_gl_colorspace
 extension and need this workaround.
@@ -976,13 +976,13 @@ index 18ad300..079f03b 100644
    LOCAL_CFLAGS += -DMAX_EGL_CACHE_ENTRY_SIZE=$(MAX_EGL_CACHE_ENTRY_SIZE)
  endif
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 954e152bb4c1c6edf2ee82492adaea6e1dc8ee77 Mon Sep 17 00:00:00 2001
+From 809131af43f4e6926236787f59df49f3f904e7da Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 14 Nov 2013 15:19:46 +0700
-Subject: [PATCH 4/9] binder: add compat symbol
+Subject: [PATCH 04/10] binder: add compat symbol
 
 Required for older Samsung libtvout
 
@@ -1007,13 +1007,13 @@ index ef88181..a6daf23 100644
  {
      return mCallingPid;
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From b192062146e5acce4ccee04331783fc95a436f93 Mon Sep 17 00:00:00 2001
+From aee774409b299bc95d0cdfde5a5643f36d95914c Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 19:38:17 +0700
-Subject: [PATCH 5/9] binder: add compat symbols
+Subject: [PATCH 05/10] binder: add compat symbols
 
 Required for libtvservice_binder.so on I9082
 
@@ -1053,23 +1053,23 @@ index 7a4ddc4..9fc52fb 100644
  {
      // size
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 796ad03eead6031fe575c7d4d50b4e71a9c3d6b6 Mon Sep 17 00:00:00 2001
+From e020614d75603b26297261402fdde115eb4c3613 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 16 Dec 2013 15:45:42 +0700
-Subject: [PATCH 6/9] sf: CAPRI_HWC: fix rotation artifact
+Subject: [PATCH 06/10] sf: CAPRI_HWC: fix rotation artifact
 
 ---
  services/surfaceflinger/SurfaceFlinger.cpp | 5 +++++
  1 file changed, 5 insertions(+)
 
 diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
-index f5012bd..2468528 100644
+index ad96716..979da10 100644
 --- a/services/surfaceflinger/SurfaceFlinger.cpp
 +++ b/services/surfaceflinger/SurfaceFlinger.cpp
-@@ -3341,6 +3341,11 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+@@ -3364,6 +3364,11 @@ status_t SurfaceFlinger::captureScreenImplLocked(
  {
      ATRACE_CALL();
  
@@ -1082,13 +1082,13 @@ index f5012bd..2468528 100644
      uint32_t hw_w = hw->getWidth();
      uint32_t hw_h = hw->getHeight();
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 021b2e56f8de51c4dd4661a07cd2a4c0310dda7a Mon Sep 17 00:00:00 2001
+From fcbb3ed4ecbe4665ec54a22dafc8375809f0ed64 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 15 Dec 2014 23:12:44 +0700
-Subject: [PATCH 7/9] SurfaceComposerClient: don't block RGBA_8888 for
+Subject: [PATCH 07/10] SurfaceComposerClient: don't block RGBA_8888 for
  screenshot on CAPRI_HWC
 
 Works here and required for ColorFade animation
@@ -1112,13 +1112,13 @@ index 0b47f75..b535833 100644
      producer->query(NATIVE_WINDOW_FORMAT,&format);
      if (format == PIXEL_FORMAT_RGBA_8888) {
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 8824e966b1874f0ae5781b64951d36fd06d30b18 Mon Sep 17 00:00:00 2001
+From 1adf7e0fd04007002d516217f53839146032b0e5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 20 Dec 2014 19:09:27 +0700
-Subject: [PATCH 8/9] sf: CAPRI_HWC: fix for screen recording
+Subject: [PATCH 08/10] sf: CAPRI_HWC: fix for screen recording
 
 Change-Id: I6c7e59400eab86bc5ec0ffebbcc475fa0fa404d2
 ---
@@ -1143,13 +1143,13 @@ index 87e5b4d..9634db7 100644
                  BQ_LOGE("%s: min undequeued buffer count (%d) exceeded "
                          "(dequeued=%d undequeued=%d)",
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
 
 
-From 145db4a7692884bc4a75db8fafda40c8f7e36fb0 Mon Sep 17 00:00:00 2001
+From 333fb2a8ecf78a6b6d8966d00e5d7f99baeb22ed Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 11 Oct 2015 15:28:51 +0700
-Subject: [PATCH 9/9] binder: add compat symbol for RIL
+Subject: [PATCH 09/10] binder: add compat symbol for RIL
 
 ---
  libs/binder/Parcel.cpp | 6 ++++++
@@ -1173,5 +1173,77 @@ index 9fc52fb..3848bef 100644
  {
      if (str == NULL) return writeInt32(-1);
 -- 
-2.3.8 (Apple Git-58)
+2.4.9 (Apple Git-60)
+
+
+From db4203bbf58a7e913fc4755c2d734901fcaacc36 Mon Sep 17 00:00:00 2001
+From: forkbomb <keepcalm444@gmail.com>
+Date: Thu, 3 Dec 2015 20:34:15 +1100
+Subject: [PATCH 10/10] libbinder: allow devices to disable ashmem size
+ tracking
+
+The addition of ashmem size tracking can lead to parcel objects
+overwriting other values on the stack in old binary blobs.
+
+Change-Id: Ida52cec851a6f9d5a57c8f9130a5875c03dcb094
+---
+ include/binder/Parcel.h |  2 ++
+ libs/binder/Parcel.cpp  | 10 ++++++++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/include/binder/Parcel.h b/include/binder/Parcel.h
+index 3ada1e9..dc9757e 100644
+--- a/include/binder/Parcel.h
++++ b/include/binder/Parcel.h
+@@ -340,8 +340,10 @@ public:
+         inline void* data() { return mData; }
+     };
+ 
++#ifndef DISABLE_ASHMEM_TRACKING
+ private:
+     size_t mBlobAshmemSize;
++#endif
+ 
+ public:
+     size_t getBlobAshmemSize() const;
+diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
+index 3848bef..de2d05f 100644
+--- a/libs/binder/Parcel.cpp
++++ b/libs/binder/Parcel.cpp
+@@ -928,9 +928,9 @@ status_t Parcel::writeBlob(size_t len, bool mutableCopy, WritableBlob* outBlob)
+     ALOGV("writeBlob: write to ashmem");
+     int fd = ashmem_create_region("Parcel Blob", len);
+     if (fd < 0) return NO_MEMORY;
+-
++#ifndef DISABLE_ASHMEM_TRACKING
+     mBlobAshmemSize += len;
+-
++#endif
+     int result = ashmem_set_prot_region(fd, PROT_READ | PROT_WRITE);
+     if (result < 0) {
+         status = result;
+@@ -1908,7 +1908,9 @@ void Parcel::initState()
+     mFdsKnown = true;
+     mAllowFds = true;
+     mOwner = NULL;
++#ifndef DISABLE_ASHMEM_TRACKING
+     mBlobAshmemSize = 0;
++#endif
+ }
+ 
+ void Parcel::scanForFds() const
+@@ -1928,7 +1930,11 @@ void Parcel::scanForFds() const
+ 
+ size_t Parcel::getBlobAshmemSize() const
+ {
++#ifndef DISABLE_ASHMEM_TRACKING
+     return mBlobAshmemSize;
++#else
++    return 0;
++#endif
+ }
+ 
+ // --- Parcel::Blob ---
+-- 
+2.4.9 (Apple Git-60)
 
