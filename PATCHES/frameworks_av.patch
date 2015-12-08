@@ -1,7 +1,7 @@
-From 28fab491eb2f2207177626852838968389da2c25 Mon Sep 17 00:00:00 2001
+From 6716c8d7b7c1088b459f37c630f4ee6ec2762762 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 24 Apr 2013 11:37:19 +0700
-Subject: [PATCH 01/10] OMXCodec: Re-implement requires-flush-before-shutdown
+Subject: [PATCH 1/9] OMXCodec: Re-implement requires-flush-before-shutdown
  quirk
 
 Support is already there, but is not in the codec quirk reading list.
@@ -30,10 +30,10 @@ index b1dde80..8c1c962 100644
 2.4.9 (Apple Git-60)
 
 
-From 07b39be4460420bda9d06e51b39da96b3ca00472 Mon Sep 17 00:00:00 2001
+From 8e87d2e4b5aab981421e30d9ded59adb1d2e118a Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 17 Dec 2013 13:15:52 +0700
-Subject: [PATCH 02/10] OMXCodec: set default input buffer size
+Subject: [PATCH 2/9] OMXCodec: set default input buffer size
 
 Broadcom OMX only set the buffer size to 65536 by default which
 is not enough for higher bitrate video
@@ -96,10 +96,10 @@ index 8c1c962..fa2999a 100644
 2.4.9 (Apple Git-60)
 
 
-From 665037948c06fe8581a9c6c4ce71f872aac87234 Mon Sep 17 00:00:00 2001
+From c73b45e0f393f9764f6f44653f7f14b22cc57de5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 19 Nov 2014 20:33:58 +0700
-Subject: [PATCH 03/10] ACodec: skip port index checking on vc4 encoder
+Subject: [PATCH 3/9] ACodec: skip port index checking on vc4 encoder
 
 Change-Id: I3fe742a8ec4b7f9bc0c4e5f0825fd3b88965a95e
 ---
@@ -126,10 +126,10 @@ index 3450f90..f9eb50e 100644
 2.4.9 (Apple Git-60)
 
 
-From 63e0d7b86c82abce0e42ac8e47af92cca3d7a929 Mon Sep 17 00:00:00 2001
+From b83b755d4d2fb6f49823bf1ac919b2e6221a3753 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 23 Nov 2014 17:27:20 +0700
-Subject: [PATCH 04/10] ACodec: Don't trust provided width/height when setting
+Subject: [PATCH 4/9] ACodec: Don't trust provided width/height when setting
  input buffer size
 
 They are bogus
@@ -164,10 +164,10 @@ index f9eb50e..0dcc13f 100644
 2.4.9 (Apple Git-60)
 
 
-From fbf9aa63d7cee8c6201360bf71885504e72ec161 Mon Sep 17 00:00:00 2001
+From dc87d1bc82b1a7c5b5c298d15dafec08d3792f4f Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Fri, 28 Nov 2014 21:07:59 +0700
-Subject: [PATCH 05/10] AudioFlinger: i9082: HACK: disable stereo record
+Subject: [PATCH 5/9] AudioFlinger: i9082: HACK: disable stereo record
 
 Stereo record causes audio to speed up x2 for some reason.
 Record in mono and let AudioFlinger resample to stereo
@@ -179,10 +179,10 @@ Change-Id: I59236addc022186fa35bd3b3914f42709c2318de
  1 file changed, 6 insertions(+)
 
 diff --git a/services/audioflinger/AudioFlinger.cpp b/services/audioflinger/AudioFlinger.cpp
-index 9ec5802..f00e211 100644
+index fab1ef5..959afa7 100644
 --- a/services/audioflinger/AudioFlinger.cpp
 +++ b/services/audioflinger/AudioFlinger.cpp
-@@ -2049,6 +2049,12 @@ sp<AudioFlinger::RecordThread> AudioFlinger::openInput_l(audio_module_handle_t m
+@@ -2053,6 +2053,12 @@ sp<AudioFlinger::RecordThread> AudioFlinger::openInput_l(audio_module_handle_t m
      audio_config_t halconfig = *config;
      audio_hw_device_t *inHwHal = inHwDev->hwDevice();
      audio_stream_in_t *inStream = NULL;
@@ -199,10 +199,10 @@ index 9ec5802..f00e211 100644
 2.4.9 (Apple Git-60)
 
 
-From b83c1c38e67de270e3da4768dffbf126b4493406 Mon Sep 17 00:00:00 2001
+From 81bbf290f0b89ba60a578de62034af67da343509 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 10 Dec 2014 17:38:10 +0700
-Subject: [PATCH 06/10] AudioFlinger: i9082: HACK: force audio to 48 KHz
+Subject: [PATCH 6/9] AudioFlinger: i9082: HACK: force audio to 48 KHz
 
 Let surfaceflinger do all the resampling instead of the audio HAL
 
@@ -214,10 +214,10 @@ Change-Id: I0113831464f2f64c26a9c93bba8fe6b8229b09b4
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/services/audioflinger/AudioFlinger.cpp b/services/audioflinger/AudioFlinger.cpp
-index f00e211..94ca2f6 100644
+index 959afa7..65d79ff 100644
 --- a/services/audioflinger/AudioFlinger.cpp
 +++ b/services/audioflinger/AudioFlinger.cpp
-@@ -2051,8 +2051,9 @@ sp<AudioFlinger::RecordThread> AudioFlinger::openInput_l(audio_module_handle_t m
+@@ -2055,8 +2055,9 @@ sp<AudioFlinger::RecordThread> AudioFlinger::openInput_l(audio_module_handle_t m
      audio_stream_in_t *inStream = NULL;
  
  #ifdef CAPRI_HWC
@@ -232,11 +232,10 @@ index f00e211..94ca2f6 100644
 2.4.9 (Apple Git-60)
 
 
-From 822e1345472da7421ff880db28fc2b73d29c9792 Mon Sep 17 00:00:00 2001
+From 5639b0c29a27ee69315efcce8fa300d53f38e67f Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 16 Dec 2014 21:12:22 +0700
-Subject: [PATCH 07/10] stagefright: i9082: don't allocate too many extra
- buffers
+Subject: [PATCH 7/9] stagefright: i9082: don't allocate too many extra buffers
 
 Too many extra buffers (for a total of 8) causes random
 video freezes and freezes on rotation
@@ -283,10 +282,10 @@ index fa2999a..9ee48b2 100644
 2.4.9 (Apple Git-60)
 
 
-From 5596bbc535d3efabae2bcd19e4db3d467242e309 Mon Sep 17 00:00:00 2001
+From e8b0a945f191cde87b25d7d718d4c188957b1d68 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 20 Dec 2014 19:09:59 +0700
-Subject: [PATCH 08/10] stagefright: CAPRI_HWC: fix for screen recording
+Subject: [PATCH 8/9] stagefright: CAPRI_HWC: fix for screen recording
 
 Change-Id: Ib8a677eb1ecabc30efe163faa9b209f4db966437
 ---
@@ -340,10 +339,10 @@ index 94a213a..b42f067 100644
 2.4.9 (Apple Git-60)
 
 
-From 06d98adcef0a033c12fb21089043efd1254e8fe8 Mon Sep 17 00:00:00 2001
+From 149f8b01dcdd33eaedc9960555986b841e43c47f Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 21 Dec 2014 15:25:33 +0700
-Subject: [PATCH 09/10] stagefright: CAPRI_HWC: fix for miracast
+Subject: [PATCH 9/9] stagefright: CAPRI_HWC: fix for miracast
 
 Our encoder does not support OMX_Video_ControlRateConstant
 
@@ -416,37 +415,6 @@ index ab3e4ad..420863a 100644
  
      float frameRate;
      if (!msg->findFloat("frame-rate", &frameRate)) {
--- 
-2.4.9 (Apple Git-60)
-
-
-From c7d8e7a626952f5a00616e7d218d1bf9b1502e30 Mon Sep 17 00:00:00 2001
-From: Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Date: Mon, 14 Sep 2015 11:00:33 +0200
-Subject: [PATCH 10/10] Fix setTorchMode support for the old HAL version
-
-CameraHardwareInterfaceFlashControl class calls disconnectCameraDevice
-when torch is disabled. This closes connection to the camera module,
-but mDevice instance is kept and variable is non-NULL which will
-prevent connection next time torch is going to be enabled.
-
-Change-Id: Icb1ffb07f05256afd92821f0f4908cda5332c05b
----
- services/camera/libcameraservice/CameraFlashlight.cpp | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/services/camera/libcameraservice/CameraFlashlight.cpp b/services/camera/libcameraservice/CameraFlashlight.cpp
-index 280bb9d..e42c596 100644
---- a/services/camera/libcameraservice/CameraFlashlight.cpp
-+++ b/services/camera/libcameraservice/CameraFlashlight.cpp
-@@ -878,6 +878,7 @@ status_t CameraHardwareInterfaceFlashControl::disconnectCameraDevice() {
-     }
-     mDevice->setPreviewWindow(NULL);
-     mDevice->release();
-+    mDevice = NULL;
- 
-     return OK;
- }
 -- 
 2.4.9 (Apple Git-60)
 

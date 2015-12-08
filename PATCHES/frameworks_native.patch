@@ -1,4 +1,4 @@
-From 3553f6205eae3aa79ea33156615347f1e5e14fb7 Mon Sep 17 00:00:00 2001
+From 59e7dbe9aaf63fe4c18b5ef5581ef155b3b494f5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 18 Nov 2014 08:38:33 +0700
 Subject: [PATCH 01/10] Bring back support for glReadPixels screenshot path
@@ -454,7 +454,7 @@ index b3baadd..5d77208 100644
 2.4.9 (Apple Git-60)
 
 
-From 1ef23e38d8f667b12f84faa150a6b60c51e2ea46 Mon Sep 17 00:00:00 2001
+From 4c087c51dacdf07449c8b92634d2d8675fd5b71d Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 6 Aug 2013 16:11:06 +0100
 Subject: [PATCH 02/10] libgui: Bring back support for mHeap-based screenshots
@@ -948,7 +948,7 @@ index 5d77208..f32bf7d 100644
 2.4.9 (Apple Git-60)
 
 
-From 9a292ce7de36d1a713eb1e195fe832f5221d307d Mon Sep 17 00:00:00 2001
+From 8ceb4d4dd8c1649956f9ad606fef0e3168fa7946 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 2 Nov 2013 23:02:15 -0700
 Subject: [PATCH 03/10] libEGL: allow devices to workaround Google bug 10194508
@@ -979,7 +979,7 @@ index 18ad300..079f03b 100644
 2.4.9 (Apple Git-60)
 
 
-From 809131af43f4e6926236787f59df49f3f904e7da Mon Sep 17 00:00:00 2001
+From c07bab5900e57816ad66430bb6369586f9f93921 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 14 Nov 2013 15:19:46 +0700
 Subject: [PATCH 04/10] binder: add compat symbol
@@ -1010,7 +1010,7 @@ index ef88181..a6daf23 100644
 2.4.9 (Apple Git-60)
 
 
-From aee774409b299bc95d0cdfde5a5643f36d95914c Mon Sep 17 00:00:00 2001
+From 3e4e523487bf5036d166cf9c06e81b0f34c7e523 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 19:38:17 +0700
 Subject: [PATCH 05/10] binder: add compat symbols
@@ -1023,10 +1023,10 @@ Change-Id: I059e92f19e4c5a911d38faa9c4df549c75c90761
  1 file changed, 12 insertions(+)
 
 diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
-index 7a4ddc4..9fc52fb 100644
+index 22d7ef3..7709a88 100644
 --- a/libs/binder/Parcel.cpp
 +++ b/libs/binder/Parcel.cpp
-@@ -964,6 +964,12 @@ status_t Parcel::writeDupImmutableBlobFileDescriptor(int fd)
+@@ -990,6 +990,12 @@ status_t Parcel::writeDupImmutableBlobFileDescriptor(int fd)
      return writeDupFileDescriptor(fd);
  }
  
@@ -1039,7 +1039,7 @@ index 7a4ddc4..9fc52fb 100644
  status_t Parcel::write(const FlattenableHelperInterface& val)
  {
      status_t err;
-@@ -1404,6 +1410,12 @@ status_t Parcel::readBlob(size_t len, ReadableBlob* outBlob) const
+@@ -1430,6 +1436,12 @@ status_t Parcel::readBlob(size_t len, ReadableBlob* outBlob) const
      return NO_ERROR;
  }
  
@@ -1056,7 +1056,7 @@ index 7a4ddc4..9fc52fb 100644
 2.4.9 (Apple Git-60)
 
 
-From e020614d75603b26297261402fdde115eb4c3613 Mon Sep 17 00:00:00 2001
+From 0d7b98910d8728b2a73709816e01c1e5f1d1c6a9 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 16 Dec 2013 15:45:42 +0700
 Subject: [PATCH 06/10] sf: CAPRI_HWC: fix rotation artifact
@@ -1085,7 +1085,7 @@ index ad96716..979da10 100644
 2.4.9 (Apple Git-60)
 
 
-From fcbb3ed4ecbe4665ec54a22dafc8375809f0ed64 Mon Sep 17 00:00:00 2001
+From 3f3738def44fad1b97becec38d8345b15230e5b1 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 15 Dec 2014 23:12:44 +0700
 Subject: [PATCH 07/10] SurfaceComposerClient: don't block RGBA_8888 for
@@ -1115,7 +1115,7 @@ index 0b47f75..b535833 100644
 2.4.9 (Apple Git-60)
 
 
-From 1adf7e0fd04007002d516217f53839146032b0e5 Mon Sep 17 00:00:00 2001
+From cefc54192beef82c046479d6108d3fd1cb5aad72 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 20 Dec 2014 19:09:27 +0700
 Subject: [PATCH 08/10] sf: CAPRI_HWC: fix for screen recording
@@ -1146,7 +1146,7 @@ index 87e5b4d..9634db7 100644
 2.4.9 (Apple Git-60)
 
 
-From 333fb2a8ecf78a6b6d8966d00e5d7f99baeb22ed Mon Sep 17 00:00:00 2001
+From 39df09a2bb718fc101a15355ec290046a7874683 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 11 Oct 2015 15:28:51 +0700
 Subject: [PATCH 09/10] binder: add compat symbol for RIL
@@ -1156,10 +1156,10 @@ Subject: [PATCH 09/10] binder: add compat symbol for RIL
  1 file changed, 6 insertions(+)
 
 diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
-index 9fc52fb..3848bef 100644
+index 7709a88..90c3e12 100644
 --- a/libs/binder/Parcel.cpp
 +++ b/libs/binder/Parcel.cpp
-@@ -823,6 +823,12 @@ status_t Parcel::writeString16(const String16& str)
+@@ -851,6 +851,12 @@ status_t Parcel::writeString16(const String16& str)
      return writeString16(str.string(), str.size());
  }
  
@@ -1176,7 +1176,7 @@ index 9fc52fb..3848bef 100644
 2.4.9 (Apple Git-60)
 
 
-From db4203bbf58a7e913fc4755c2d734901fcaacc36 Mon Sep 17 00:00:00 2001
+From 98feea67b6e5a6070114bca64d86b089cd1017de Mon Sep 17 00:00:00 2001
 From: forkbomb <keepcalm444@gmail.com>
 Date: Thu, 3 Dec 2015 20:34:15 +1100
 Subject: [PATCH 10/10] libbinder: allow devices to disable ashmem size
@@ -1185,14 +1185,16 @@ Subject: [PATCH 10/10] libbinder: allow devices to disable ashmem size
 The addition of ashmem size tracking can lead to parcel objects
 overwriting other values on the stack in old binary blobs.
 
+[pawitp: port to 6.0.1]
+
 Change-Id: Ida52cec851a6f9d5a57c8f9130a5875c03dcb094
 ---
  include/binder/Parcel.h |  2 ++
- libs/binder/Parcel.cpp  | 10 ++++++++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
+ libs/binder/Parcel.cpp  | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
 diff --git a/include/binder/Parcel.h b/include/binder/Parcel.h
-index 3ada1e9..dc9757e 100644
+index 16cd6cf..91ffae0 100644
 --- a/include/binder/Parcel.h
 +++ b/include/binder/Parcel.h
 @@ -340,8 +340,10 @@ public:
@@ -1201,43 +1203,100 @@ index 3ada1e9..dc9757e 100644
  
 +#ifndef DISABLE_ASHMEM_TRACKING
  private:
-     size_t mBlobAshmemSize;
+     size_t mOpenAshmemSize;
 +#endif
  
  public:
-     size_t getBlobAshmemSize() const;
+     // TODO: Remove once ABI can be changed.
 diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
-index 3848bef..de2d05f 100644
+index 90c3e12..c33e0ca 100644
 --- a/libs/binder/Parcel.cpp
 +++ b/libs/binder/Parcel.cpp
-@@ -928,9 +928,9 @@ status_t Parcel::writeBlob(size_t len, bool mutableCopy, WritableBlob* outBlob)
-     ALOGV("writeBlob: write to ashmem");
-     int fd = ashmem_create_region("Parcel Blob", len);
-     if (fd < 0) return NO_MEMORY;
--
+@@ -532,7 +532,11 @@ status_t Parcel::appendFrom(const Parcel *parcel, size_t offset, size_t len)
+ 
+             flat_binder_object* flat
+                 = reinterpret_cast<flat_binder_object*>(mData + off);
 +#ifndef DISABLE_ASHMEM_TRACKING
-     mBlobAshmemSize += len;
--
+             acquire_object(proc, *flat, this, &mOpenAshmemSize);
++#else
++            acquire_object(proc, *flat, this);
 +#endif
-     int result = ashmem_set_prot_region(fd, PROT_READ | PROT_WRITE);
-     if (result < 0) {
-         status = result;
-@@ -1908,7 +1908,9 @@ void Parcel::initState()
+ 
+             if (flat->type == BINDER_TYPE_FD) {
+                 // If this is a file descriptor, we need to dup it so the
+@@ -1064,7 +1068,11 @@ restart_write:
+         // Need to write meta-data?
+         if (nullMetaData || val.binder != 0) {
+             mObjects[mObjectsSize] = mDataPos;
++#ifndef DISABLE_ASHMEM_TRACKING
+             acquire_object(ProcessState::self(), val, this, &mOpenAshmemSize);
++#else
++            acquire_object(ProcessState::self(), val, this);
++#endif
+             mObjectsSize++;
+         }
+ 
+@@ -1653,7 +1661,11 @@ void Parcel::releaseObjects()
+         i--;
+         const flat_binder_object* flat
+             = reinterpret_cast<flat_binder_object*>(data+objects[i]);
++#ifndef DISABLE_ASHMEM_TRACKING
+         release_object(proc, *flat, this, &mOpenAshmemSize);
++#else
++        release_object(proc, *flat, this);
++#endif
+     }
+ }
+ 
+@@ -1667,7 +1679,11 @@ void Parcel::acquireObjects()
+         i--;
+         const flat_binder_object* flat
+             = reinterpret_cast<flat_binder_object*>(data+objects[i]);
++#ifndef DISABLE_ASHMEM_TRACKING
+         acquire_object(proc, *flat, this, &mOpenAshmemSize);
++#else
++        acquire_object(proc, *flat, this);
++#endif
+     }
+ }
+ 
+@@ -1849,7 +1865,11 @@ status_t Parcel::continueWrite(size_t desired)
+                     // will need to rescan because we may have lopped off the only FDs
+                     mFdsKnown = false;
+                 }
++#ifndef DISABLE_ASHMEM_TRACKING
+                 release_object(proc, *flat, this, &mOpenAshmemSize);
++#else
++                release_object(proc, *flat, this);
++#endif
+             }
+             binder_size_t* objects =
+                 (binder_size_t*)realloc(mObjects, objectsSize*sizeof(binder_size_t));
+@@ -1934,7 +1954,9 @@ void Parcel::initState()
      mFdsKnown = true;
      mAllowFds = true;
      mOwner = NULL;
 +#ifndef DISABLE_ASHMEM_TRACKING
-     mBlobAshmemSize = 0;
+     mOpenAshmemSize = 0;
 +#endif
  }
  
  void Parcel::scanForFds() const
-@@ -1928,7 +1930,11 @@ void Parcel::scanForFds() const
+@@ -1957,12 +1979,20 @@ size_t Parcel::getBlobAshmemSize() const
+     // This used to return the size of all blobs that were written to ashmem, now we're returning
+     // the ashmem currently referenced by this Parcel, which should be equivalent.
+     // TODO: Remove method once ABI can be changed.
++#ifndef DISABLE_ASHMEM_TRACKING
+     return mOpenAshmemSize;
++#else
++    return 0;
++#endif
+ }
  
- size_t Parcel::getBlobAshmemSize() const
+ size_t Parcel::getOpenAshmemSize() const
  {
 +#ifndef DISABLE_ASHMEM_TRACKING
-     return mBlobAshmemSize;
+     return mOpenAshmemSize;
 +#else
 +    return 0;
 +#endif
