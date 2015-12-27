@@ -37,10 +37,6 @@ on init
     symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
 
-    export SECONDARY_STORAGE /storage/sdcard1
-    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
-    mkdir /storage/sdcard1 0700 root root
-
     symlink /efs /factory
 
     symlink /dev/block/mmcblk0p11 /dev/block/param
