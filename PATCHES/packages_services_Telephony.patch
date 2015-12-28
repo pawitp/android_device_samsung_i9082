@@ -1,0 +1,106 @@
+From 2b3eec32a3d460a9f43477f4b19419afa347370d Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Mon, 28 Dec 2015 19:37:32 +0700
+Subject: [PATCH] On create, values need to be read from the RIL, not set
+
+This causes problem on dual SIM phones where setting one SIM to
+3G would cause the RIL to automatically change the other RIL to
+2G.
+
+In this case, when the setting saved is 3G for both SIM, whenever
+the user switches tab, the tab the user switches to become 3G.
+For example, when the user switches to Sim 2, Sim 2 becomes 3G.
+And when the user switches back to Sim 1, Sim 1 becomes 3G. This
+can be very confusing, not to mention that switching between
+tabs should not cause the network mode to change.
+
+The updateBody() call is removed to ensure that when SET is called,
+the value is not immediately GET from the RIL as the RIL might not
+finish updating the value yet and GET will return the old value,
+resulting in the following behavior:
+
+- User is on 2G
+- User switches to 3G
+- UI still displays "2G" due to updating value from RIL
+- After a few seconds, UI displays "3G" because RIL update is
+  finished.
+
+Not sure what the call is for, but it's probably not used in GSM
+phones. Care should be taken if this patch is to be applied to
+other phones.
+---
+ src/com/android/phone/MobileNetworkSettings.java | 30 +++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
+
+diff --git a/src/com/android/phone/MobileNetworkSettings.java b/src/com/android/phone/MobileNetworkSettings.java
+index c94bf4c..0b33e3f 100644
+--- a/src/com/android/phone/MobileNetworkSettings.java
++++ b/src/com/android/phone/MobileNetworkSettings.java
+@@ -724,8 +724,7 @@ public class MobileNetworkSettings extends PreferenceActivity
+         UpdatePreferredNetworkModeSummary(settingsNetworkMode);
+         UpdateEnabledNetworksValueAndSummary(settingsNetworkMode);
+         // Display preferred network type based on what modem returns b/18676277
+-        mPhone.setPreferredNetworkType(settingsNetworkMode, mHandler
+-                .obtainMessage(MyHandler.MESSAGE_SET_PREFERRED_NETWORK_TYPE));
++        mPhone.getPreferredNetworkType(mHandler.obtainMessage(MyHandler.MESSAGE_GET_PREFERRED_NETWORK_TYPE));
+ 
+         /**
+          * Enable/disable depending upon if there are any active subscriptions.
+@@ -922,7 +921,6 @@ public class MobileNetworkSettings extends PreferenceActivity
+             return true;
+         }
+ 
+-        updateBody();
+         // always let the preference setting proceed.
+         return true;
+     }
+@@ -930,6 +928,7 @@ public class MobileNetworkSettings extends PreferenceActivity
+     private class MyHandler extends Handler {
+ 
+         static final int MESSAGE_SET_PREFERRED_NETWORK_TYPE = 0;
++        static final int MESSAGE_GET_PREFERRED_NETWORK_TYPE = 1;
+ 
+         @Override
+         public void handleMessage(Message msg) {
+@@ -937,6 +936,9 @@ public class MobileNetworkSettings extends PreferenceActivity
+                 case MESSAGE_SET_PREFERRED_NETWORK_TYPE:
+                     handleSetPreferredNetworkTypeResponse(msg);
+                     break;
++                case MESSAGE_GET_PREFERRED_NETWORK_TYPE:
++                    handleGetPreferredNetworkTypeResponse(msg);
++                    break;
+             }
+         }
+ 
+@@ -967,6 +969,28 @@ public class MobileNetworkSettings extends PreferenceActivity
+                 updatePreferredNetworkUIFromDb();
+             }
+         }
++
++        private void handleGetPreferredNetworkTypeResponse(Message msg) {
++            AsyncResult ar = (AsyncResult) msg.obj;
++            final int phoneSubId = mPhone.getSubId();
++
++            if (ar.exception == null) {
++                int networkMode = ((int[]) ar.result)[0];
++
++                // Store this in setting so onPreferenceChange would trigger even if
++                // network mode from modem does not equal saved network mode
++                android.provider.Settings.Global.putInt(mPhone.getContext().getContentResolver(),
++                        android.provider.Settings.Global.PREFERRED_NETWORK_MODE + phoneSubId,
++                        networkMode );
++
++                UpdatePreferredNetworkModeSummary(networkMode);
++                UpdateEnabledNetworksValueAndSummary(networkMode);
++            } else {
++                if (DBG) {
++                    log("handleGetPreferredNetworkTypeResponse: exception in geting network mode.");
++                }
++            }
++        }
+     }
+ 
+     private void updatePreferredNetworkUIFromDb() {
+-- 
+2.5.4 (Apple Git-61)
+
