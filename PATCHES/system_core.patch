@@ -1,7 +1,7 @@
-From 6f690ebaa9c6b1bba7f3989dd32f75d8af9b7e64 Mon Sep 17 00:00:00 2001
+From 2204b39608bc52e5617bb9c6c1a16fc3d980080c Mon Sep 17 00:00:00 2001
 From: Dave Burke <daveburke@google.com>
 Date: Wed, 24 Oct 2012 17:30:31 -0700
-Subject: [PATCH 01/11] Revert "Revert "put back the unused virtuals in
+Subject: [PATCH 1/9] Revert "Revert "put back the unused virtuals in
  Vector<>""
 
 This reverts commit 225c66a48cdc3acef21ee380dc134449749d3cb3
@@ -65,10 +65,10 @@ index 21ad71c..cab95be 100644
              ssize_t         _indexOrderOf(const void* item, size_t* order = 0) const;
  
 diff --git a/libutils/VectorImpl.cpp b/libutils/VectorImpl.cpp
-index 30ca663..0bfc1f0 100644
+index de65a6c..6d4e601 100644
 --- a/libutils/VectorImpl.cpp
 +++ b/libutils/VectorImpl.cpp
-@@ -516,6 +516,17 @@ void VectorImpl::_do_move_backward(void* dest, const void* from, size_t num) con
+@@ -552,6 +552,17 @@ void VectorImpl::_do_move_backward(void* dest, const void* from, size_t num) con
      do_move_backward(dest, from, num);
  }
  
@@ -86,7 +86,7 @@ index 30ca663..0bfc1f0 100644
  /*****************************************************************************/
  
  SortedVectorImpl::SortedVectorImpl(size_t itemSize, uint32_t flags)
-@@ -631,6 +642,17 @@ ssize_t SortedVectorImpl::remove(const void* item)
+@@ -667,6 +678,17 @@ ssize_t SortedVectorImpl::remove(const void* item)
      return i;
  }
  
@@ -105,13 +105,13 @@ index 30ca663..0bfc1f0 100644
  
  }; // namespace android
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From 5fd288065d0172416606edeeba40d42fc140b717 Mon Sep 17 00:00:00 2001
+From 0402b7854fc173a9882abce88d751198830f683e Mon Sep 17 00:00:00 2001
 From: Arne Coucheron <arco68@gmail.com>
 Date: Wed, 3 Dec 2014 06:14:55 +0100
-Subject: [PATCH 02/11] libutils: Properly #ifdef NEEDS_VECTORIMPL_SYMBOLS
+Subject: [PATCH 2/9] libutils: Properly #ifdef NEEDS_VECTORIMPL_SYMBOLS
 
  * Compile error might occur otherwise
 
@@ -144,10 +144,10 @@ index cab95be..88c3a05 100644
      virtual void            reservedSortedVectorImpl1();
      virtual void            reservedSortedVectorImpl2();
 diff --git a/libutils/VectorImpl.cpp b/libutils/VectorImpl.cpp
-index 0bfc1f0..c4944cf 100644
+index 6d4e601..ffd552b 100644
 --- a/libutils/VectorImpl.cpp
 +++ b/libutils/VectorImpl.cpp
-@@ -516,7 +516,7 @@ void VectorImpl::_do_move_backward(void* dest, const void* from, size_t num) con
+@@ -552,7 +552,7 @@ void VectorImpl::_do_move_backward(void* dest, const void* from, size_t num) con
      do_move_backward(dest, from, num);
  }
  
@@ -156,7 +156,7 @@ index 0bfc1f0..c4944cf 100644
  void VectorImpl::reservedVectorImpl1() { }
  void VectorImpl::reservedVectorImpl2() { }
  void VectorImpl::reservedVectorImpl3() { }
-@@ -642,7 +642,7 @@ ssize_t SortedVectorImpl::remove(const void* item)
+@@ -678,7 +678,7 @@ ssize_t SortedVectorImpl::remove(const void* item)
      return i;
  }
  
@@ -166,13 +166,13 @@ index 0bfc1f0..c4944cf 100644
  void SortedVectorImpl::reservedSortedVectorImpl2() { };
  void SortedVectorImpl::reservedSortedVectorImpl3() { };
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From 7c0d4bbd1f36c7b7a1295e8c02501dd5fe37a5eb Mon Sep 17 00:00:00 2001
+From 1c4db7444daf18111736577df621c507daaac582 Mon Sep 17 00:00:00 2001
 From: codeworkx <codeworkx@cyanogenmod.org>
 Date: Sat, 27 Jul 2013 08:18:42 +0200
-Subject: [PATCH 03/11] libutils: refbase: jellybean mr1 compat
+Subject: [PATCH 3/9] libutils: refbase: jellybean mr1 compat
 
 [mikeioannina]: Update for L
 Can be enabled with global cflag REFBASE_JB_MR1_COMPAT_SYMBOLS
@@ -222,13 +222,13 @@ index 02907ad..b0ca12e 100644
  void RefBase::renameRefs(size_t n, const ReferenceRenamer& renamer) {
      for (size_t i=0 ; i<n ; i++) {
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From 477ba14ba8446d2d6bbc1f58bf44a703f5fd80ff Mon Sep 17 00:00:00 2001
+From 1267859b1206cf0ba9dcbbe139af1eddc7006326 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 17 Dec 2011 17:26:54 -0500
-Subject: [PATCH 04/11] init: add detection of charging mode
+Subject: [PATCH 4/9] init: add detection of charging mode
 
 Based on Prashant Somashekar's patch which is in turn based on techomancer's
 patch http://goo.gl/I19GG.
@@ -311,13 +311,13 @@ index 93fe944..5cb0f5c 100644
      } else {
          action_for_each_trigger("late-init", action_add_queue_tail);
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From 344f2a4db82656868baa873578114ed8da19bf26 Mon Sep 17 00:00:00 2001
+From 7dea3b338f5e8816ccb123ababd0e60ab40c1a26 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 10:48:07 +0700
-Subject: [PATCH 05/11] disable recovery flash
+Subject: [PATCH 5/9] disable recovery flash
 
 We don't want to flash AOSP's recovery
 
@@ -327,10 +327,10 @@ Change-Id: Icb999b58879f71f39b64b6e85afc5869c2e7d92e
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/rootdir/init.rc b/rootdir/init.rc
-index b71908c..cff177f 100644
+index 317207c..8ab432d 100644
 --- a/rootdir/init.rc
 +++ b/rootdir/init.rc
-@@ -649,9 +649,9 @@ service installd /system/bin/installd
+@@ -688,9 +688,9 @@ service installd /system/bin/installd
      class main
      socket installd stream 600 system system
  
@@ -344,13 +344,13 @@ index b71908c..cff177f 100644
  service racoon /system/bin/racoon
      class main
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From af8d3f39cf4a506c4f4932512097fe91bbb23ba8 Mon Sep 17 00:00:00 2001
+From b39bc21220951309bf9e876245b8f78f1a99242c Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Fri, 12 Apr 2013 11:40:15 +0700
-Subject: [PATCH 06/11] libnetutils: add ifc_set_mtu
+Subject: [PATCH 6/9] libnetutils: add ifc_set_mtu
 
 Change-Id: I3031e9ee38583648350f2c46baa7a9a714b9ea1e
 ---
@@ -382,13 +382,13 @@ index 7d2a5fb..e2be134 100644
 +    return ret;
 +}
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From 0de5a83374f1e58919ee2eabbd5ac41b5f636f09 Mon Sep 17 00:00:00 2001
+From 0874ba7eaf1d06efe76d69eda1756697669d38ed Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 18 Nov 2014 22:36:32 +0700
-Subject: [PATCH 07/11] charger: allow home button to wake
+Subject: [PATCH 7/9] charger: allow home button to wake
 
 A squashed commit of the following:
 
@@ -444,52 +444,13 @@ index 6800ad2..793a318 100644
      if (charger->next_key_check != -1 && now > charger->next_key_check)
          charger->next_key_check = -1;
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From 1aa80ae2f942658ac04a15f40f984f32cb8d090b Mon Sep 17 00:00:00 2001
-From: Pawit Pornkitprasan <p.pawit@gmail.com>
-Date: Sat, 10 Oct 2015 20:45:40 +0700
-Subject: [PATCH 08/11] liblog: fix android_set_abort_message compile error
-
----
- liblog/logd_write_kern.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/liblog/logd_write_kern.c b/liblog/logd_write_kern.c
-index 8742b34..e456c12 100644
---- a/liblog/logd_write_kern.c
-+++ b/liblog/logd_write_kern.c
-@@ -26,7 +26,9 @@
- #include <time.h>
- #include <unistd.h>
- 
-+#if __BIONIC__
- #include <android/set_abort_message.h>
-+#endif
- 
- #include <log/log.h>
- #include <log/logd.h>
-@@ -167,9 +169,11 @@ int __android_log_buf_write(int bufID, int prio, const char *tag, const char *ms
-             tag = tmp_tag;
-     }
- 
-+#if __BIONIC__
-     if (prio == ANDROID_LOG_FATAL) {
-         android_set_abort_message(msg);
-     }
-+#endif
- 
-     vec[0].iov_base   = (unsigned char *) &prio;
-     vec[0].iov_len    = 1;
--- 
-2.3.8 (Apple Git-58)
-
-
-From 82c6e56e8e22957ef9984417474362c8cbf32df2 Mon Sep 17 00:00:00 2001
+From 152994b408ec180c94dc3f3f0db55b20d6a4324b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 11 Oct 2015 10:35:26 +0700
-Subject: [PATCH 09/11] init: fix compile
+Subject: [PATCH 8/9] init: fix compile
 
 system/extras/ext4_utils/ext4_crypt_init_extensions.cpp:31: error: undefined reference to 'socket_local_client'
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
@@ -513,13 +474,13 @@ index 0e4b9dc..392b646 100644
      liblog \
      libc \
 -- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 
 
-From 6415a9b6b8d85f04b51407f586dac7a7fd38cf56 Mon Sep 17 00:00:00 2001
+From 54da84c6e1794ec41383f929c07c6c0dae822646 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 11 Oct 2015 17:36:05 +0700
-Subject: [PATCH 10/11] Bring back /proc/cpuinfo parsing
+Subject: [PATCH 9/9] Bring back /proc/cpuinfo parsing
 
 This partially reverts commit 74b34f3cb79aa8f2c5ba6a9dcc46d0dd84cdac86.
 ---
@@ -632,31 +593,5 @@ index 09d64cd..4b02efb 100644
  int make_dir(const char *path, mode_t mode);
  int restorecon(const char *pathname);
 -- 
-2.3.8 (Apple Git-58)
-
-
-From 75ec82ede464448f429492345cc871db9d686ca7 Mon Sep 17 00:00:00 2001
-From: Pawit Pornkitprasan <p.pawit@gmail.com>
-Date: Sun, 11 Oct 2015 21:11:25 +0700
-Subject: [PATCH 11/11] HACK: temporarily change SELinux to permissive
-
----
- init/init.cpp | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/init/init.cpp b/init/init.cpp
-index 80d21be..61e465c 100644
---- a/init/init.cpp
-+++ b/init/init.cpp
-@@ -894,7 +894,7 @@ static void selinux_init_all_handles(void)
- enum selinux_enforcing_status { SELINUX_DISABLED, SELINUX_PERMISSIVE, SELINUX_ENFORCING };
- 
- static selinux_enforcing_status selinux_status_from_cmdline() {
--    selinux_enforcing_status status = SELINUX_ENFORCING;
-+    selinux_enforcing_status status = SELINUX_PERMISSIVE;
- 
-     std::function<void(char*,bool)> fn = [&](char* name, bool in_qemu) {
-         char *value = strchr(name, '=');
--- 
-2.3.8 (Apple Git-58)
+2.5.4 (Apple Git-61)
 

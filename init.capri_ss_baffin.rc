@@ -429,15 +429,6 @@ on post-fs
     chown radio system /efs
     chmod 0771 /efs
 
-# create filesystem if necessary
-service setup_fs /system/bin/setup_fs \
-            /dev/block/mmcblk0p17 \
-            /dev/block/mmcblk0p11
-    class core
-    user root
-    group root
-    oneshot
-
 # geomagneticd
 service geomagneticd /system/bin/geomagneticd
     class main

@@ -1,1 +1,3 @@
+type efs_block_device, dev_type;
+type radio_block_device, dev_type;
 type cam_block_device, dev_type;

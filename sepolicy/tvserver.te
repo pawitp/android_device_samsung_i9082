@@ -5,4 +5,7 @@ init_daemon_domain(tvserver)
 binder_use(tvserver)
 
 allow tvserver gpu_device:chr_file rw_file_perms;
-allow tvserver system_server_service:service_manager add;
+allow tvserver mediaserver_service:service_manager add;
+
+allow tvserver mediaserver:binder call;
+allow tvserver surfaceflinger:binder call;

@@ -35,10 +35,6 @@ PRODUCT_COPY_FILES += \
 	device/samsung/i9082/samsung-keypad.kl:system/usr/keylayout/samsung-keypad.kl \
 	device/samsung/i9082/sii9234_rcp.kl:system/usr/keylayout/sii9234_rcp.kl
 
-# Filesystem management tools
-PRODUCT_PACKAGES += \
-	setup_fs
-
 # Usb accessory
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory

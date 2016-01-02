@@ -4,5 +4,16 @@ allow system_server sysfs_writable:file rw_file_perms;
 # Access /efs/wifi/.mac.info
 allow system_server efs_file:file { read open };
 
+# Access .gps.interface.pipe.to_jni and .gps.interface.pipe.to_gpsd
+# (they might be created either by system_server or gpsd)
+allow system_server gps_data_file:dir rw_dir_perms;
+allow system_server gps_data_file:fifo_file create_file_perms;
+
+type_transition system_server system_data_file:fifo_file gps_data_file ".gps.interface.pipe.to_gpsd";
+type_transition system_server system_data_file:fifo_file gps_data_file ".gps.interface.pipe.to_jni";
+
+# Wi-Fi
+allow system_server self:capability sys_module;
+
 # Not sure why
 allow system_server efs_file:dir search;

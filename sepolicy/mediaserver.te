@@ -1,0 +1,2 @@
+allow mediaserver system_file:file execmod;
+allow mediaserver tvserver:binder { transfer call };
