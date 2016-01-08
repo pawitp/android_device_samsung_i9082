@@ -104,9 +104,6 @@ BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/i9082/cmhw/
 # GPS
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/i9082/include
 
-# Compat
-TARGET_USES_LOGD := false
-
 # jemalloc causes a lot of random crash on free()
 MALLOC_IMPL := dlmalloc
 
