@@ -442,7 +442,7 @@ index 65d79ff..aff61b2 100644
          status_t result = dev->get_mic_mute(dev, &state);
 +#ifdef CAPRI_HWC
 +        // When not muted, Capri's audio driver incorrectly returns NO_INIT instead of NO_ERROR
-+        if (mAudioHwDevs.valueAt(0) == mPrimaryHardwareDev && result == NO_INIT) {
++        if (mAudioHwDevs.valueAt(i) == mPrimaryHardwareDev && result == NO_INIT) {
 +            result = NO_ERROR;
 +        }
 +#endif
