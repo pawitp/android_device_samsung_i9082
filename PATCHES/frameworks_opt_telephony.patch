@@ -1368,7 +1368,7 @@ index 0543151..166a400 100644
 2.5.4 (Apple Git-61)
 
 
-From d6f21bb63f600ad00b613ee6ecf2893f201a6eae Mon Sep 17 00:00:00 2001
+From 52d8385afe4d7f86540d4f37151045de15d8f02a Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 28 Dec 2014 18:53:11 +0700
 Subject: [PATCH 9/9] UiccController: use registerForAvailable only for
@@ -1379,13 +1379,15 @@ CAF changed the callback to registerForAvailable, but that does
 not work on other RILs where the SIM information will not be
 loaded successfully.
 
+Change from CM patch: use && instead of ||
+
 Change-Id: I9f9124417db2fe983e716a2825fc08d87511f8aa
 ---
  src/java/com/android/internal/telephony/uicc/UiccController.java | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/src/java/com/android/internal/telephony/uicc/UiccController.java b/src/java/com/android/internal/telephony/uicc/UiccController.java
-index 4f3b58b..30b5edf 100644
+index 4f3b58b..a8df6fb 100644
 --- a/src/java/com/android/internal/telephony/uicc/UiccController.java
 +++ b/src/java/com/android/internal/telephony/uicc/UiccController.java
 @@ -122,7 +122,10 @@ public class UiccController extends Handler {
@@ -1393,7 +1395,7 @@ index 4f3b58b..30b5edf 100644
              mCis[i].registerForIccStatusChanged(this, EVENT_ICC_STATUS_CHANGED, index);
              // TODO remove this once modem correctly notifies the unsols
 -            if (DECRYPT_STATE.equals(SystemProperties.get("vold.decrypt"))) {
-+            if (DECRYPT_STATE.equals(SystemProperties.get("vold.decrypt")) ||
++            if (DECRYPT_STATE.equals(SystemProperties.get("vold.decrypt")) &&
 +                    SystemProperties.getBoolean("persist.radio.apm_sim_not_pwdn", false)) {
 +                // Reading ICC status in airplane mode is only supported in QCOM
 +                // RILs when this property is set to true
