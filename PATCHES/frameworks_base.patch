@@ -1,4 +1,4 @@
-From fa6ae5a276bd7f8b23c965a671117dbbfb672ae9 Mon Sep 17 00:00:00 2001
+From adb883100425d4c406cbd7d6697c1f1f4e7e17de Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:50:29 +0700
 Subject: [PATCH 1/7] TelephonyManager: set properties in Broadcom-style as
@@ -12,10 +12,10 @@ Change-Id: I475fdd164b3316720387fefb14a3e12fbc262b39
  1 file changed, 20 insertions(+), 43 deletions(-)
 
 diff --git a/telephony/java/android/telephony/TelephonyManager.java b/telephony/java/android/telephony/TelephonyManager.java
-index 47f13c9..9c04ec7 100644
+index 7276980..6445238 100644
 --- a/telephony/java/android/telephony/TelephonyManager.java
 +++ b/telephony/java/android/telephony/TelephonyManager.java
-@@ -3201,49 +3201,19 @@ public class TelephonyManager {
+@@ -3244,49 +3244,19 @@ public class TelephonyManager {
       * @hide
       */
      public static void setTelephonyProperty(int phoneId, String property, String value) {
@@ -70,7 +70,7 @@ index 47f13c9..9c04ec7 100644
      }
  
      /**
-@@ -3340,15 +3310,22 @@ public class TelephonyManager {
+@@ -3383,15 +3353,22 @@ public class TelephonyManager {
       * @hide
       */
      public static String getTelephonyProperty(int phoneId, String property, String defaultVal) {
@@ -102,10 +102,10 @@ index 47f13c9..9c04ec7 100644
  
      /** @hide */
 -- 
-2.4.9 (Apple Git-60)
+1.9.1
 
 
-From 7f443c609172d52909b239bdc2cf3c45066dfc34 Mon Sep 17 00:00:00 2001
+From 797bb47d2587bdd53a740e8b3babd13029e6436c Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 22:33:16 +0700
 Subject: [PATCH 2/7] Camera: HACK: i9082: API hacks
@@ -162,10 +162,10 @@ index 1aee794..e7c5313 100644
                  throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
              case INVALID_OPERATION:
 -- 
-2.4.9 (Apple Git-60)
+1.9.1
 
 
-From 83bba5954e7ca1530cdbf1eea269d60b371798b2 Mon Sep 17 00:00:00 2001
+From 66249ace91f3ef4072bebb9a21cd79806ec3c4df Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:22:43 +0000
 Subject: [PATCH 3/7] Forward port Samsung STK support (frameworks/base)
@@ -181,10 +181,10 @@ Change-Id: I08d169bc466df290fca838b09f6b0fbea2ac82a8
  mode change 100644 => 100755 core/res/res/values/symbols.xml
 
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
-index 6e8f81e..6195e64 100644
+index f76dfb2..ca8358c 100644
 --- a/core/res/res/values/config.xml
 +++ b/core/res/res/values/config.xml
-@@ -2310,6 +2310,9 @@
+@@ -2345,6 +2345,9 @@
      <string-array name="config_cell_retries_per_error_code">
      </string-array>
  
@@ -197,12 +197,12 @@ index 6e8f81e..6195e64 100644
 diff --git a/core/res/res/values/symbols.xml b/core/res/res/values/symbols.xml
 old mode 100644
 new mode 100755
-index 95cd143..a393baf
+index e709500..9e21a33
 --- a/core/res/res/values/symbols.xml
 +++ b/core/res/res/values/symbols.xml
-@@ -2199,6 +2199,8 @@
-   <java-symbol type="bool" name="config_defaultWindowFeatureOptionsPanel" />
+@@ -2208,6 +2208,8 @@
    <java-symbol type="bool" name="config_defaultWindowFeatureContextMenu" />
+   <java-symbol type="bool" name="config_overrideRemoteViewsActivityTransition" />
  
 +  <java-symbol type="bool" name="config_samsung_stk" />
 +
@@ -220,10 +220,10 @@ index 7088be8..0b99052 100644
 +    int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002; /* Samsung STK */
  }
 -- 
-2.4.9 (Apple Git-60)
+1.9.1
 
 
-From 69c25c4e133e5581880b30c403ea65dba7da2a10 Mon Sep 17 00:00:00 2001
+From 8ce6ec236ae42ae3c42e7538949069d94819232e Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:47:35 +0700
 Subject: [PATCH 4/7] frameworks: base: add KEYCODE_HOME to wake keys
@@ -234,22 +234,22 @@ Change-Id: I77d70df2263dd9c75b02efde18d91585b1ad29f9
  1 file changed, 1 insertion(+)
 
 diff --git a/core/java/android/view/KeyEvent.java b/core/java/android/view/KeyEvent.java
-index a9bf92b..b7a42f6 100644
+index 19d5c73..1543af8 100644
 --- a/core/java/android/view/KeyEvent.java
 +++ b/core/java/android/view/KeyEvent.java
-@@ -1830,6 +1830,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
-             case KeyEvent.KEYCODE_MENU:
-             case KeyEvent.KEYCODE_WAKEUP:
-             case KeyEvent.KEYCODE_PAIRING:
+@@ -1849,6 +1849,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
+             case KeyEvent.KEYCODE_STEM_1:
+             case KeyEvent.KEYCODE_STEM_2:
+             case KeyEvent.KEYCODE_STEM_3:
 +            case KeyEvent.KEYCODE_HOME:
                  return true;
          }
          return false;
 -- 
-2.4.9 (Apple Git-60)
+1.9.1
 
 
-From c0895b92a24b0bfae573ac1a21873d0dcf13a23d Mon Sep 17 00:00:00 2001
+From bca4ead63caf4e1af882cd43cc10355c36a6689a Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 23 Nov 2012 14:23:16 +0000
 Subject: [PATCH 5/7] Reintroduce button-backlight (and respective inactivity
@@ -270,7 +270,7 @@ Change-Id: I6094c446e0b8c23f57d30652a3cbd35dee5e821a
  2 files changed, 17 insertions(+)
 
 diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
-index 452378f..b1c3a77 100644
+index 7b49530..19ff682 100644
 --- a/services/core/java/com/android/server/display/DisplayPowerController.java
 +++ b/services/core/java/com/android/server/display/DisplayPowerController.java
 @@ -19,6 +19,7 @@ package com.android.server.display;
@@ -316,7 +316,7 @@ index 452378f..b1c3a77 100644
  
          // Apply manual brightness.
 diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
-index f7a8970..95a7243 100644
+index 1f45896..d4d409b 100644
 --- a/services/core/java/com/android/server/power/PowerManagerService.java
 +++ b/services/core/java/com/android/server/power/PowerManagerService.java
 @@ -159,6 +159,8 @@ public final class PowerManagerService extends SystemService
@@ -336,7 +336,7 @@ index f7a8970..95a7243 100644
  
      private final Object mLock = new Object();
  
-@@ -540,6 +543,7 @@ public final class PowerManagerService extends SystemService
+@@ -548,6 +551,7 @@ public final class PowerManagerService extends SystemService
  
              mLightsManager = getLocalService(LightsManager.class);
              mAttentionLight = mLightsManager.getLight(LightsManager.LIGHT_ID_ATTENTION);
@@ -344,7 +344,7 @@ index f7a8970..95a7243 100644
  
              // Initialize display power management.
              mDisplayManagerInternal.initPowerManagement(
-@@ -1531,6 +1535,12 @@ public final class PowerManagerService extends SystemService
+@@ -1561,6 +1565,12 @@ public final class PowerManagerService extends SystemService
                      nextTimeout = mLastUserActivityTime
                              + screenOffTimeout - screenDimDuration;
                      if (now < nextTimeout) {
@@ -358,10 +358,10 @@ index f7a8970..95a7243 100644
                      } else {
                          nextTimeout = mLastUserActivityTime + screenOffTimeout;
 -- 
-2.4.9 (Apple Git-60)
+1.9.1
 
 
-From ac3e37c0cdbb76aff1e7a9b2791f16bdb913dfd5 Mon Sep 17 00:00:00 2001
+From cd4c360a3e75efd309a8f02fede38c8e5603d76a Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
 Subject: [PATCH 6/7] PowerManagerService: only turn on button light when any
@@ -377,7 +377,7 @@ Change-Id: I6b15c45b713bcbc290a1026805c46109060f9990
  1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
-index 95a7243..54a4325 100644
+index d4d409b..79d54fe 100644
 --- a/services/core/java/com/android/server/power/PowerManagerService.java
 +++ b/services/core/java/com/android/server/power/PowerManagerService.java
 @@ -159,7 +159,7 @@ public final class PowerManagerService extends SystemService
@@ -397,7 +397,7 @@ index 95a7243..54a4325 100644
  
      // Timestamp of last interactive power hint.
      private long mLastInteractivePowerHintTime;
-@@ -1046,6 +1047,11 @@ public final class PowerManagerService extends SystemService
+@@ -1059,6 +1060,11 @@ public final class PowerManagerService extends SystemService
                      return true;
                  }
              } else {
@@ -409,7 +409,7 @@ index 95a7243..54a4325 100644
                  if (eventTime > mLastUserActivityTime) {
                      mLastUserActivityTime = eventTime;
                      mDirty |= DIRTY_USER_ACTIVITY;
-@@ -1535,7 +1541,7 @@ public final class PowerManagerService extends SystemService
+@@ -1565,7 +1571,7 @@ public final class PowerManagerService extends SystemService
                      nextTimeout = mLastUserActivityTime
                              + screenOffTimeout - screenDimDuration;
                      if (now < nextTimeout) {
@@ -419,10 +419,10 @@ index 95a7243..54a4325 100644
                          } else {
                              mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
 -- 
-2.4.9 (Apple Git-60)
+1.9.1
 
 
-From 726c7a97cffa158b4bf5f8f73a00afec530b0e57 Mon Sep 17 00:00:00 2001
+From afd990737676e896e21e998745f7cd3d04b4e3db Mon Sep 17 00:00:00 2001
 From: timduru <timduru@gmail.com>
 Date: Wed, 11 Nov 2015 12:53:11 +0100
 Subject: [PATCH 7/7] Fix AutoRotation
@@ -504,5 +504,5 @@ index 9916223..6bd50f8 100644
  
          private void scheduleRotationEvaluationIfNecessaryLocked(long now) {
 -- 
-2.4.9 (Apple Git-60)
+1.9.1
 
